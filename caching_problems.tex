@@ -1,7 +1,24 @@
 \section{Caching problems}
 
 \subsection{Basic definitions}
+We shell remind ourselves about basic conceptst of online algorithms theory. 
+Let $\sigma = \sigma(1), \sigma(2), \ldots, \sigma(n)$ be a sequence of 
+requests. An $online algorithm A$ has to process requests one by one, $online$, 
+without any knowledge of the future requests. Formally, when serving request 
+$\sigma(t), 1 \leq t \leq n,$ the algotithm does not know any request 
+$\sigma(t')$ for $t'>t$. Handling any request incures $cost$ whose value is 
+depends on request and algorithm state. The goal is to minimize the overall 
+$cost$.
 
+Precursory publication written by Sleator and Tarjan proposes 
+\textit{competitive analysis} as a way to compare preformace of online 
+algorithms. In this approach we compare $C_A(\sigma)$, cost of online algorithm 
+$A$ on input $\sigma$, with $C_{OPT}(\sigma)$ of optimal offline algorithm, 
+which knows all the input sequence beforehand. We call algorithm $r-competitive$ 
+if there exist constant $c$ such that
+$$C_A(\sigma) \leq r \times C_{OPT}(\sigma) + c$$
+for any request sequence $\sigma$. We call $r$ a \textit{competitive ratio}. 
+The goal is therefore to minimize $r$.
 \subsection{Caching model variants}
 
 \subsection{Deterministic algorithms}
