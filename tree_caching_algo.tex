@@ -1,5 +1,28 @@
 \section{Tree caching with dependencies}
+The problem we consider (called \textit{tree caching problem})is an extension 
+of classic caching problem with bypassing that was recalled in secion 2. The 
+main difference is that requested items have inter-dependencies. Specifically, 
+universe forms rooted tree $T$ and the items requested are placed in its nodes 
+and whenever $v \in T$ is fetched all of its descendants $T(v)$ that are not in 
+cache have to be fetched at the same time. We say that the cache with property 
+described above is \textit{bottom-contiguous}.
+
+Moreover, we consider two types of requests: \textit{negative} and 
+\textit{positive}. If incomming request is positive we pay 1 if it is 
+not present in the cache (so the same as in most considered settings). On the 
+other hand we pay for negative requests if the item is cached (so in opposite 
+situation). After serving of any request we can reorgenize cache paying 
+$\alpha \geq 1$ for every element evicted or fetched. 
+
+The goal is to minimize the cost obtained by online algorithm solving this 
+problem. We present a deterministic algorithm \textbf{TRC} which we prove is 
+$O(h(T) \times R)$-competitive where $h(T)$ is height of input tree and $R = 
+k_{ONL}/(k_{ONL} - k_{OPT} +1$ with $k_{ONL}$ and $k_{OPT}$ being size of 
+online and optimal offline algorithm cache.
 
 \subsection{Model}
+For ease of future algorithm description and readability of proofs we define 
+some usefull objects. First of all by $T(r)$ we mean subtree of $T$ rooted in 
+$r$ and $h(T)$ denotes height of tree.
 
 \subsection{Algorithm TRC}

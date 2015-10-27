@@ -1,5 +1,10 @@
 \section{Caching problems}
-
+In this section we make an overview of caching problems. The basic paging 
+problem setting is well studied from the competitive analysis perspective. 
+Both determinisic and randomized optimal solutions are already known. We focus 
+on deterministic algorithms, although we give a sketch of randomized solutions 
+because of their popularity and importance in the online algorithm theory as a 
+whole. 
 \subsection{Basic definitions}
 We shell remind ourselves about basic conceptst of online algorithms theory. 
 Let $\sigma = \sigma(1), \sigma(2), \ldots, \sigma(n)$ be a sequence of 
@@ -19,9 +24,29 @@ if there exist constant $c$ such that
 $$C_A(\sigma) \leq r \times C_{OPT}(\sigma) + c$$
 for any request sequence $\sigma$. We call $r$ a \textit{competitive ratio}. 
 The goal is therefore to minimize $r$.
-\subsection{Caching model variants}
+
+\subsection{Caching and model variants}
+Caching problem can be described as follows. We are given two types of memory: 
+fast memory which has size $k$ and slow memory but its size $N \gg k$. We can 
+assume that number of request $n$ fullfills $N \geq n \gg k$. When getting a 
+request $\sigma_{it}$to an item $it$ that is already in cache we serve it 
+without obtaining no cost (or the cost $c \ll 1$). 
+Otherwise we have to retrieve $it$ from the secondary (slower) memory and pay 
+$1$ ($1/c$). Sometime we require, whenever $it$ is not in the cache, before 
+serving $\sigma_{it}$ we have to place $it$ in cache therefore have eanough 
+free space in fast memory to move it there. If there is no such requirement 
+(and $\sigma_{it}$ can 'ommit' moving into cache) we say that model is 
+\textit{with bypassing}. Usually ommiting cache is very costfull. After serving 
+request the algorithm can change its cache by evicting and fetching elements 
+from secondary storage. Some cost is assigned to this operations, too.
+
+In tree caching problem, that we study, requested element $v$ can be dependent 
+on some other elements. Specifically, they are dependent on its descendant in a 
+way, that when we decide to fetch $v$ we have to fetch all nodes from $T(v)$ 
+that are not alrady in cache.
 
 \subsection{Deterministic algorithms}
+
 \subsubsection{Longest Forward Distance (LFD) - offline optimal solution}
 \subsubsection{Marking algorithms examples (LRU, FIFO)}
 \subsubsection{Non competitive algortithms examples}
