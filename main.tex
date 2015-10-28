@@ -1,15 +1,25 @@
 \documentclass[a4paper,10pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{pstricks}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \usepackage{auto-pst-pdf}
+\usepackage{amssymb}
+\usepackage{amsthm}
 \usepackage{graphicx}
 \usepackage{wrapfig}
-%opening
+
+\newtheorem{myalgo}{Algorithm}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\renewcommand\algorithmicthen{}
+
+
 \title{Caching problem on tree structure with dependencies.}
 \author{Aleksandra Spyra}
 
 \begin{document}
-
 \maketitle
 
 \begin{abstract}
@@ -31,7 +41,6 @@ algorithm, respectively.
 \include{introduction}
 \include{caching_problems}
 \include{tree_caching_algo}
-\include{definition_pic}
 \include{analysis}
 \include{motivation}
 

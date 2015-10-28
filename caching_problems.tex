@@ -45,9 +45,58 @@ on some other elements. Specifically, they are dependent on its descendant in a
 way, that when we decide to fetch $v$ we have to fetch all nodes from $T(v)$ 
 that are not alrady in cache.
 
-\subsection{Deterministic algorithms}
+There is another generalization of caching problem that we consider. It is 
+called $(k_{ONL}, k_{OPT})$\textit{-paging generalization}. It gives online and 
+optimal offline algorithm diffrent resources: online cache has size $k_{ONL}$, 
+while optimal offline cahce has size $k_{OPT} \leq k_{ONL}$. It might seems 
+unfair to give the optimal solution less space, but sometimes it can give us 
+some information how resources can influence the performance (and remember that 
+offline algorithm has much more power, it knows all the future). 
 
+\subsection{Deterministic algorithms}
+We remind well-known algorithms that solve caching problem without bypassing, 
+so every requested item has to be placesd in cache and any reference to 
+secondary memory has unit cost 1.
 \subsubsection{Longest Forward Distance (LFD) - offline optimal solution}
+Consider following \textit{lazy} (evicts a page if and only if it has no space  
+offline algorithm: 
+\begin{myalgo}
+Whenever there is a cache miss (item requested is not 
+present in fast memory) evict element whose next request is latest among other 
+cached elements.
+\end{myalgo}
+
+This algorithm is callled \textbf{Longest Distance Forward} (LDF) and it turnes 
+out it is the offline optimal solution. That is really uncommon to know the 
+optimal offline solution which really helps in competitive analysis giving us 
+a lot of knowledge about the problem. More over, this algorithm has polinomial 
+time complexity, whereas most online theory problem are NP-hard.The optimality 
+of \textbf{LFD} was proven by Belady.
+\begin{theorem}
+ \textbf{LFD} is optimal offline algorithm for paging.
+\end{theorem}
+\begin{proof}
+ The proof is based on applying following lemma. For its proof look at [?].
+\begin{lemma}
+Let $A$ be any offline algorithm for paging, $\sigma$ - request sequence. For 
+amy $i \in \{1 \ldots |\sigma|\}$ we can construct offline algorithm $A_i$ such 
+that:
+\begin{itemize}
+ \item[(a)] $A_i$ serves first $i-1$ items the same as $A$,
+ \item[(b)] If $i$th request results in page fault, $A_i$ evicts from cache 
+item from items in cache which will be latest requested (with 'longest distance 
+forward'),
+  \item[(c)] $A_i(\sigma) \leq A(\sigma)$.
+\end{itemize}
+\end{lemma}
+Having this lemma, we can prove the theorem by applying it $|\sigma|$ times. 
+We start with any $OPT$ algorithm and apply the lemma, so we get $OPT_1$. Then 
+we apply lemma to $OPT_1$ for $i=2$ getting $OPT_2$ and so on. It is easy to 
+see that $OPT_{|\sigma|}$ acts like \textbf{LFD} and pays cost at most the 
+same 
+as $OPT$.
+\end{proof}
+
 \subsubsection{Marking algorithms examples (LRU, FIFO)}
 \subsubsection{Non competitive algortithms examples}
 

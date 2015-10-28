@@ -21,8 +21,70 @@ k_{ONL}/(k_{ONL} - k_{OPT} +1$ with $k_{ONL}$ and $k_{OPT}$ being size of
 online and optimal offline algorithm cache.
 
 \subsection{Model}
-For ease of future algorithm description and readability of proofs we define 
-some usefull objects. First of all by $T(r)$ we mean subtree of $T$ rooted in 
-$r$ and $h(T)$ denotes height of tree.
+\input{definition_pic}
+For ease of future algorithm description and readability of proofs we introduce 
+some usefull definitions. First of all by $T(r)$ we mean subtree of $T$ rooted 
+in $r$ and by $h(T)$ height of tree. \textit{Tree cap} is a tree $T_c \subseteq 
+T$ such that root $r$ of $T$ belongs to it and $v \in T_c$ implies that all the 
+nodes on the path from $v$ to $r$ belong to $T_c$. We say that set $C \subseteq 
+T$ is \textit{bottom contiguous} if $v \in C$ implies $T(v) \subseteq C$ and we 
+say that set $C$ \textit{valid cache state}. Notice that it is not dependent on 
+cache size so $C$ ca be valid cache state and not fit into cache size the same 
+time.
+
+The \textbf{TRC} algorihm, after each request, can change the state of cache, 
+but the only possible changes have to leave the the cache in valid state. 
+Depending on the character of change (eviction vs. fetch) we can apply for cahce 
+$C$ either \textit{valid negative changeset} or \textit{valid positive 
+changeset}. The valid positive changeset $X$ (think of it as a set that can be 
+fetched) is a set for which $X \cap C = \varnothing$ and $C \cup X$ 
+is a valid cache state, the negative one (related to evicion) is a set $X 
+\subseteq C$ such that $C \ X$ is valid cache state.
+
+We process the input one by one and assume each request is processed in 
+discrete time $t$, so the next request is served in time $t + 1$ and so on. In 
+the time interval an changes to cache take place, thouse $C_t$, cache state at 
+time $t$ is well defined.
+
+Some of the definition which appreared in this section are presented on figure 
+~\ref{fig:TreeCacheDefinitions}.
 
 \subsection{Algorithm TRC}
+
+Before finally defining the \textbf{TRC} algorithm we bind to each node $v \in 
+T$ a $bank_{t}(v)$ value. At the beginning of algorithm for each $v \in T$ we 
+have $bank_{0}(v) = 0$. If node $v$ gets negative or positive request at 
+time $t$ for which we pay 1 we increase $bank_{t}(v) = bank_{t-1}(v) + 1$, 
+leaving the value for any other node unchanged (so for $v' \neq v 
+bank_{t-1}(v') = bank_{t}(v')$). When we change the state of node $v$ (either 
+evict or fetch it into cache) we clear its bank value. For set of nodes $V 
+\subseteq T$, we denote sum $\sum_{v \in V} bank_{t}(v)$ as $bank_{t}(V)$.
+
+The \textbf{TRC} proceedes in phases. First phase starts at time 0 and at the 
+start of each phase the \textbf{TRC} cache is empty. 
+\begin{algorithm}
+\caption{\textbf{TRC}}
+\begin{algorithmic}[1]
+\ForAll{$t \in \{1 \ldots |\sigma|\}$}
+  \State Serve request $\sigma(t)$.
+  \State Compute $bank_t(v)$ values for $v \in T$.
+  \If{exists valid changeset $X$ such that: \begin{itemize}
+    \item $bank_t(X) \geq |X| \times \alpha$ (saturation),
+    \item $bank_t(Y) < |Y| \times \alpha$ for any valid changeset $Y 
+\varsupsetneq X$ (maximality):
+\end{itemize}}
+ \State Apply $X$.
+ \If {cache size $k_{ONL}$ is exceeded}:
+  \State Empty cache.
+  \State Reset $bank_t$ values to be 0.
+  \State Start new phase.
+ \EndIf
+ \EndIf
+\EndFor
+  \end{algorithmic}
+\end{algorithm}
+
+In line 6 of the algortihm above we do not actually exceed the cache. Instead 
+we do not apply last valid changeset, empty the cache and start new phase. 
+Every phase ends then whenever applying valid changeset $X$ would lead to cahce 
+being overloaded except of the last phase: this one can be \textit{unfinished}.
