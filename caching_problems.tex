@@ -114,12 +114,13 @@ Both of them belong to a class of algoritms which is called \textit{marking
 algorithms}. It is characterized by associating a bit to each page and we call 
 it its mark. Initally all pages are unmarked. 
 
-We devide input sequence $\sigma$ into phases dependent on value $k$ (cache 
-size). We define $i$th phase as a maximal input sequence, following phase $i-1$ 
-such that it contains at most k different items requested. So, except of the 
-last phase, each phase ends when the next request $r$ would increase the number 
-of distinct pages in phase to $k+1$. Usefull observation is that $r$ has to be 
-\textit{new}, meaning it is diffrent then any item requested in phase $i$.
+We devide input sequence $\sigma$ into \textit{k-phases} dependent on value $k$ 
+(cache size). We define $i$th phase as a maximal input sequence, following 
+phase $i-1$ such that it contains at most k different items requested. So, 
+except of the last phase, each phase ends when the next request $r$ would 
+increase the number of distinct pages in phase to $k+1$. Usefull observation is 
+that $r$ has to be \textit{new}, meaning it is diffrent then any item requested 
+in phase $i$.
 \input{phase_deterministic_pic}
 
 In any marking algorithm, during a phase, we mark a page when it is first 
@@ -131,7 +132,24 @@ For any $A_{mark}$ marking algorithm with cache of size $k$, if $OPT$ cache
 size is $h \leq k$, $A_{mark}$ is $O(\frac{k}{k-h+1})$-competitive.
 \end{theorem}
 \begin{proof}
- 
+Fix any input sequence $\sigma$ and devide it into $k$-phases as described 
+above. $A_{mark}$ on any such phase pays at most $k$ (because there is at most 
+k distict requests in one phase). To bound the $OPT$ cost we will bound it with 
+respect to \textit{shifted phases}. Shifted phase $i$ consists 
+of first element of phase $i+1$ (call it $f_{i+1}$) and all requests from phase 
+$i$th except the first one (call it $f_i$). Figure 
+~\ref{fig:PhaseDeterministic} shows phases and shifted phases for $k=3$. See 
+that to obtain shifted phase window we moved phase window by one element. At 
+the beginning of $i$ shifted phase $OPT$ has to have $f_i$ in it's cache. 
+Therefore it can have at most $h-1$ distinct elements from shifted phase $i$. 
+Shifted phase has at least $k$ distinct elements therefore $OPT$ has at least 
+$k-h+1$ page faults during shifted phase (there can be at most two shifted 
+phases that do not have this property, we ommit them, cause the cost can be put 
+into the constant when comparing costs).
+Summing up costs for $A_{mark}$ by phases and $OPT$ by shifted phases we get:
+$$ A_{mark}(\sigma) \leq \frac{k}{k-h+1} \cdot OPT(\sigma) + const,$$
+where we put all the cost obtained at requests not covered by phases (or 
+shifted phases).
 \end{proof}
 
 
