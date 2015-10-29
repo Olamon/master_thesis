@@ -97,7 +97,44 @@ same
 as $OPT$.
 \end{proof}
 
-\subsubsection{Marking algorithms examples (LRU, FIFO)}
+\subsubsection{Marking algorithms examples (LRU, FWF)}
+Now we will consider two deterministic algorithms.
+\begin{myalgo}
+ \textbf{Least Recently Used (LRU)}
+ \newline
+When eviction is necessary, evict item whose most recent request was the 
+earliest among cached items.
+\end{myalgo}
+\begin{myalgo}
+  \textbf{Flush When Full (FWF)}
+  \newline
+Whenever the is page fault and cache is full evict all elements from cache.
+\end{myalgo}
+Both of them belong to a class of algoritms which is called \textit{marking 
+algorithms}. It is characterized by associating a bit to each page and we call 
+it its mark. Initally all pages are unmarked. 
+
+We devide input sequence $\sigma$ into phases dependent on value $k$ (cache 
+size). We define $i$th phase as a maximal input sequence, following phase $i-1$ 
+such that it contains at most k different items requested. So, except of the 
+last phase, each phase ends when the next request $r$ would increase the number 
+of distinct pages in phase to $k+1$. Usefull observation is that $r$ has to be 
+\textit{new}, meaning it is diffrent then any item requested in phase $i$.  
+
+In any marking algorithm, during a phase, we mark a page when it is first 
+requested in the phase. Finally, marking algorithm is such an algorithm that 
+never evicts marked page. Now we will show theorem characterizing this class of 
+algorithms.
+\begin{theorem}
+For any $A_{mark}$ marking algorithm with cache of size $k$, if $OPT$ cache 
+size is $h \leq k$, $A_{mark}$ is $O(\frac{k}{k-h+1})$-competitive.
+\end{theorem}
+\begin{proof}
+ 
+\end{proof}
+
+
+
 \subsubsection{Non competitive algortithms examples}
 
 \subsection{Randomized algorithms (RAND, MARK)}
