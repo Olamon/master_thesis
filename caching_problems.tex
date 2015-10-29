@@ -119,7 +119,8 @@ size). We define $i$th phase as a maximal input sequence, following phase $i-1$
 such that it contains at most k different items requested. So, except of the 
 last phase, each phase ends when the next request $r$ would increase the number 
 of distinct pages in phase to $k+1$. Usefull observation is that $r$ has to be 
-\textit{new}, meaning it is diffrent then any item requested in phase $i$.  
+\textit{new}, meaning it is diffrent then any item requested in phase $i$.
+\input{phase_deterministic_pic}
 
 In any marking algorithm, during a phase, we mark a page when it is first 
 requested in the phase. Finally, marking algorithm is such an algorithm that 
