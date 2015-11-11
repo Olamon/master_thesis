@@ -41,10 +41,12 @@ fetched) is a set for which $X \cap C = \varnothing$ and $C \cup X$
 is a valid cache state, the negative one (related to eviction) is a set $X 
 \subseteq C$ such that $C \ X$ is valid cache state.
 
-We process the input one by one and assume each request is processed in 
-discrete time $t$, so the next request is served in time $t + 1$ and so on. In 
-the time interval an changes to cache take place, those $C_t$, cache state at 
-time $t$ is well defined.
+We process the input one by one and assume each request $\sigma(t)$ comes in 
+time interval $(t-1, t)$, so the next request comes in time interval $(t, t + 
+1)$ and so on. At time $t$ algorithm changes cache state from $C_{t}$ to 
+$C_{t+1}$. Cache state is well defined for round $t$ (which contains time 
+interval $(t-1, t)$), because as we see the cache may change only between 
+rounds.
 
 Some of the definition which appeared in this section are presented on figure 
 ~\ref{fig:TreeCacheDefinitions}.
@@ -64,6 +66,7 @@ The \textbf{TRC} proceeds in phases. First phase starts at time 0 and at the
 start of each phase the \textbf{TRC} cache is empty. 
 \begin{algorithm}
 \caption{\textbf{TRC}}
+\label{alg:TRC}
 \begin{algorithmic}[1]
 \ForAll{$t \in \{1 \ldots |\sigma|\}$}
   \State Serve request $\sigma(t)$.
@@ -87,4 +90,76 @@ start of each phase the \textbf{TRC} cache is empty.
 In line 6 of the algorithm above we do not actually exceed the cache. Instead 
 we do not apply last valid changeset, empty the cache and start new phase. 
 Every phase ends then whenever applying valid changeset $X$ would lead to cache 
-being overloaded except of the last phase: this one can be \textit{unfinished}.
+being overloaded except of the last phase: this one can be \textit{unfinished}. 
+If $P$ is a phase, by $begin_P$ and $end_P$ we denote time when the phase $P$ 
+started and finished respectively.
+
+\subsection{Analysis}
+Throughout all the analysis we fix the input sequence $I$ and its division into 
+phases. We compare \textbf{TRC} with \textbf{OPT} by analyzing both on a single 
+phase $P$. By $k_P$ we denote the number of elements in \textbf{TRC's} cache 
+after artificial fetch at $end_P$ but before all cache elemants eviction.
+
+We start with some basic properties of changesets. Then we introduce 
+\textit{fields} which will help us proving algorithm's competitiveness.
+
+\subsubsection{Elementary properties}
+Remind that $C_t$ denotes the cache state of \textbf{TRC} at round $t$ and that 
+any cache change takes place between rounds in discrete times. 
+Having that in mind we prove that at any time there cannot be both saturated 
+positive and negative changesets.
+\begin{lemma}
+ Fix phase $P$. For any $t \in \{begin_P +1, begin_P + 2, \ldots, end_P\}$. 
+For any valid changeset $X$ for cache $C_t$ we have $bank_t(X) \leq |X| \cdot 
+\alpha$ (1). Moreover changesets $Y$ for $C_t$ for which equality holds are 
+all either positive or negative (2).
+\end{lemma}
+\begin{proof}
+We prove this lemma by induction on $t$, starting with $t_1 = begin_P +1$. In 
+that time there was only one request so for all $X$ being valid changeset 
+$bank_{t_1} \leq 1$, which proves (1). For (2) see that the request can be both 
+negative and positive.
+
+To process with the induction step, first we prove following property:
+\begin{property}
+For any changeset $X$ for $C_{t+1}$ we have $bank_t(X) < |X| \cdot \alpha$.
+\end{property}
+We prove it only for $X$ being positive changeset. For negative ones the proof 
+is symmetric. We consider three cases depending on the action taken by 
+algorithm \textbf{TRC} at time $t$.
+\begin{enumerate}
+ \item \textbf{TRC} does not perform any action. That means that there was no 
+saturated (saturation is defined in algorithm \ref{alg:TRC} above) changeset 
+$X'$ for $C_t$ and $bank_t(X') \cdot \alpha$ for any $X'$. See that $C_t = 
+C_{t+1}$, therefore property follows trivially in that case.
+  \item \textbf{TRC} fetches $X'$, so $C_{t+1} = C_t \cup X'$. Assume the 
+opposite, that there exists changeset $X$ for $C_{t+1}$ such that $bank_t(X) 
+\geq |X| \cdot \alpha$. It implies that $X \cup X'$ is positive changeset for 
+$C_t$ that might have been fetched instead of $X'$ at time $t$. That 
+contradicts the maximality property of algorithm.
+  \item \textbf{TRC} evicts $X'$, so $C_{t+1}  = C_t \setminus X'$. Assume 
+again the opposite of the property. It gives, that $X'' = X \ X'$ is valid 
+positive changeset for $C_t$ which is saturated, because $bank_t(X'') = 
+bank_t(X) \geq |X| \cdot \alpha \geq |X''| \cdot \alpha$. We have both positive 
+and negative saturated changeset for $C_t$ which contradicts induction 
+assumption (2).
+\end{enumerate}
+This property implies the lemma for $t+1$ since we have strict inequalities for 
+$C_{t+1}$. When request comes in round $t+1$ it is either positive or negative, 
+so if it make a changset saturated it can be either positive or negative one. 
+Only one request cames during the round, so strict inequalities can only change 
+for eqalities, so we have first part of lemma, too.
+\end{proof}
+The above lemma convince us that the algorithm is deterministic when choosing 
+changeset to apply.
+
+\subsubsection{Concept of fields}
+
+\subsubsection{Shifting}
+\paragraph{Up-shifting of negative requests}
+\paragraph{Down-shifting of positive requests}
+
+\subsubsection{Competitiveness of TRC}
+\paragraph{Lower bound for OPT}
+\paragraph{Main result}
+\paragraph{Lower bound for competitve ratio}

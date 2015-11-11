@@ -151,8 +151,32 @@ $$ A_{mark}(\sigma) \leq \frac{k}{k-h+1} \cdot OPT(\sigma) + const,$$
 where we put all the cost obtained at requests not covered by phases (or 
 shifted phases).
 \end{proof}
+Now we should prove that both \textbf{FWF} and \textbf{LRU} are
+marking algorithms.
+\begin{propo}
+ \textbf{FWF} and \textbf{LRU} are marking algorithms.
+\end{propo}
+\begin{proof}
+ We fix request sequence $\sigma$ and consider its $k$-phase division 
+(where $k$ is cache size).
 
+First, see that \textbf{FWF} is marking algorithm. At the start of each phase 
+it's cache is empty and it does not evict any pages during whole phase, 
+therefore it certainly does not evict any marked page.
 
+Now suppose that \textbf{LRU} is not marking algorithm. Then there exists a 
+phase $p$ and element $x$ that is marked during this phase and evicted before 
+the phase ends. Assume that both $p$ and $x$ are first such phase and element. 
+Consider the moment when $x$ is marked (first time it was requested in $p$). 
+For that time it is the most recently requesed element. For the \textbf{LRU} to 
+evict $x$ there must be $k$ elements distinct from $x$ requested for it to turn 
+to be 'the oldest' in cache. The evicion takes place during $p$ so it must have 
+at least $k+1$ distinct elements which contradicts with $k$-phase deffinition. 
+\end{proof}
+This gives us that both algorithms are $O(\frac{k}{k-h+1})$-competitive. Not 
+only marking algorithms obtain this ratio. One example of such algorithm is 
+\textbf{First-in First-out} (FIFO), which evicts a page that was in cache for 
+the longest time.
 
 \subsubsection{Non competitive algorithms examples}
 
