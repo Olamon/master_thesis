@@ -189,8 +189,27 @@ Together with Lemma \ref{thm:lemma1} we can summarize it in simple observation.
 For field $F^t$ we have $req(F^t) = |X_t| \cdot \alpha$ and the requests 
 in one field are either all positive or all negative.
 \end{observe}
-Fields are hard to visualize in general case, so we present one only for the 
-case when the processed tree structure forms a line. It can be found in figure.
+The rest of event space, occupied slots that does not belog to any field $F^t$ 
+in phase $P$, we call \textit{open field} $F^{\inf}$. All fields except of an 
+open field are denoted by $\mathcal{F}$ and $|\mathcal{F}| = \sum_{F^t \in 
+\mathcal{F}} |X^t| \cdot \alpha$.
+Additionaly for any field $F$, if $A$ is a set of nodes, $F \cap A = \{(v,t) 
+\in F: v \in A$ and if $T$ is set of rounds $F \cap T = \{(v, t) \in F: t \in 
+T\}$. To shorten notation we introduce $\tau$\textit{-restricted} subfields of 
+$F^t$ as:
+$$F^t_{\leq \tau} = F^t \cap {t': t' \leq \tau}.$$
+We can think of it as sotopping time at $\tau$ and looking what slots are 
+occupated up to this time in $F^t$.
+Fields are hard to visualize in general case, so we present them on a 
+Figure \ref{fig:fields} only for the case when the processed tree structure 
+forms a line.
+\begin{figure}
+\label{fig:fields}
+\begin{center}
+  \includegraphics[width=\textwidth]{fields.jpg}
+\end{center}
+\end{figure}
+
 \subsubsection{Shifting}
 \paragraph{Up-shifting of negative requests}
 \paragraph{Down-shifting of positive requests}
