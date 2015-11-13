@@ -98,7 +98,7 @@ started and finished respectively.
 Throughout all the analysis we fix the input sequence $I$ and its division into 
 phases. We compare \textbf{TRC} with \textbf{OPT} by analyzing both on a single 
 phase $P$. By $k_P$ we denote the number of elements in \textbf{TRC's} cache 
-after artificial fetch at $end_P$ but before all cache elemants eviction.
+after artificial fetch at $end_P$ but before all cache elements eviction.
 
 We start with some basic properties of changesets. Then we introduce 
 \textit{fields} which will help us proving algorithm's competitiveness.
@@ -109,6 +109,7 @@ any cache change takes place between rounds in discrete times.
 Having that in mind we prove that at any time there cannot be both saturated 
 positive and negative changesets.
 \begin{lemma}
+\label{thm:lemma1}
  Fix phase $P$. For any $t \in \{begin_P +1, begin_P + 2, \ldots, end_P\}$. 
 For any valid changeset $X$ for cache $C_t$ we have $bank_t(X) \leq |X| \cdot 
 \alpha$ (1). Moreover changesets $Y$ for $C_t$ for which equality holds are 
@@ -148,13 +149,48 @@ This property implies the lemma for $t+1$ since we have strict inequalities for
 $C_{t+1}$. When request comes in round $t+1$ it is either positive or negative, 
 so if it make a changset saturated it can be either positive or negative one. 
 Only one request cames during the round, so strict inequalities can only change 
-for eqalities, so we have first part of lemma, too.
+for equalities, so we have first part of lemma, too.
 \end{proof}
 The above lemma convince us that the algorithm is deterministic when choosing 
 changeset to apply.
 
 \subsubsection{Concept of fields}
+First notice that whenever there is a positive (negative) request to element 
+present (absent)in \textbf(TRC's) cache it neither influence the algorithm 
+behaviour nor cost. Therefor from now on we assume that in phase $P$ there are 
+no such requests.
+We extend the space of requests from nodes to pairs of nodes and time $(v, t)$ 
+calling them \textit{slots} and obtained space: \textit{event space}. If there 
+is a request to node $v$ at time $t$ we say that slot $(v, t)$ is 
+\textit{occupied}. We can then see each phase $P$ as set of occupied slots. 
+Figure \ref{fig:spacial_temporal} might help to familiarize with above 
+definitions.
+\begin{figure}
+ \begin{center}
+  \includegraphics[width=0.7\textwidth]{spacial_temporal.jpg}
+ \end{center}
+ \caption{Event space for node $v$.}
+ \label{fig:spacial_temporal}
+\end{figure}
 
+As we now know what event space and slots are, we can define $fields$. Fields 
+form disjoint partition of phase $P$ (meaning partition of corresponding 
+slots). Formally if $X_t$ is changeset applied by \textbf{TRC} at time $t$ we 
+define related filed as:
+$$ F^t = \{(v, t'): v \in X^t \wedge last_v^t < t' \leq t\},$$
+where $last_v^{t'}$ denotes the last time strictly before $t'$ in phase $P$ 
+when node $v$ changed its state in cache either by being fetched or evicted. If 
+there was no such change for $v$ in phase $P$ we assign $last_v^{t'} = begin_P$.
+$F^t$ is \textit{positive} if changeset $X_t$ is positive, symmetrically for 
+\textit{negative}. We define $req(F^t)$ to be occupied slots from $F^t$. Notice 
+that $req(F^t)$ all exactly the requests that 'payed' for changeset $X_t$. 
+Together with Lemma \ref{thm:lemma1} we can summarize it in simple observation.
+\begin{observe}
+For field $F^t$ we have $req(F^t) = |X_t| \cdot \alpha$ and the requests 
+in one field are either all positive or all negative.
+\end{observe}
+Fields are hard to visualize in general case, so we present one only for the 
+case when the processed tree structure forms a line. It can be found in figure.
 \subsubsection{Shifting}
 \paragraph{Up-shifting of negative requests}
 \paragraph{Down-shifting of positive requests}
@@ -162,4 +198,4 @@ changeset to apply.
 \subsubsection{Competitiveness of TRC}
 \paragraph{Lower bound for OPT}
 \paragraph{Main result}
-\paragraph{Lower bound for competitve ratio}
+\paragraph{Lower bound for competitive ratio}
