@@ -16,7 +16,7 @@ depends on request and algorithm state. The goal is to minimize the overall
 $cost$.
 
 Precursory publication written by Sleator and Tarjan proposes 
-\textit{competitive analysis} as a way to compare preformance of online 
+\textit{competitive analysis} as a way to compare performance of online 
 algorithms. In this approach we compare $C_A(\sigma)$, cost of online algorithm 
 $A$ on input $\sigma$, with $C_{OPT}(\sigma)$ of optimal offline algorithm, 
 which knows all the input sequence beforehand. We call algorithm $r-competitive$ 
@@ -69,7 +69,7 @@ cached elements.
 This algorithm is called \textbf{Longest Distance Forward} (LDF) and it turns 
 out it is the offline optimal solution. That is really uncommon to know the 
 optimal offline solution which really helps in competitive analysis giving us 
-a lot of knowledge about the problem. More over, this algorithm has polinomial 
+a lot of knowledge about the problem. More over, this algorithm has polynomial 
 time complexity, whereas most online theory problem are NP-hard.The optimality 
 of \textbf{LFD} was proven by Belady.
 \begin{theorem}
@@ -114,9 +114,9 @@ Both of them belong to a class of algorithms which is called \textit{marking
 algorithms}. It is characterized by associating a bit to each page and we call 
 it its mark. Initially all pages are unmarked. 
 
-We divide input sequence $\sigma$ into \textit{k-phases} dependent on value $k$ 
+We divide input sequence $\sigma$ into $k$\textit{-phases} dependent on value $k$ 
 (cache size). We define $i$th phase as a maximal input sequence, following 
-phase $i-1$ such that it contains at most k different items requested. So, 
+phase $i-1$ such that it contains at most $k$ different items requested. So, 
 except of the last phase, each phase ends when the next request $r$ would 
 increase the number of distinct pages in phase to $k+1$. Useful observation is 
 that $r$ has to be \textit{new}, meaning it is different then any item requested 
@@ -134,7 +134,7 @@ size is $h \leq k$, $A_{mark}$ is $O(\frac{k}{k-h+1})$-competitive.
 \begin{proof}
 Fix any input sequence $\sigma$ and divide it into $k$-phases as described 
 above. $A_{mark}$ on any such phase pays at most $k$ (because there is at most 
-k distinct requests in one phase). To bound the $OPT$ cost we will bound it with 
+$k$ distinct requests in one phase). To bound the $OPT$ cost we will bound it with 
 respect to \textit{shifted phases}. Shifted phase $i$ consists 
 of first element of phase $i+1$ (call it $f_{i+1}$) and all requests from phase 
 $i$th except the first one (call it $f_i$). Figure 
@@ -168,10 +168,10 @@ Now suppose that \textbf{LRU} is not marking algorithm. Then there exists a
 phase $p$ and element $x$ that is marked during this phase and evicted before 
 the phase ends. Assume that both $p$ and $x$ are first such phase and element. 
 Consider the moment when $x$ is marked (first time it was requested in $p$). 
-For that time it is the most recently requesed element. For the \textbf{LRU} to 
+For that time it is the most recently requested element. For the \textbf{LRU} to 
 evict $x$ there must be $k$ elements distinct from $x$ requested for it to turn 
-to be 'the oldest' in cache. The evicion takes place during $p$ so it must have 
-at least $k+1$ distinct elements which contradicts with $k$-phase deffinition. 
+to be 'the oldest' in cache. The eviction takes place during $p$ so it must have 
+at least $k+1$ distinct elements which contradicts with $k$-phase definition. 
 \end{proof}
 This gives us that both algorithms are $O(\frac{k}{k-h+1})$-competitive. Not 
 only marking algorithms obtain this ratio. One example of such algorithm is 
@@ -179,5 +179,100 @@ only marking algorithms obtain this ratio. One example of such algorithm is
 the longest time.
 
 \subsubsection{Non competitive algorithms examples}
+In this part we consider two well known strategies that turn out to be non 
+competitive at all.
+\begin{myalgo}
+ \textbf{Last-in First-out (LIFO)}
+ \newline
+If removal is necessary, evict the element which was moved to cache most 
+recently.
+\end{myalgo}
+\begin{myalgo}
+ \textbf{Least Frequently Used (LFU)}
+ \newline
+Remove the element that which was least frequently requested since start of its 
+presence in cache.
+\end{myalgo}
 
+To prove that those algorithms are not competitive we have to show a sequence 
+of requests that potentially occur infinite cost when compared to cost of 
+\textbf{OPT}. In cases of both algorithms presented above we will use only 
+$k+1$ different pages, denoted $p_1, p_2, \ldots, p_{k+1}$ where $k$ is the 
+size of cache.
+
+We start with \textbf{LIFO}. Suppose that \textbf{LIFO} holds in its cache 
+elements $p_1, p_2, \ldots p_k$ (we can always renumber the elements, so we can 
+assume that). Consider following sequence of requests:
+$$ \sigma = (p_1, p_2, \ldots, p_k, p_{k+1}, p_k, p_{k+1}, \ldots).$$
+The idea is we request the elements that \textbf{LIFO} just removed from the 
+cache. See that on every request after first $p_{k+1}$ this algorithm pays 1, 
+so the summarized cost tends to infinity, whereas \textbf{OPT}, keeping $p_k$ 
+and $p_{k+1}$ in its cache pays gets only one page fault on this subsequence. 
+This proves the non-competitiveness of \textbf{LIFO}.
+
+In the case of \textbf{LFU}, fix any constant integer $c$ and sequence:
+$$\sigma = (p_1^c, p_2^c, \ldots, p_{k-1}^c, (p_k, p_{k+1})^{c-1}),$$
+where superscript means how many times we repeat the request. We can see that 
+after first $(k-1) \cdot c + 1$ requests \textbf{LFU} will pay for each of the 
+following requests, so it pays $O(c)$ for all the sequence. On the other hand 
+\textbf{OPT} will pay only for one page fault when $p_{k+1}$ occurs for the 
+first time. Since we can fix $c$ to be any value and we can repeat this 
+sequence many times, we can get infinite sequence for which 
+$\frac{cost(LFU)}{cost(OPT)} = c \rightarrow \infty$. 
+\textbf{LFU} is then not competitive.
 \subsection{Randomized algorithms (RAND, MARK)}
+When analyzing deterministic algorithms we had only one model of 
+\textit{adversary}. His task was to figure out a sequence of requests to 
+maximize the competitive ratio of online algorithms. Looking at randomized 
+algorithms the adversary can be given less or more power. Does he have to 
+provide all the sequence explicitly or can it generate it in on-line fashion? 
+Does he knows the algorithm and randomization used by it? Having this questions 
+in mind we define different adversaries when dealing with randomized 
+algorithms. Usually we recognize three types of adversaries:
+\begin{itemize}
+\item \textbf{Oblivious Adversary:} The adversary has to show all the request 
+sequence before any of them is processed my online algorithm, which is known to 
+adversary. The adversary cost is the cost of optimal offline algorithm on that 
+sequence. Notice that this adversary is similar to the one used when analyzing
+deterministic algorithms.
+\item \textbf{Adaptive Online Adversary:} This one can observe the online 
+algorithm and generate next request using knowledge about previous (randomized) 
+answers of online algorithm. It has to serve requests online though, without 
+knowing online algorithm action on present and future requests.
+\item \textbf{Adaptive Offline Adversary:} Same as above with the difference in 
+way of charging adversary: it obtains cost equal to optimal offline algorithm 
+on generated sequence.
+\end{itemize}
+The competitive ratio for randomized algorithm is dependent on the type of 
+adversary we choose. The easiest definition is for oblivious adversary. We say 
+that online algorithm $A$ id $c$-competitive against oblivious adversary if for 
+all sequences $\sigma$ generated by this adversary, we have:
+$$\mathbb{E}[cost_A(\sigma)] \leq c\cdot cost_{OPT}(\sigma) + const,$$
+where the expected value is taken over the random choices of $A$. For adaptive 
+adversaries on the other hand we say $A$ is $c$-competitive if:
+$$\mathbb{E}[cost_A(\sigma) - c \cdot cost_{ADV}(\sigma)] \leq const.$$
+Here the expected value is still taken over the choices of $A$. The difference 
+is that the $cost_{ADV}$ is random variable dependent on randomization of $A$. 
+In case of adaptive offline adversary at least we know that $cost_{ADV}(\sigma) 
+ \sim cost_{OPT}(\sigma)$ has the same distribution, whereas for online 
+adaptive adversary so simple nature of its cost random variable is not known.
+
+It turns out that randomization can't give an improvement on competitive 
+ration in the case of adaptive offline adversary. The following theorem was 
+presented in 'Ben-David, Borodin .. On the power...':
+\begin{theorem}
+If there is a $c$-competitive algorithm against adaptive offline adversary then 
+there exists a $c$-competitive deterministic online algorithm. 
+\end{theorem}
+The relation between adversaries is captured in the same paper and presented in 
+theorem above.
+\begin{theorem}
+Suppose $A$ is $c$-competitive randomized algorithm against any adaptive online 
+adversary and additionally there exists $d$-competitive algorithm against any 
+oblivious adversary then $A$ is $c \cdot d$-competitive against adaptive 
+offline adversary.
+\end{theorem}
+Usually we say the oblivious adversary 'weak', adaptive online 'medium' and 
+adaptive offline: 'strong'. This informal names are consistent with intuition: 
+oblivious adversary is the easiest to compete with, whereas adaptive offline is 
+the hardest being the most powerful one.
