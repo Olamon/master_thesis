@@ -276,3 +276,75 @@ Usually we say the oblivious adversary 'weak', adaptive online 'medium' and
 adaptive offline: 'strong'. This informal names are consistent with intuition: 
 oblivious adversary is the easiest to compete with, whereas adaptive offline is 
 the hardest being the most powerful one.
+
+Now we present a randomized algorithm \textbf{MARK} which turns out to be 
+$2 \cdot H_k$-competitive against oblivious adversary. $H_k$ is called $k$
+\textit{th harmonic number} ad is defined as $H_k = \sum^k_{i=1} \frac{1}{i}$. 
+This series has a really nice property that $\ln k < H_k \leq \ln k + 1$. 
+Algorithm \textbf{MARK} is a marking algorithm so it has a bit associated with 
+each of $k$ entries in cache.
+
+\begin{algorithm}
+\caption{\textbf{MARK}}
+\label{alg:MARK}
+\begin{algorithmic}[1]
+\ForAll{$r$ in sequence $\sigma$}
+  \If{$r$ is in cache}
+    \State Mark $r$.
+  \Else
+    \If{Cache is full}
+      \If{All elements are marked}
+	\State Unmark all cached elements.
+      \EndIf
+      \State Choose $p$ uniformly at random from unmarked pages.
+      \State Remove $p$ from cache.
+    \EndIf
+    \State Fetch $r$ and mark it.
+  \EndIf
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+\begin{theorem}
+ Algorithm \textbf{MARK} is $2 \cdot H_k$-competitive against oblivious 
+adversary.
+\end{theorem}
+\begin{proof}
+We fix input sequence $\sigma$ and its $k$-phases partition defined the same as 
+in case of deterministic marking algorithm. We can assume that both 
+\textbf{OPT} and \textbf{MARK} start with the same cache state (adjusting the 
+cache can be done with constant cost not influencing the competitive ratio).
+
+Consider $i$th phase. We call \textbf{old pages} all the elements requested in 
+phase $i$th that were requested in phase $i-1$. All the other pages requested 
+in phase $i$ are \textit{new}. For the first phase, all the pages are new. We 
+denote $m_i$ the number of new pages for phase $i$. The picture of above 
+definition can be found on Figure \ref{fig:PhasesRandomized}.
+\input{phase_randomized_pic}
+
+We can see that old pages are somehow beneficial for \textbf{MARK}. It it keeps 
+an old page sufficiently long (up to the moment when it is first time requested 
+in phase $i$) it does not pay for this page through whole phase. Seeing that 
+leads us to conclusion that the worst case is when the firstly all the new 
+$m_i$ elements are requested, then th old pages, so the probability of an old 
+page being still in cache is smallest possible. More specifically the 
+probability that the $jth$ old page (the order is the order of first occurrence 
+in phase) is still in cache when requested can be bounded from below by 
+$\frac{k-m_i-(j-1)}{k-(j-1)}$ since $k-m_i-(j-1)$ is the number of old pages in 
+the cache that are unmarked and  $k-(j-1)$ is the number of unmarked old pages 
+up to the time $j$th page is requested for the first time. This gives us that 
+the probability of page fault on that request is equal $1 - 
+\frac{k-m_i-(j-1)}{k-(j-1)} = \frac{m_i}{k-(j-1)}$ so the expected number of 
+page faults in whole phase is (remembering that we pay $1$ for every new page):
+$$ m_i + \sum_{j=1}^{k - m_i}\frac{m_i}{k-(j-1)} = m_i\cdot(1+H_k-H_{m_i}) \leq 
+m_i \cdot H_k.$$
+
+Now we have to lower bound the cost of \textbf{OPT}. Consider two consecutive 
+phases $i-1$ and $i$. There is $k + m_i$ distinct pages request in that two 
+phases. Since \textbf{OPT} cache size is $k$ there is at least $m_i$ faults. 
+During the first phase \textbf{OPT} has at least $m_1$ faults. Summing up by 
+the pairs $(i-1, i)$ we get $\sum m_i$. Since each phase is counted twice 
+(except of the first one, but this one is already bounded) the lower bound for 
+\textbf{OPT} cost is $\frac{1}{2} \cdot \sum m_i$. As we know \textbf{MARK's} 
+number of page faults, taking sum from every phase, is at most $H_k \cdot \sum 
+m_i$ which together proves the theorem. 
+\end{proof}
