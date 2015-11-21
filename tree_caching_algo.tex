@@ -188,6 +188,7 @@ Together with Lemma \ref{thm:lemma1} we can summarize it in simple observation.
 \begin{observe}
 For field $F^t$ we have $req(F^t) = |X_t| \cdot \alpha$ and the requests 
 in one field are either all positive or all negative.
+\label{obs:observe1}
 \end{observe}
 The rest of event space, occupied slots that does not belog to any field $F^t$ 
 in phase $P$, we call \textit{open field} $F^{\infty}$. All fields except of 
@@ -199,8 +200,8 @@ Additionaly for any field $F$, if $A$ is a set of nodes, $F \cap A = \{(v,t)
 T\}$. To shorten notation we introduce $\tau$\textit{-restricted} subfields of 
 $F^t$ as:
 $$F^t_{\leq \tau} = F^t \cap {t': t' \leq \tau}.$$
-We can think of it as sotopping time at $\tau$ and looking what slots are 
-occupated up to this time in $F^t$.
+We can think of it as stopping time at $\tau$ and looking what slots are 
+occupied up to this time in $F^t$.
 Fields are hard to visualize in general case, so we present them on a 
 Figure \ref{fig:fields} only for the case when the processed tree structure 
 forms a line.
@@ -213,8 +214,153 @@ forms a line.
 $F^2$ is negative. $F^{\infty}$ is an open field for presented phase.}
 \end{figure}
 
+Now we are ready to upper bound the cost of \textbf{TRC} on phase $P$.
+\begin{lemma}
+Let $\mathcal{F} \cup F^{\infty}$ be a partition of $P$ into fields. We have:
+$$TRC(P) \leq 2 \cdot \alpha \cdot |\mathcal{F}| + req(F^{\infty}) + k_P \cdot 
+\alpha.$$ 
+\end{lemma}
+\begin{proof}
+The cost on every field $F^t$ originates from serving requests belonging to it 
+and to reorganize the cache at the end of the field - both this costs are equal 
+$|X^t| \cdot \alpha$, which sums up to the first term in right side of 
+inequality. Expression $req(F^{\infty})$ captures all the cost associated with 
+open field in $P$ and $k_P$ is the cost of final eviction which does not 
+occur for the unfinished (last) phase. 
+\end{proof}
+
 \subsubsection{Shifting}
-\paragraph{Up-shifting of negative requests}
+Now we process to the most tricky part of our deduction. What we need to do is 
+relate the cost of \textbf{OPT} to fields. Just to show the motivation, imagine 
+for a moment that requests are evenly distributed within fields. What we mean, 
+is every node contained in every field $F^t$ has exactly $\alpha$ slots 
+saturated at time $t$ (so we distribute $|X^t| \cdot \alpha$ requests belonging 
+to $F^t$ evenly). What it gives us is that every node $v$ alternates between 
+periods spent in positive and negative field and on each such periods it is 
+requested $\alpha$ times. Moreover, we see that on two consecutive periods 
+(one positive and one negative) \textbf{OPT} pays at least $\alpha$ changing 
+the state of $v$ or paying for all positive or all negative requests. 
+Unfortunately, we do not have such fair distribution of requests. What we do is 
+we change phase $P$ to $P'$ which is not harder for \textbf{OPT} but will be 
+close enough to even distribution to lower bound the cost.
+
+To achieve that we will change $P$ by applying \textit{legal shifts}. The 
+requests placed in slot $(v, t)$ can be legally shifted to slot $(m(v), t)$ if 
+$v = m(v)$ or for positive requests $m(v)$ is descendant of $v$, for negative 
+$m(v)$ is ascendant of $v$. See, that for fixed sequence of fetches and 
+removals, for any algorithm, the associated cost can only decrease when this 
+legal shifts are applied. For example for positive request, shifting it 'down' 
+in the tree can lead to a node which is already in cache and we can save on 
+that request. Similar example can be constructed for negative requests. So we 
+can make following observation:
+\begin{observe}
+ If $P'$ was created from $P$ by application of  legal shifts then 
+$cost_{OPT}(P') \leq cost_{OPT}(P)$.
+\end{observe}
+
+We do not want $P'$ to lead \textbf{OPT} to have too small cost so we cannot 
+argue about it is sufficiently large. What we want to keep in our hands is that 
+there are still consecutive alternating periods of positive and negative 
+requests that are sufficiently 'long' in the sense of number of requests. 
+Therefore we will show that we can perform shifts within fields in such way 
+that there are exactly (for negative requests) or approximately (for positive 
+requests) distributed, so we can lower bound \textbf{OPT}.
+
+Before we start shifting the requests we present a property of restricted 
+subfields and corresponding changeset. For any filed $F$ we say that $S 
+\subseteq F$ is \textit{overrequested} if $req(S) > |S| \cdot \alpha$. It turns 
+out that some subsets of fields are never overrequested.
+
+\begin{lemma}
+Fix $F^t$, $F^t_{\leq \tau}$ with $X^t$ corresponding changeset.
+\begin{itemize}
+ \item If $F^t$ is negative then for any tree cap $T'$ of $X^t$, $T' \cap 
+F^t_{\leq \tau}$ is not overrequested.
+\item If $F^t$ is positive then for any subtree $T'\cap F^t_{\leq \tau}$ is not 
+overrequested.
+\end{itemize}
+\label{thm:not_over_requested}
+\end{lemma}
+\begin{proof}
+We prove the property for negative fields only. The proof for positive ones is 
+similar. From \ref{thm:lemma1}, because $T' \cap  F^t_{\leq \tau}$ is valid 
+changeset at $\tau$, $req(T' \cap  F^t_{\leq \tau}) = bank_{\tau}(T' \cap  
+F^t_{\leq \tau}) \leq |D \cap F^t_{\leq \tau}| \cdot \alpha$.
+\end{proof}
+\begin{wrapfigure}{l}{0.5\textwidth}
+\vspace{-20pt}
+ \begin{center}
+  \includegraphics[width=0.5\textwidth]{density_pic.png}
+\end{center}
+\caption{This picture shows the average density of request in fields. The 
+darker colour the more request is in average in that part of changeset.}
+\vspace{-40pt}
+\label{fig:density}
+\end{wrapfigure}
+For $\tau = t$ we can apply this lemma and Observation \ref{obs:observe1} 
+what gives us a property of fields, intuitively saying that for positive 
+fields the saturation of slots in average is more dense the closer we are to 
+the root, whereas the density of requests in negative field is higher in the 
+bottom (see Figure \ref{fig:density}).
+\begin{corollary}
+ Fix $F^t$ filed with corresponding changeset $X_t$. Let $T'$ be tree cap of 
+$X_t$, then if the field is:
+ \begin{itemize}
+  \item positive: $req(F^t \cap T') \geq |T'| \cdot \alpha$,
+  \item negative: $req(F^t \cap (X_t \setminus T')) \geq |X_t \setminus 
+T'| \cdot \alpha$.
+ \end{itemize}
+ \label{thm:proper_at_t}
+\end{corollary}
+
+\myparagraph{Up-shifting of negative requests}
+With up shifting negative requests up, we can obtain an even distribution of 
+requests across nodes in changeset.
+\begin{theorem}
+By legal shifts of negative requests we can move request within the field $F^t$ 
+and each node is requested exactly $\alpha$ times.
+\label{thm:legal_shifting_up}
+\end{theorem}
+To prove this theorem we will first convince ourselves that we can always 
+shift requests that appeared after first $\alpha$ requests to leaf to its 
+parent. To make our deduction transparent we will say that tree cap $Y 
+\subseteq X_t$ is \textit{proper} if for any tree cap $Y' \subseteq Y$ and any 
+time $\tau \leq t$ it holds that $req(F^t_{\leq \tau} \cap Y') \leq |Y'| \cdot 
+\alpha$. Look that Corollary \ref{thm:proper_at_t} tells that at time $t$, 
+$X_t$ with all its tree caps are proper.
+
+Now we can present a lemma which will be then used as induction step to prove 
+Theorem \ref{thm:legal_shifting_up}.
+\begin{lemma}
+ Let $Y$ be a proper tree cap of negative changeset $X_t$ and let $v_l$ be one 
+of $Y$'s leaves. If $v_l$ was requested $r_l \geq \alpha$ we can legally shift  
+$\delta_l = r_l - \alpha$ requests to parent of $v_l$ ($p(v_l)$), so they are 
+kept in $F^t$ and $Y \setminus \{v_l\}$ stays proper. 
+\end{lemma}
+\begin{proof}
+We consider $r_l$ requests that are placed on $v_l$ in chronological order. See 
+that when $\alpha + 1$-th request comes, at time $t_l$, $p(v_l)$ has to be in 
+cache. If that wasn't true, we would have overrequested tree cap ${v_l}$ which 
+contradicts Lemma \ref{thm:not_over_requested}. That means, after $\alpha$ first 
+requests to $v_l$ the rest $\delta_l$ requests can be moved within field to 
+$p(v_l)$.
+
+What remains to be proven is that $Y' = Y \setminus {v_l}$ after that operation 
+is proper. Suppose it is not, and there exists tree cap $D \subseteq Y'$ which 
+is overrequested in some time $\tau$. First of all $\tau \geq t_l$ because we 
+do not change placement of any request up to time $t_l$ and $Y$ before change 
+was not overrequested. Also see that $p(v) \in D$ - we did not change the 
+number of requests in any other node. After shift $req(F^t \cap Y) = req(F^t 
+\cap D) + \alpha$, and if $req(F^t \cap D) > |D| \cdot \alpha$, then $D \cup 
+v_l$ would be overrequested contradicting that $Y$ is proper before change.
+\end{proof}
+
+Now above lemma, used as induction step, proves Theorem 
+\ref{thm:legal_shifting_up}. To see that remind that 
+Corollary \ref{thm:proper_at_t} ensures that in any proper tree cap $D$ of 
+$X_t$ there is a leaf with at least $\alpha$ requests. Going with bottom-up 
+manner through the field shifting requests from 'overrequested' the proof of 
+theorem is completed.   
 \paragraph{Down-shifting of positive requests}
 
 \subsubsection{Competitiveness of TRC}
