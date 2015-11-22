@@ -340,7 +340,8 @@ kept in $F^t$ and $Y \setminus \{v_l\}$ stays proper.
 \begin{proof}
 We consider $r_l$ requests that are placed on $v_l$ in chronological order. See 
 that when $\alpha + 1$-th request comes, at time $t_l$, $p(v_l)$ has to be in 
-cache. If that wasn't true, we would have overrequested tree cap ${v_l}$ which 
+cache. If that wasn'tprzechodniośc true, we would have overrequested tree cap 
+${v_l}$ which 
 contradicts Lemma \ref{thm:not_over_requested}. That means, after $\alpha$ first 
 requests to $v_l$ the rest $\delta_l$ requests can be moved within field to 
 $p(v_l)$.
@@ -354,6 +355,16 @@ number of requests in any other node. After shift $req(F^t \cap Y) = req(F^t
 \cap D) + \alpha$, and if $req(F^t \cap D) > |D| \cdot \alpha$, then $D \cup 
 v_l$ would be overrequested contradicting that $Y$ is proper before change.
 \end{proof}
+\begin{wrapfigure}{l}{0.5\textwidth}
+\vspace{-20pt}
+ \begin{center}
+  \includegraphics[width=0.5\textwidth]{density_pic.png}
+\end{center}
+\caption{This picture shows the average density of request in fields. The 
+darker colour the more request is in average in that part of changeset.}
+\vspace{-20pt}
+\label{fig:density}
+\end{wrapfigure}
 
 Now above lemma, used as induction step, proves Theorem 
 \ref{thm:legal_shifting_up}. To see that remind that 
@@ -361,9 +372,174 @@ Corollary \ref{thm:proper_at_t} ensures that in any proper tree cap $D$ of
 $X_t$ there is a leaf with at least $\alpha$ requests. Going with bottom-up 
 manner through the field shifting requests from 'overrequested' the proof of 
 theorem is completed.   
-\paragraph{Down-shifting of positive requests}
+\myparagraph{Down-shifting of positive requests}
+Unfortunately, we can not obtain such even distribution of requests by legal 
+shifts in a positive field as in the negative case. Specifically, we cannot 
+shift legally positive requests down and end up with $\alpha$ requests in every 
+node. Imagine we have a tree $T$ with root $r$ and two distinct subtrees $T_1$ 
+and $T_2$ both of size $s$ and having $l$ leaves. Consider following series on 
+events, assuming that initially whole tree $T$ is in \textbf{TRC's} cache.
+\begin{wrapfigure}{r}{0.5\textwidth}
+\vspace{-20pt}
+ \begin{center}
+  \includegraphics[width=0.5\textwidth]{example_not_even.png}
+\end{center}
+\caption{Numbers indicate chronology of events.}
+\label{fig:example_not_even}
+\end{wrapfigure}
+\begin{enumerate}
+ \item $T_1 \cup \{r\}$ is evicted from cache.
+ \item $(s+1) \cdot \alpha - l$ requests to root $r$ appear (no fetch occures - 
+there is not enough requests in $r$ to pay for whole $T_1 \cup \{r\}$).
+ \item $T_2$ is evicted.
+ \item $s \cdot \alpha$ requests appear at root of $T_1$.
+ \item $l$ requests appear at root $r$ of tree $T$. $T$ is again in 
+\textbf{TRC's} cache.
+\end{enumerate}
+This example's picture can be found on Figure \ref{fig:example_not_even}. 
+Notice that when first $(s+1) \cdot \alpha - l$ request to $r$ appear they can 
+only be shifted to $T_1$ nodes. After that root of $T_1$ is given requests 
+which can not be moved to $T_2$ - we are unable to do shift up with positive 
+requests. Thereforre only $l$ last requests are left which can be moved to 
+$T_2$. Assuming that $\frac{l}{\alpha} \ll s$ we only managed to fill half of 
+the tree nodes with $\Omega(\alpha)$ requests.   
 
+Convinced that shifting down request is not so easy, our goal is to prove that 
+we can get, by legal shifting within field $F^t$, 
+at least $\Omega(\frac{|F^t|}{h(T)})$ nodes having at least $\frac{\alpha}{2}$ 
+requests. To do that first we argue that from any node $v$ in the positive 
+field $F^t$ we can move down fraction of its requests that we stay in the field 
+and no node $u$ from $T(v)$ gets more then $\frac{\alpha}{2}$ (we do not count 
+the requests placed originally at $u$). Notice that to shift any request $(v, 
+t_v)$ from $F^t$ to node $v'$ we need to ensure that $v$ is outside the cache, 
+what can be expressed by $t_v > last_u(t)$.
+
+\begin{lemma}
+Fix $F^t$ positive field with corresponding $X_t$ and $v \in X_t$ that has 
+been requested at least $c_v \cdot (\frac{\alpha}{2})$ times for some positive 
+natural number $c_v$. There exists legal shifting of $\lceil \frac{\alpha}{2} 
+\rceil \cdot (\frac{\alpha}{2})$ requests from the requests to $v$ to nodes 
+$T(v) \cap X^t$ and at least $\lceil \frac{\alpha}{2} \rceil$ of them is given 
+$\frac{\alpha}{2}$. All these shifts are within the field $F^t$.
+\label{thm:request_mapping}
+\end{lemma}
+\begin{proof}
+We sort the elements of $T(v) \cap X_t$ with respect to incresing time of last 
+eviction (function $last_v$), getting sequence of nodes $\{u_i\}_{i \geq 
+0}$. Since $v$ has to be on of the first elements that are evicted from cache 
+in that positive field, we assume $u_0 = v$. We sort the request sequence to 
+$v$ too to get the sequence with increasing arrival time. The resulting 
+sequence will be denoted by $\{(v, t_j)\}_{j=0}^{c_v \cdot \frac{\alpha}{2} - 
+1}$. We define partial fuction \textit{sh} on latter sequence's 
+elements, that will say to which element of $T(v) \cap X_t$ request should be 
+pushed down. Specifically, $sh((v, t_{k \cdot \alpha + m})) = u_k$, where $m$ 
+values are from $[0, \frac{\alpha}{2})$. The function $sh$ is not defined on 
+the rest of requests, which mean we will not push those requests down. The 
+mapping definition is presented on Figure \ref{fig:req_map}.
+\begin{figure}
+ \begin{center}
+  \includegraphics[width=1.1\textwidth]{request_mapping.png}
+ \end{center}
+ \caption{Request mapping from Lemma \ref{thm:request_mapping}. The requests 
+are divided into alternetaing parts of size $\lceil \frac{\alpha}{2} \rceil$ 
+and $\lfloor \frac{\alpha}{2} \rfloor$. The odd fragments (counting from $1$) 
+are mapped, whereas even parts are ommited in mapping}
+ \label{fig:req_map}
+\end{figure}
+
+Now we need to prove that defined shifting is within the field, meaning that 
+for shifted requests $t_j \geq last_{sh((v, t_j))}(t)$. Assume that it is not 
+true, so $t_j < last_{sh((v, t_j))}(t)$ for $j = k \cdot \alpha + m$ 
+corresponding to shifted request. Since request are mapped with respect to 
+increasing order of sequence $\{u\}$, $|F^t_{\leq t_j}| \cap T(v)| <= k|$, but 
+the same time $req(F^t_{\leq t_j}| \cap T(v)) = j$ and $F^t_{\leq t_j}| \cap 
+T(v)$ is then overrequested. This with Lemma \ref{thm:not_over_requested} leads 
+us to contradiction.
+\end{proof}
+We are ready to prove the main lemma of this paragraph, which gives as 
+possibility of obtaining even distribution of positive request to the factor 
+$O(\frac{1}{h(T)})$.
+\begin{lemma}
+For any positive field $F^t$ it is possible to shift 
+legally $\frac{req(F^t)}{2}$ requests within the field, so at least 
+$\frac{|X^t|}{2 \cdot h(T)}$ nodes in $F^t$ have at least 
+$\frac{\alpha}{2}$ requests each. 
+\end{lemma}
+ \begin{figure}
+ \begin{center}
+  \includegraphics[width=0.5\textwidth]{layers.png}
+\end{center}
+\caption{Division of requests to layers. Requests to nodes which have the same 
+distance from $X^t$ root are on the same level.}
+\label{fig:layers}
+\end{figure}
+\begin{proof}
+Let $X^t$ be corresponding changeset for $F^t$. We take all the requests in 
+every node and arrange them into groups of size $\frac{\alpha}{2}$ 
+chronologically, meaning first $\frac{\alpha}{2}$ requests to node are in first 
+group and so on. If the last group is not full (it has less then  
+$\frac{\alpha}{2}$ requests) then it is omitted. The number of request that are 
+not ommited in set $X$ will be denoted by $\overline{req}(X)$. Notice that  
+$\overline{req}(F^t) \geq |X^t| \cdot \frac{\alpha}{2}$, since $req(F^t) = 
+|X^t| \cdot \alpha$ and we omitt at most $\frac{\alpha}{2}$ requests at every 
+node.
+
+We partition the elements of $X^t$. In each part there are elements with the 
+same distance from root of $X^t$ and call them levels. The nodes that are 
+distance $i$ from root are on level $i$ and are denoted $X^t_i$. We therefore 
+have exactly $h(T)$ layers. By pigeonhole principle there exists a level 
+$X^t_i$ for which $\overline{req}(F^t \cap X^t_i) \geq \frac{req(F^t)}{2} \cdot 
+h(T)$ (look at Figure \ref{fig:layers}). The subtrees rooted in nodes from 
+$X^t_i$ are distinct and to each of them we apply Lemma 
+\ref{thm:request_mapping}. Node $v \in X^t_i$ has $\overline{req}(F^t \cap 
+\{v\})$ requests so from the lemma we we can shift $\frac{\alpha}{2}$ of 
+them to $\lceil \overline{req}(F^t \cap \{v\} \rceil$ distinct nodes in $T(v)$. 
+Summing up the 'filled' nodes for each element from $X^t_i$ we get at least 
+$\lceil \overline{req}(F^t \cap X^t_i) \rceil \geq \frac{|X^t|}{2 \cdot h(T)}$ 
+with $\frac{\alpha}{2}$ requests.
+\end{proof}
 \subsubsection{Competitiveness of TRC}
-\paragraph{Lower bound for OPT}
-\paragraph{Main result}
-\paragraph{Lower bound for competitive ratio}
+We will use results from previous subsection to lower bound \textbf{OPT's} cost 
+and finally getting the main theorem of the thesis about competitive ratio of 
+\textbf{TRC}. This proofs are mostly technical, but still intuitions from 
+previous sections might be usefull to understand idea behind them.
+
+We will need one auxiliary lemma about \textbf{TRC's} cache at the end of the 
+phase. We remind that this last cache state is special - its size exceeds 
+$k_{ONL}$, because instead of normal fetch we perform artificial one 
+described earlier in this section.  
+\begin{lemma}
+Fix phase $P$ and $C$ cache state at the end of the phase ($end_P$). Any tree 
+cap $D \subseteq C$ received at least $|D| \ cdot \alpha$ requests during phase 
+$P$.   
+\end{lemma}
+\begin{proof}
+Let $X_1, X_2, \ldots, X_m$ be all positive chengesets from phase $P$. We make 
+separation by defining $X'_i = X_i \setminus \bigcup_{j=1}^{i-1}$. Note that 
+$X'_i$ is tree cap of $X_i$. The sequence $X'_1, X'_2, \ldots, X'_m$ is 
+pairwise disjoint and covers $C$ - $C \subseteq \bigsqcup_{j=1}^m X'_j$. Let 
+$X_j^D = D \cap X'_j$, then $D = \bigsqcup_{j=1}^m X_j^D$ since $D \subsetq C$ 
+and $X_j^D$ is tree cup of $X'_j$ so, by transitivity of relation of being 
+treecap, $X_j^D$ makes up a tree cap of $X_j$. From Lemma 
+\end{proof}
+
+\myparagraph{Lower bound for OPT}
+We get two different lower bounds for \textbf{OPT} presented in the next two 
+lemmas.
+\begin{lemma}
+For any phase $P$, $cost_{OPT}(P) \geq (k_P - k_{OPT}) \cdot \alpha$. 
+\end{lemma}
+\begin{proof}
+ 
+\end{proof}
+\begin{lemma}
+For any phase $P$, $cost_{OPT}(P) \geq (\frac{|\mathcal{F}|}{4 \cdot h(T)} - 
+k_P) \cdot \frac{\alpha}{2}$. 
+\end{lemma}
+\begin{proof}
+ 
+\end{proof}
+
+\myparagraph{Upper bound for open fileds}
+\myparagraph{Main result}
+\myparagraph{Lower bound for competitive ratio}
