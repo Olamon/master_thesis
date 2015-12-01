@@ -355,17 +355,15 @@ number of requests in any other node. After shift $req(F^t \cap Y) = req(F^t
 \cap D) + \alpha$, and if $req(F^t \cap D) > |D| \cdot \alpha$, then $D \cup 
 v_l$ would be overrequested contradicting that $Y$ is proper before change.
 \end{proof}
-\begin{wrapfigure}{l}{0.5\textwidth}
+\begin{wrapfigure}{r}{0.5\textwidth}
 \vspace{-20pt}
  \begin{center}
-  \includegraphics[width=0.5\textwidth]{density_pic.png}
+  \includegraphics[width=0.5\textwidth]{example_not_even.png}
 \end{center}
-\caption{This picture shows the average density of request in fields. The 
-darker colour the more request is in average in that part of changeset.}
+\caption{Numbers indicate chronology of events.}
 \vspace{-20pt}
-\label{fig:density}
+\label{fig:example_not_even}
 \end{wrapfigure}
-
 Now above lemma, used as induction step, proves Theorem 
 \ref{thm:legal_shifting_up}. To see that remind that 
 Corollary \ref{thm:proper_at_t} ensures that in any proper tree cap $D$ of 
@@ -379,14 +377,6 @@ shift legally positive requests down and end up with $\alpha$ requests in every
 node. Imagine we have a tree $T$ with root $r$ and two distinct subtrees $T_1$ 
 and $T_2$ both of size $s$ and having $l$ leaves. Consider following series on 
 events, assuming that initially whole tree $T$ is in \textbf{TRC's} cache.
-\begin{wrapfigure}{r}{0.5\textwidth}
-\vspace{-20pt}
- \begin{center}
-  \includegraphics[width=0.5\textwidth]{example_not_even.png}
-\end{center}
-\caption{Numbers indicate chronology of events.}
-\label{fig:example_not_even}
-\end{wrapfigure}
 \begin{enumerate}
  \item $T_1 \cup \{r\}$ is evicted from cache.
  \item $(s+1) \cdot \alpha - l$ requests to root $r$ appear (no fetch occures - 
@@ -578,15 +568,21 @@ unpaired periods.
 Let's denote by $cnt_{IN}$ and $cnt_{OUT}$ the number of all $IN$ and $OUT$ 
 periods in $P$ respectively. From the above descussion, $cnt_{OUT} = cnt_{IN} + 
 k_P$. The sum of all periods (both $IN$ and $OUT$) is equal to the sum of sizes 
-of all fields (excluding the open one) which we denoted by $|\mathcl{F}|$. It 
-implies that $|\mathcl{F}| = cnt_{OUT} + cnt_{IN}$ so $cnt_{OUT} = 
-\frac{|\mathcl{F}| + k_P}{2} \geq \frac{|\mathcl{F}| + k_P}{2}.$
+of all fields (excluding the open one) which we denoted by $|\mathcal{F}|$. It 
+implies that $|\mathcal{F}| = cnt_{OUT} + cnt_{IN}$ so $cnt_{OUT} = 
+\frac{|\mathcal{F}| + k_P}{2} \geq \frac{|\mathcal{F}|}{2}.$
 
 Now we will use the lemmas about shifting. From them we know that in $P'$ all 
 $IN$ periods consist of $\alpha$ requests and there is at least 
-$\frac{1}{2h(T)}$ throughout $OUT$ periods paired with $IN$ periods such that 
-have at least $\frac{\alpha}{2}$ requests. Therefore we have at least 
-$(cnt_{OUT} - k_P)
+$\frac{1}{2h(T)}$ throughout $OUT$ periods paired with $IN$ periods that have 
+at least $\frac{\alpha}{2}$ requests. Therefore there are at least 
+$(\frac{cnt_{OUT}}{2h(T)} - k_P)$ pairs of $OUT$ and $IN$ periods that both 
+have $\frac{\alpha}{2}$ requests or more. On each such pair \textbf{OPT} pays 
+at least $\frac{\alpha}{2}$ because of changing nodes state in cache (at cost 
+$\alpha$) or paying from either positive or negative requests from that stripe. 
+Stripes are distinct, so the cost of \textbf{OPT} can be bounded from below by 
+$(\frac{cnt_{OUT}}{2h(T)} - k_P) \cdot \frac{\alpha}{2} \geq 
+(\frac{|\mathcal{F}|}{4h(T)} - k_P) \cdot  \frac{\alpha}{2}$.
 \end{proof}
 
 \myparagraph{Upper bound for open fileds}

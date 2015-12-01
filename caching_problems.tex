@@ -6,77 +6,83 @@ on deterministic algorithms, although we give a sketch of randomized solutions
 because of their popularity and importance in the online algorithm theory as a 
 whole. 
 \subsection{Basic definitions}
-We shell remind ourselves about basic concepts of online algorithms theory. 
+We shall remind ourselves about basic concepts of online algorithms theory. 
 Let $\sigma = \sigma(1), \sigma(2), \ldots, \sigma(n)$ be a sequence of 
-requests. An $online algorithm A$ has to process requests one by one, $online$, 
-without any knowledge of the future requests. Formally, when serving request 
+requests. An \textit{online algorithm} $A$ has to process requests one by one, 
+\textit{online} without any knowledge of the future requests. Formally, when 
+serving request 
 $\sigma(t), 1 \leq t \leq n,$ the algorithm does not know any request 
 $\sigma(t')$ for $t'>t$. Handling any request incurs $cost$ whose value is 
 depends on request and algorithm state. The goal is to minimize the overall 
 $cost$.
 
-Precursory publication written by Sleator and Tarjan proposes 
-\textit{competitive analysis} as a way to compare performance of online 
-algorithms. In this approach we compare $C_A(\sigma)$, cost of online algorithm 
-$A$ on input $\sigma$, with $C_{OPT}(\sigma)$ of optimal offline algorithm, 
+Publication written by Sleator and Tarjan proposes 
+\textit{competitive analysis} as a way to evaluate performance of online 
+algorithms. In this approach we compare \csigma{A}, cost of online algorithm 
+$A$ on input $\sigma$, with \csigma{OPT} of optimal offline algorithm, 
 which knows all the input sequence beforehand. We call algorithm $r-competitive$ 
-if there exist constant $c$ such that
-$$C_A(\sigma) \leq r \times C_{OPT}(\sigma) + c$$
+if there exists constant $c$, such that
+$$C_{\mathrm{A}}(\sigma) \leq r \times C_{\mathrm{OPT}}(\sigma) + c$$
 for any request sequence $\sigma$. We call $r$ a \textit{competitive ratio}. 
 The goal is therefore to minimize $r$.
 
 \subsection{Caching and model variants}
 Caching problem can be described as follows. We are given two types of memory: 
-fast memory which has size $k$ and slow memory but its size $N \gg k$. We can 
+fast memory which has size $k$ and slow memory (secondary storage) with size $N 
+\gg k$. We can 
 assume that number of request $n$ fulfills $N \geq n \gg k$. When getting a 
-request $\sigma_{it}$to an item $it$ that is already in cache we serve it 
-without obtaining no cost (or the cost $c \ll 1$). 
-Otherwise we have to retrieve $it$ from the secondary (slower) memory and pay 
-$1$ ($1/c$). Sometime we require, whenever $it$ is not in the cache, before 
-serving $\sigma_{it}$ we have to place $it$ in cache therefore have enough 
+request $\sigma_{it}$ to an item $it$ that is already in cache we serve it 
+without any cost (or at the cost $c \ll 1$). 
+Otherwise, we have to retrieve $it$ from the slower memory and pay 
+$1$. Sometimes we require, whenever $it$ is not in the cache, before 
+serving $\sigma_{it}$ we have to place $it$ in cache, therefore to have enough 
 free space in fast memory to move it there. If there is no such requirement 
 (and $\sigma_{it}$ can 'omit' moving into cache) we say that model is 
 \textit{with bypassing}. Usually omitting cache is very expensive. After serving 
 request the algorithm can change its cache by evicting and fetching elements 
-from secondary storage. Some cost is assigned to this operations, too.
+from secondary storage. Some cost is assigned to these operations, too.
 
-In tree caching problem, that we study, requested element $v$ can be dependent 
-on some other elements. Specifically, they are dependent on its descendant in a 
+In tree caching problem, that we study, requested element $v$ can depend 
+on some other elements. Specifically, they depend on its descendant in a 
 way, that when we decide to fetch $v$ we have to fetch all nodes from $T(v)$ 
 that are not already in cache.
 
 There is another generalization of caching problem that we consider. It is 
-called $(k_{ONL}, k_{OPT})$\textit{-paging generalization}. It gives online and 
+called $(k_{\mathrm{ONL}}, k_{\mathrm{OPT}})$\textit{-paging generalization}. 
+It gives online and 
 optimal offline algorithm different resources: online cache has size $k_{ONL}$, 
-while optimal offline cache has size $k_{OPT} \leq k_{ONL}$. It might seems 
+while optimal offline cache has size $k_{\mathrm{OPT}} \leq k_{\mathrm{ONL}}$. 
+It might seems 
 unfair to give the optimal solution less space, but sometimes it can give us 
-some information how resources can influence the performance (and remember that 
-offline algorithm has much more power, it knows all the future). 
+some information how resources can influence the performance. (Remember 
+that offline algorithm has much more power: it knows all the future). 
 
 \subsection{Deterministic algorithms}
 We remind well-known algorithms that solve caching problem without bypassing, 
 so every requested item has to be placed in cache and any reference to 
-secondary memory has unit cost 1.
+slow memory has unit cost 1.
 \subsubsection{Longest Forward Distance (LFD) - offline optimal solution}
 Consider following \textit{lazy} (evicts a page if and only if it has no space  
-offline algorithm: 
+offline algorithm): 
 \begin{myalgo}
 Whenever there is a cache miss (item requested is not 
-present in fast memory) evict element whose next request is latest among other 
+present in fast memory), evict element whose next request is latest among other 
 cached elements.
 \end{myalgo}
 
 This algorithm is called \textbf{Longest Distance Forward} (LDF) and it turns 
 out it is the offline optimal solution. That is really uncommon to know the 
 optimal offline solution which really helps in competitive analysis giving us 
-a lot of knowledge about the problem. More over, this algorithm has polynomial 
-time complexity, whereas most online theory problem are NP-hard.The optimality 
-of \textbf{LFD} was proven by Belady.
-\begin{theorem}
+a lot of knowledge about the problem. Moreover, this algorithm has polynomial 
+time complexity, whereas most online theory problem are not solvable in 
+polinomial time. The optimality of \textbf{LFD} was proven by Belady 
+\cite{LFDBelady}.
+\begin{theorem} 
  \textbf{LFD} is optimal offline algorithm for paging.
 \end{theorem}
 \begin{proof}
- The proof is based on applying following lemma. For its proof look at [?].
+ The proof is based on applying following lemma (its proof can be found in 
+\cite{czarodziej}).
 \begin{lemma}
 Let $A$ be any offline algorithm for paging, $\sigma$ - request sequence. For 
 any $i \in \{1 \ldots |\sigma|\}$ we can construct offline algorithm $A_i$ such 
@@ -108,10 +114,10 @@ earliest among cached items.
 \begin{myalgo}
   \textbf{Flush When Full (FWF)}
   \newline
-Whenever the is page fault and cache is full evict all elements from cache.
+Whenever there is page fault and cache is full evict all elements from cache.
 \end{myalgo}
-Both of them belong to a class of algorithms which is called \textit{marking 
-algorithms}. It is characterized by associating a bit to each page and we call 
+Both of them belong to a class of algorithms which are called \textit{marking}. 
+It is characterized by associating a bit to each page and we call 
 it its mark. Initially all pages are unmarked. 
 
 We divide input sequence $\sigma$ into $k$\textit{-phases} dependent on value $k$ 
@@ -124,16 +130,18 @@ in phase $i$.
 \input{phase_deterministic_pic}
 
 In any marking algorithm, during a phase, we mark a page when it is first 
-requested in the phase. Finally, marking algorithm is such an algorithm that 
-never evicts marked page. Now we will show theorem characterizing this class of 
-algorithms.
+requested in the phase. Finally, marking algorithm that 
+never evicts marked page during a phase. Now we will show theorem 
+characterizing this class of marking algorithms.
 \begin{theorem}
-For any $A_{mark}$ marking algorithm with cache of size $k$, if $OPT$ cache 
-size is $h \leq k$, $A_{mark}$ is $O(\frac{k}{k-h+1})$-competitive.
+For any marking algorithm $A_{\mathrm{mark}}$ with cache of size $k$, if $OPT$ 
+cache 
+size is $h \leq k$, $A_{\mathrm{mark}}$ is $O(\frac{k}{k-h+1})$-competitive.
 \end{theorem}
 \begin{proof}
 Fix any input sequence $\sigma$ and divide it into $k$-phases as described 
-above. $A_{mark}$ on any such phase pays at most $k$ (because there is at most 
+above. $A_{\mathrm{mark}}$ on any such phase pays at most $k$ (because there is 
+at most 
 $k$ distinct requests in one phase). To bound the $OPT$ cost we will bound it with 
 respect to \textit{shifted phases}. Shifted phase $i$ consists 
 of first element of phase $i+1$ (call it $f_{i+1}$) and all requests from phase 
@@ -146,8 +154,9 @@ Shifted phase has at least $k$ distinct elements therefore $OPT$ has at least
 $k-h+1$ page faults during shifted phase (there can be at most two shifted 
 phases that do not have this property, we omit them, cause the cost can be put 
 into the constant when comparing costs).
-Summing up costs for $A_{mark}$ by phases and $OPT$ by shifted phases we get:
-$$ A_{mark}(\sigma) \leq \frac{k}{k-h+1} \cdot OPT(\sigma) + const,$$
+Summing up costs for $A_{\mathrm{mark}}$ by phases and $OPT$ by shifted phases 
+we get:
+$$ A_{\mathrm{mark}}(\sigma) \leq \frac{k}{k-h+1} \cdot OPT(\sigma) + const,$$
 where we put all the cost obtained at requests not covered by phases (or 
 shifted phases).
 \end{proof}
@@ -169,8 +178,9 @@ phase $p$ and element $x$ that is marked during this phase and evicted before
 the phase ends. Assume that both $p$ and $x$ are first such phase and element. 
 Consider the moment when $x$ is marked (first time it was requested in $p$). 
 For that time it is the most recently requested element. For the \textbf{LRU} to 
-evict $x$ there must be $k$ elements distinct from $x$ requested for it to turn 
-to be 'the oldest' in cache. The eviction takes place during $p$ so it must have 
+evict $x$, it has to be 'the oldest' element in cache, therefore there must be 
+$k$ elements distinct from $x$ requested. The eviction takes place 
+during $p$ so, it must contain 
 at least $k+1$ distinct elements which contradicts with $k$-phase definition. 
 \end{proof}
 This gives us that both algorithms are $O(\frac{k}{k-h+1})$-competitive. Not 
@@ -179,7 +189,7 @@ only marking algorithms obtain this ratio. One example of such algorithm is
 the longest time.
 
 \subsubsection{Non competitive algorithms examples}
-In this part we consider two well known strategies that turn out to be non 
+In this part we consider two well known strategies that turn out to be not 
 competitive at all.
 \begin{myalgo}
  \textbf{Last-in First-out (LIFO)}
@@ -194,20 +204,22 @@ Remove the element that which was least frequently requested since start of its
 presence in cache.
 \end{myalgo}
 
-To prove that those algorithms are not competitive we have to show a sequence 
+To prove that those algorithms are not competitive, we have to show a sequence 
 of requests that potentially occur infinite cost when compared to cost of 
-\textbf{OPT}. In cases of both algorithms presented above we will use only 
+\textbf{OPT}, which is finite. In cases of both algorithms presented above we 
+will use only 
 $k+1$ different pages, denoted $p_1, p_2, \ldots, p_{k+1}$ where $k$ is the 
 size of cache.
 
-We start with \textbf{LIFO}. Suppose that \textbf{LIFO} holds in its cache 
-elements $p_1, p_2, \ldots p_k$ (we can always renumber the elements, so we can 
-assume that). Consider following sequence of requests:
+We start with \textbf{LIFO}. Suppose that at the beginning \textbf{LIFO} holds
+elements $p_1, p_2, \ldots p_k$ in its cache (we can always renumber the 
+elements, so we can 
+assume that). Consider the following sequence of requests:
 $$ \sigma = (p_1, p_2, \ldots, p_k, p_{k+1}, p_k, p_{k+1}, \ldots).$$
 The idea is we request the elements that \textbf{LIFO} just removed from the 
 cache. See that on every request after first $p_{k+1}$ this algorithm pays 1, 
-so the summarized cost tends to infinity, whereas \textbf{OPT}, keeping $p_k$ 
-and $p_{k+1}$ in its cache pays gets only one page fault on this subsequence. 
+so the total cost tends to infinity, whereas \textbf{OPT}, keeping $p_k$ 
+and $p_{k+1}$ in its cache gets only one page fault on this subsequence. 
 This proves the non-competitiveness of \textbf{LIFO}.
 
 In the case of \textbf{LFU}, fix any constant integer $c$ and sequence:
@@ -247,19 +259,23 @@ The competitive ratio for randomized algorithm is dependent on the type of
 adversary we choose. The easiest definition is for oblivious adversary. We say 
 that online algorithm $A$ id $c$-competitive against oblivious adversary if for 
 all sequences $\sigma$ generated by this adversary, we have:
-$$\mathbb{E}[cost_A(\sigma)] \leq c\cdot cost_{OPT}(\sigma) + const,$$
+$$\mathbb{E}[cost_{\mathrm{A}}(\sigma)] \leq c\cdot cost_{\mathrm{OPT}}(\sigma) 
++ const,$$
 where the expected value is taken over the random choices of $A$. For adaptive 
 adversaries on the other hand we say $A$ is $c$-competitive if:
-$$\mathbb{E}[cost_A(\sigma) - c \cdot cost_{ADV}(\sigma)] \leq const.$$
+$$\mathbb{E}[cost_{\mathrm{A}}(\sigma) - c \cdot cost_{\mathrm{ADV}}(\sigma)]
+\leq const.$$
 Here the expected value is still taken over the choices of $A$. The difference 
-is that the $cost_{ADV}$ is random variable dependent on randomization of $A$. 
-In case of adaptive offline adversary at least we know that $cost_{ADV}(\sigma) 
- \sim cost_{OPT}(\sigma)$ has the same distribution, whereas for online 
+is that the $cost_{\mathrm{ADV}}$ is random variable dependent on randomization 
+of $A$. 
+In case of adaptive offline adversary at least we know that 
+$cost_{\mathrm{ADV}}(\sigma)$ and $cost_{\mathrm{OPT}}(\sigma)$ has the same 
+distribution, whereas for online 
 adaptive adversary so simple nature of its cost random variable is not known.
 
 It turns out that randomization can't give an improvement on competitive 
 ration in the case of adaptive offline adversary. The following theorem was 
-presented in 'Ben-David, Borodin .. On the power...':
+presented in \cite{power}:
 \begin{theorem}
 If there is a $c$-competitive algorithm against adaptive offline adversary then 
 there exists a $c$-competitive deterministic online algorithm. 
@@ -278,8 +294,8 @@ oblivious adversary is the easiest to compete with, whereas adaptive offline is
 the hardest being the most powerful one.
 
 Now we present a randomized algorithm \textbf{MARK} which turns out to be 
-$2 \cdot H_k$-competitive against oblivious adversary. $H_k$ is called $k$
-\textit{th harmonic number} ad is defined as $H_k = \sum^k_{i=1} \frac{1}{i}$. 
+$2 \cdot H_k$-competitive against oblivious adversary. $H_k$ is the called $k$
+\textit{th harmonic number} and is defined as $H_k = \sum^k_{i=1} \frac{1}{i}$. 
 This series has a really nice property that $\ln k < H_k \leq \ln k + 1$. 
 Algorithm \textbf{MARK} is a marking algorithm so it has a bit associated with 
 each of $k$ entries in cache.
@@ -314,37 +330,41 @@ in case of deterministic marking algorithm. We can assume that both
 \textbf{OPT} and \textbf{MARK} start with the same cache state (adjusting the 
 cache can be done with constant cost not influencing the competitive ratio).
 
-Consider $i$th phase. We call \textbf{old pages} all the elements requested in 
+Consider the $i$th phase. We call \textbf{old pages} all the elements requested 
+in 
 phase $i$th that were requested in phase $i-1$. All the other pages requested 
 in phase $i$ are \textit{new}. For the first phase, all the pages are new. We 
-denote $m_i$ the number of new pages for phase $i$. The picture of above 
-definition can be found on Figure \ref{fig:PhasesRandomized}.
+denote the number of new pages for phase $i$ by $m_i$. The picture of above 
+definition can be found in Figure \ref{fig:PhasesRandomized}.
 \input{phase_randomized_pic}
 
-We can see that old pages are somehow beneficial for \textbf{MARK}. It it keeps 
+We can see that old pages are somehow beneficial for \textbf{MARK}. If it keeps 
 an old page sufficiently long (up to the moment when it is first time requested 
-in phase $i$) it does not pay for this page through whole phase. Seeing that 
-leads us to conclusion that the worst case is when the firstly all the new 
+in phase $i$), it does not pay for this page through whole phase. Seeing that 
+leads us to conclusion that the worst case is when all the new 
 $m_i$ elements are requested, then th old pages, so the probability of an old 
 page being still in cache is smallest possible. More specifically the 
-probability that the $jth$ old page (the order is the order of first occurrence 
+probability that the $jth$ old page (their order is the order of first 
+occurrence 
 in phase) is still in cache when requested can be bounded from below by 
 $\frac{k-m_i-(j-1)}{k-(j-1)}$ since $k-m_i-(j-1)$ is the number of old pages in 
 the cache that are unmarked and  $k-(j-1)$ is the number of unmarked old pages 
 up to the time $j$th page is requested for the first time. This gives us that 
-the probability of page fault on that request is equal $1 - 
-\frac{k-m_i-(j-1)}{k-(j-1)} = \frac{m_i}{k-(j-1)}$ so the expected number of 
-page faults in whole phase is (remembering that we pay $1$ for every new page):
+the probability of page fault on that request is equal to $1 - 
+\frac{k-m_i-(j-1)}{k-(j-1)} = \frac{m_i}{k-(j-1)}$, so the expected number of 
+page faults in whole phase is (recall that we pay $1$ for every new page):
 $$ m_i + \sum_{j=1}^{k - m_i}\frac{m_i}{k-(j-1)} = m_i\cdot(1+H_k-H_{m_i}) \leq 
 m_i \cdot H_k.$$
 
 Now we have to lower bound the cost of \textbf{OPT}. Consider two consecutive 
-phases $i-1$ and $i$. There is $k + m_i$ distinct pages request in that two 
-phases. Since \textbf{OPT} cache size is $k$ there is at least $m_i$ faults. 
-During the first phase \textbf{OPT} has at least $m_1$ faults. Summing up by 
-the pairs $(i-1, i)$ we get $\sum m_i$. Since each phase is counted twice 
-(except of the first one, but this one is already bounded) the lower bound for 
+phases $i-1$ and $i$. There are $k + m_i$ distinct pages requested in that two 
+phases. Since \textbf{OPT} cache size is $k$, there are at least $m_i$ faults. 
+During the first phase \textbf{OPT} has at least $m_1$ faults. Summing up the 
+number of faults in 
+the pairs of phases $(i-1, i)$ we get $\sum m_i$ page faults. Since each phase 
+is counted at most twice 
+(except first one, which is counted once), the lower bound for 
 \textbf{OPT} cost is $\frac{1}{2} \cdot \sum m_i$. As we know \textbf{MARK's} 
 number of page faults, taking sum from every phase, is at most $H_k \cdot \sum 
-m_i$ which together proves the theorem. 
+m_i$ which proves the theorem. 
 \end{proof}

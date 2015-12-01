@@ -6,10 +6,18 @@
 \usepackage{auto-pst-pdf}
 \usepackage{amssymb}
 \usepackage{amsthm}
+\usepackage{comment}
+
 \usepackage{graphicx}
 \usepackage{wrapfig}
 \usepackage{pst-grad,multido}
 \usepackage[font={small}]{caption}
+\usepackage[
+backend=biber,
+style=alphabetic,
+sorting=ynt
+]{biblatex}
+\addbibresource{bibliography.bib}
 
 \newtheorem{myalgo}{Algorithm}[section]
 \newtheorem{theorem}{Theorem}[section]
@@ -19,6 +27,7 @@
 \newtheorem{corollary}{Corollary}[theorem]
 \newtheorem{lemma}[theorem]{Lemma}
 \renewcommand\algorithmicthen{}
+\newcommand{\csigma}[1]{$C_{\mathrm{#1}}(\sigma)$}
 
 \newcommand{\myparagraph}[1]{\paragraph{#1}\mbox{}\\}
 
@@ -30,13 +39,14 @@
 
 \begin{abstract}
 In this thesis we study caching problem for items with dependencies.
-More precisely the universe of items forms a tree structure $T$ and whenever
-we fetch node $v$ to the cache we are required to fetch all its descendants
+More precisely, the universe of items forms a tree structure $T$ and whenever
+we fetch node $v$ to the cache, we are required to fetch all its descendants
 (subtree $T(v)$ rooted in $v$). This setting is interesting from both practical 
 and theoretical point of view. We can see direct application for improving 
 utilization of the Forwarding Information Base (FIB) in routers which can be 
 viewed exactly as a tree where we must not omit the most specific rules. We 
-present deterministic algorithm for Tree Caching (called \textbf{TRC}) which we 
+present deterministic algorithm for Tree Caching (called \textbf{TRC}), which 
+we 
 prove to be $O(height(T) \times k_{ONL}/(k_{ONL} - k_{OPT} + 1))$-competitive, 
 where $k_{ONL}$ and $k_{OPT}$ are cache sizes of online and optimal offline 
 algorithm, respectively. 
@@ -48,5 +58,5 @@ algorithm, respectively.
 \include{caching_problems}
 \include{tree_caching_algo}
 \include{motivation}
-
+\printbibliography
 \end{document}
