@@ -190,12 +190,12 @@ For field $F^t$ we have $req(F^t) = |X_t| \cdot \alpha$ and the requests
 in one field are either all positive or all negative.
 \label{obs:observe1}
 \end{observe}
-The rest of event space, occupied slots that does not belog to any field $F^t$ 
+The rest of event space, occupied slots that does not belong to any field $F^t$ 
 in phase $P$, we call \textit{open field} $F^{\infty}$. All fields except of 
 an 
 open field are denoted by $\mathcal{F}$ and $|\mathcal{F}| = \sum_{F^t \in 
 \mathcal{F}} |X^t| \cdot \alpha$.
-Additionaly for any field $F$, if $A$ is a set of nodes, $F \cap A = \{(v,t) 
+Additionally for any field $F$, if $A$ is a set of nodes, $F \cap A = \{(v,t) 
 \in F: v \in A$ and if $T$ is set of rounds $F \cap T = \{(v, t) \in F: t \in 
 T\}$. To shorten notation we introduce $\tau$\textit{-restricted} subfields of 
 $F^t$ as:
@@ -340,7 +340,7 @@ kept in $F^t$ and $Y \setminus \{v_l\}$ stays proper.
 \begin{proof}
 We consider $r_l$ requests that are placed on $v_l$ in chronological order. See 
 that when $\alpha + 1$-th request comes, at time $t_l$, $p(v_l)$ has to be in 
-cache. If that wasn'tprzechodniośc true, we would have overrequested tree cap 
+cache. If that was not true, we would have overrequested tree cap 
 ${v_l}$ which 
 contradicts Lemma \ref{thm:not_over_requested}. That means, after $\alpha$ first 
 requests to $v_l$ the rest $\delta_l$ requests can be moved within field to 
@@ -379,7 +379,7 @@ and $T_2$ both of size $s$ and having $l$ leaves. Consider following series on
 events, assuming that initially whole tree $T$ is in \textbf{TRC's} cache.
 \begin{enumerate}
  \item $T_1 \cup \{r\}$ is evicted from cache.
- \item $(s+1) \cdot \alpha - l$ requests to root $r$ appear (no fetch occures - 
+ \item $(s+1) \cdot \alpha - l$ requests to root $r$ appear (no fetch occurs - 
 there is not enough requests in $r$ to pay for whole $T_1 \cup \{r\}$).
  \item $T_2$ is evicted.
  \item $s \cdot \alpha$ requests appear at root of $T_1$.
@@ -390,7 +390,7 @@ This example's picture can be found on Figure \ref{fig:example_not_even}.
 Notice that when first $(s+1) \cdot \alpha - l$ request to $r$ appear they can 
 only be shifted to $T_1$ nodes. After that root of $T_1$ is given requests 
 which can not be moved to $T_2$ - we are unable to do shift up with positive 
-requests. Thereforre only $l$ last requests are left which can be moved to 
+requests. Therefore only $l$ last requests are left which can be moved to 
 $T_2$. Assuming that $\frac{l}{\alpha} \ll s$ we only managed to fill half of 
 the tree nodes with $\Omega(\alpha)$ requests.   
 
@@ -414,13 +414,13 @@ $\frac{\alpha}{2}$. All these shifts are within the field $F^t$.
 \label{thm:request_mapping}
 \end{lemma}
 \begin{proof}
-We sort the elements of $T(v) \cap X_t$ with respect to incresing time of last 
+We sort the elements of $T(v) \cap X_t$ with respect to increasing time of last 
 eviction (function $last_v$), getting sequence of nodes $\{u_i\}_{i \geq 
 0}$. Since $v$ has to be on of the first elements that are evicted from cache 
 in that positive field, we assume $u_0 = v$. We sort the request sequence to 
 $v$ too to get the sequence with increasing arrival time. The resulting 
 sequence will be denoted by $\{(v, t_j)\}_{j=0}^{c_v \cdot \frac{\alpha}{2} - 
-1}$. We define partial fuction \textit{sh} on latter sequence's 
+1}$. We define partial function \textit{sh} on latter sequence's 
 elements, that will say to which element of $T(v) \cap X_t$ request should be 
 pushed down. Specifically, $sh((v, t_{k \cdot \alpha + m})) = u_k$, where $m$ 
 values are from $[0, \frac{\alpha}{2})$. The function $sh$ is not defined on 
@@ -431,9 +431,9 @@ mapping definition is presented on Figure \ref{fig:req_map}.
   \includegraphics[width=1.1\textwidth]{request_mapping.png}
  \end{center}
  \caption{Request mapping from Lemma \ref{thm:request_mapping}. The requests 
-are divided into alternetaing parts of size $\lceil \frac{\alpha}{2} \rceil$ 
+are divided into alternating parts of size $\lceil \frac{\alpha}{2} \rceil$ 
 and $\lfloor \frac{\alpha}{2} \rfloor$. The odd fragments (counting from $1$) 
-are mapped, whereas even parts are ommited in mapping}
+are mapped, whereas even parts are omitted in mapping}
  \label{fig:req_map}
 \end{figure}
 
@@ -470,9 +470,9 @@ every node and arrange them into groups of size $\frac{\alpha}{2}$
 chronologically, meaning first $\frac{\alpha}{2}$ requests to node are in first 
 group and so on. If the last group is not full (it has less then  
 $\frac{\alpha}{2}$ requests) then it is omitted. The number of request that are 
-not ommited in set $X$ will be denoted by $\overline{req}(X)$. Notice that  
+not omitted in set $X$ will be denoted by $\overline{req}(X)$. Notice that  
 $\overline{req}(F^t) \geq |X^t| \cdot \frac{\alpha}{2}$, since $req(F^t) = 
-|X^t| \cdot \alpha$ and we omitt at most $\frac{\alpha}{2}$ requests at every 
+|X^t| \cdot \alpha$ and we omit at most $\frac{\alpha}{2}$ requests at every 
 node.
 
 We partition the elements of $X^t$. In each part there are elements with the 
@@ -493,7 +493,7 @@ with $\frac{\alpha}{2}$ requests.
 We will use results from previous subsection to lower bound \textbf{OPT's} cost 
 and finally getting the main theorem of the thesis about competitive ratio of 
 \textbf{TRC}. This proofs are mostly technical, but still intuitions from 
-previous sections might be usefull to understand idea behind them.
+previous sections might be useful to understand idea behind them.
 
 We will need one auxiliary lemma about \textbf{TRC's} cache at the end of the 
 phase. We remind that this last cache state is special - its size exceeds 
@@ -512,10 +512,10 @@ that $X'_i$ is tree cap of $X_i$. The sequence $X'_1, X'_2, \ldots, X'_m$ is
 pairwise disjoint and covers $C$, meaning that $C \subseteq \bigsqcup_{j=1}^m 
 X'_j$. Let $X_j^D = D \cap X'_j$, then $D = \bigsqcup_{j=1}^m X_j^D$ since $D 
 \subseteq C$. $X_j^D$ is tree cup of $X'_j$ so by transitivity of 
-being a treecap relation, $X_j^D$ makes up a tree cap of $X_j$. From Corollary 
+being a tree cap relation, $X_j^D$ makes up a tree cap of $X_j$. From Corollary 
 \ref{thm:proper_at_t} we have that $req(X_j^d \cap F_i) \geq |X_j^D| \cdot 
 \alpha$ so it can be even more on the whole phase - not only restricted to 
-field $F_i$. Since $X_j^D$ are pairwaise disjoint, we can sum up requests over 
+field $F_i$. Since $X_j^D$ are pairwise disjoint, we can sum up requests over 
 all $j$ what proves the lemma.
 \end{proof}
 
@@ -523,7 +523,7 @@ all $j$ what proves the lemma.
 In this paragraph we use a notation of $V_{OPT}$ - it will be the set of nodes 
 that appeared in \textbf{OPT's} cache during phase and $V_{OPT}^C$ will 
 denote the complement to the whole tree $T$ ($T \setminus V_{OPT}$). Notice, 
-that $V_{OPT}$ creates a proper cahce state.
+that $V_{OPT}$ creates a proper cache state.
 
 We get two different lower bounds for \textbf{OPT} presented in the next two 
 lemmas. 
@@ -537,13 +537,13 @@ so it has $k_P$ elements in cache). We consider separately the cost
 set, \textbf{OPT} had to fetch at least $|V_{OPT}| - k_{OPT}$ nodes during the 
 phase paying $\alpha$ for each of them. For the second one, see that 
 $C \setminus V_{OPT}$ is a subset of $V_{OPT}^c$. Moreover, $C \setminus 
-V_{OPT}$ is an union of disjoint treecaps of subtrees belonging to $C$. From 
-Lemma \ref{thm:lots_of_req_in_tc_end_of_p} all those treecaps are dense, so 
+V_{OPT}$ is an union of disjoint tree caps of subtrees belonging to $C$. From 
+Lemma \ref{thm:lots_of_req_in_tc_end_of_p} all those tree caps are dense, so 
 summing requests in them gives us at least $|C \setminus V_{OPT}| \cdot 
 \alpha$ requests to nodes in $C \setminus V_{OPT}$ which belongs to $V_{OPT}^c$ 
 as mentioned above. Joining results for both cases, $cost_{OPT}(P) \geq 
 (|V_{OPT}| - k_{OPT}) \cdot \alpha + |C \setminus V_{OPT}| \cdot 
-\alpha = (|C| - k_{OPT}) \cdot \alpha$ what ends the prove sice $k_P$ is 
+\alpha = (|C| - k_{OPT}) \cdot \alpha$ what ends the prove since $k_P$ is 
 defined as $|C|$ after artificial fetch. 
 \end{proof}
 \begin{lemma}
@@ -556,7 +556,7 @@ Let $P$ be a fixed phase. We perform shifting on $P$ so that Lemma
 result of this action will be called phase $P'$. From the previous discussion 
 it is sufficient to prove that $cost_{OPT}(P') \geq (\frac{|\mathcal{F}|}{4 
 \cdot h(T)}-k_P) \cdot \frac{\alpha}{2}$. To do that we first focus on each $v$ 
-node separately. See that it's history can be devided into alternating 
+node separately. See that it's history can be divided into alternating 
 intervals when it was out of the cache and was charged by receiving the positive 
 requests or it was in the cache charged by negative requests. We call those 
 periods $OUT$ and $IN$ respectively. Cache is empty in the beginning of the 
@@ -566,7 +566,7 @@ $OUT$ period in phase $P'$ might be unpaired, therefore there is at most $k_P$
 unpaired periods.
 
 Let's denote by $cnt_{IN}$ and $cnt_{OUT}$ the number of all $IN$ and $OUT$ 
-periods in $P$ respectively. From the above descussion, $cnt_{OUT} = cnt_{IN} + 
+periods in $P$ respectively. From the above discussion, $cnt_{OUT} = cnt_{IN} + 
 k_P$. The sum of all periods (both $IN$ and $OUT$) is equal to the sum of sizes 
 of all fields (excluding the open one) which we denoted by $|\mathcal{F}|$. It 
 implies that $|\mathcal{F}| = cnt_{OUT} + cnt_{IN}$ so $cnt_{OUT} = 
@@ -585,6 +585,6 @@ $(\frac{cnt_{OUT}}{2h(T)} - k_P) \cdot \frac{\alpha}{2} \geq
 (\frac{|\mathcal{F}|}{4h(T)} - k_P) \cdot  \frac{\alpha}{2}$.
 \end{proof}
 
-\myparagraph{Upper bound for open fileds}
+\myparagraph{Upper bound for open fields}
 \myparagraph{Main result}
 \myparagraph{Lower bound for competitive ratio}
