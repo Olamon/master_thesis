@@ -6,6 +6,7 @@
 \usepackage{auto-pst-pdf}
 \usepackage{amssymb}
 \usepackage{amsthm}
+\usepackage{amsmath}
 \usepackage{comment}
 
 \usepackage{graphicx}
@@ -47,7 +48,8 @@ utilization of the Forwarding Information Base (FIB) in routers which can be
 viewed exactly as a tree where we must not omit the most specific rules. We 
 present deterministic algorithm for Tree Caching (called \textbf{TRC}), which 
 we 
-prove to be $O(height(T) \times k_{ONL}/(k_{ONL} - k_{OPT} + 1))$-competitive, 
+prove to be $O(\frac{height(T) \cdot k_{ONL}}{k_{ONL} - k_{OPT} + 
+1})$-competitive, 
 where $k_{ONL}$ and $k_{OPT}$ are cache sizes of online and optimal offline 
 algorithm, respectively. 
 \end{abstract}

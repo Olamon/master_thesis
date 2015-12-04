@@ -1,23 +1,28 @@
 \section{Tree caching with dependencies}
-The problem we consider (called \textit{tree caching problem})is an extension 
-of classic caching problem with bypassing that was recalled in section 2. The 
+\label{tree_caching_algo}
+The problem we consider (called \textit{tree caching problem}) is an extension 
+of standard caching problem with bypassing that was recalled in section 2. The 
 main difference is that requested items have inter-dependencies. Specifically, 
 universe forms rooted tree $T$ and the items requested are placed in its nodes 
-and whenever $v \in T$ is fetched all of its descendants $T(v)$ that are not in 
-cache have to be fetched at the same time. We say that the cache with property 
+and whenever $v \in T$ is fetched all of its descendants $T(v)$, that are not 
+in 
+cache, have to be fetched at the same time. We say that the cache with property 
 described above is \textit{bottom-contiguous}.
 
 Moreover, we consider two types of requests: \textit{negative} and 
 \textit{positive}. If incoming request is positive we pay 1 if it is 
 not present in the cache (so the same as in most considered settings). On the 
-other hand we pay for negative requests if the item is cached (so in opposite 
-situation). After serving of any request we can reorganize cache paying 
+other hand, we have to pay for negative requests if and only if the item is 
+cached (so in opposite 
+situation to the positive case). After serving request we can reorganize 
+cache paying 
 $\alpha \geq 1$ for every element evicted or fetched. 
 
 The goal is to minimize the cost obtained by online algorithm solving this 
-problem. We present a deterministic algorithm \textbf{TRC} which we prove is 
+problem. We present a deterministic algorithm \textbf{TRC}, which we prove is 
 $O(h(T) \times R)$-competitive where $h(T)$ is height of input tree and $R = 
-k_{ONL}/(k_{ONL} - k_{OPT} +1$ with $k_{ONL}$ and $k_{OPT}$ being size of 
+k_{\mathrm{ONL}}/(k_{\mathrm{ONL}} - k_{\mathrm{OPT}} +1$ with 
+$k_{\mathrm{ONL}}$ and $k_{\mathrm{OPT}}$ being size of 
 online and optimal offline algorithm cache.
 
 \subsection{Model}
@@ -25,24 +30,27 @@ online and optimal offline algorithm cache.
 For ease of future algorithm description and readability of proofs we introduce 
 some useful definitions. First of all by $T(r)$ we mean subtree of $T$ rooted 
 in $r$ and by $h(T)$ height of tree. \textit{Tree cap} is a tree $T_c \subseteq 
-T$ such that root $r$ of $T$ belongs to it and $v \in T_c$ implies that all the 
+T$ such that root $r$ of $T$ belongs to $T_c$ and fact that $v \in T_c$ 
+implies, that all the 
 nodes on the path from $v$ to $r$ belong to $T_c$. We say that set $C \subseteq 
 T$ is \textit{bottom contiguous} if $v \in C$ implies $T(v) \subseteq C$ and we 
-say that set $C$ \textit{valid cache state}. Notice that it is not dependent on 
-cache size so $C$ ca be valid cache state and not fit into cache size the same 
-time.
+call $C$ a \textit{valid cache state}. Notice that this definition does not 
+depend on 
+cache size, so $C$ can be valid cache state and do not fit into cache size 
+at the same time.
 
-The \textbf{TRC} algorithm, after each request, can change the state of cache, 
-but the only possible changes have to leave the cache in valid state. 
-Depending on the character of change (eviction vs. fetch) we can apply for cache 
+The \textbf{TRC} algorithm, after each request, can change the state of 
+cache. The only possible changes have to leave the cache in valid state. 
+Depending on the character of change (eviction vs. fetch) we can apply on cache 
 $C$ either \textit{valid negative changeset} or \textit{valid positive 
 changeset}. The valid positive changeset $X$ (think of it as a set that can be 
 fetched) is a set for which $X \cap C = \varnothing$ and $C \cup X$ 
 is a valid cache state, the negative one (related to eviction) is a set $X 
 \subseteq C$ such that $C \ X$ is valid cache state.
 
-We process the input one by one and assume each request $\sigma(t)$ comes in 
-time interval $(t-1, t)$, so the next request comes in time interval $(t, t + 
+We process the input one request by one and assume each request $\sigma(t)$ 
+comes in 
+time interval $(t-1, t)$. The next request comes in time interval $(t, t + 
 1)$ and so on. At time $t$ algorithm changes cache state from $C_{t}$ to 
 $C_{t+1}$. Cache state is well defined for round $t$ (which contains time 
 interval $(t-1, t)$), because as we see the cache may change only between 
@@ -59,7 +67,8 @@ have $bank_{0}(v) = 0$. If node $v$ gets negative or positive request at
 time $t$ for which we pay 1 we increase $bank_{t}(v) = bank_{t-1}(v) + 1$, 
 leaving the value for any other node unchanged (so for $v' \neq v 
 bank_{t-1}(v') = bank_{t}(v')$). When we change the state of node $v$ (either 
-evict or fetch it into cache) we clear its bank value. For set of nodes $V 
+by evicting or fetching it into cache) we clear its bank value (change it to 
+$0$). For set of nodes $V 
 \subseteq T$, we denote sum $\sum_{v \in V} bank_{t}(v)$ as $bank_{t}(V)$.
 
 The \textbf{TRC} proceeds in phases. First phase starts at time 0 and at the 
@@ -77,9 +86,9 @@ start of each phase the \textbf{TRC} cache is empty.
 \varsupsetneq X$ (maximality):
 \end{itemize}}
  \State Apply $X$.
- \If {cache size $k_{ONL}$ is exceeded}:
+ \If {cache size $k_{\mathrm{ONL}}$ is exceeded}:
   \State Empty cache.
-  \State Reset $bank_t$ values to be 0.
+  \State Reset $bank_t$ values to 0.
   \State Start new phase.
  \EndIf
  \EndIf
@@ -87,20 +96,23 @@ start of each phase the \textbf{TRC} cache is empty.
   \end{algorithmic}
 \end{algorithm}
 
-In line 6 of the algorithm above we do not actually exceed the cache. Instead 
-we do not apply last valid changeset, empty the cache and start new phase. 
+In line 6 of the algorithm above we do not actually exceed the cache. We 
+do not apply last valid changeset, but instead we empty the cache and start new 
+phase. 
 Every phase ends then whenever applying valid changeset $X$ would lead to cache 
 being overloaded except of the last phase: this one can be \textit{unfinished}. 
-If $P$ is a phase, by $begin_P$ and $end_P$ we denote time when the phase $P$ 
-started and finished respectively.
+If $P$ is a phase, additionally by $\mathrm{begin_P}$ and $\mathrm{end_P}$ we 
+denote time when the phase $P$ started and finished respectively.
 
 \subsection{Analysis}
 Throughout all the analysis we fix the input sequence $I$ and its division into 
 phases. We compare \textbf{TRC} with \textbf{OPT} by analyzing both on a single 
 phase $P$. By $k_P$ we denote the number of elements in \textbf{TRC's} cache 
-after artificial fetch at $end_P$ but before all cache elements eviction.
+after artificial fetch at $\mathrm{end_P}$, before eviction of all cached 
+elements.
 
-We start with some basic properties of changesets. Then we introduce 
+We start the discussion with some basic properties of changesets. Then we 
+introduce concept of
 \textit{fields} which will help us proving algorithm's competitiveness.
 
 \subsubsection{Elementary properties}
@@ -110,16 +122,18 @@ Having that in mind we prove that at any time there cannot be both saturated
 positive and negative changesets.
 \begin{lemma}
 \label{thm:lemma1}
- Fix phase $P$. For any $t \in \{begin_P +1, begin_P + 2, \ldots, end_P\}$. 
+Fix phase $P$. For any $t \in \{\mathrm{begin_P} +1, \mathrm{begin_P} + 2, 
+\ldots, \mathrm{end_P}\}$. 
 For any valid changeset $X$ for cache $C_t$ we have $bank_t(X) \leq |X| \cdot 
 \alpha$ (1). Moreover changesets $Y$ for $C_t$ for which equality holds are 
 all either positive or negative (2).
 \end{lemma}
 \begin{proof}
-We prove this lemma by induction on $t$, starting with $t_1 = begin_P +1$. In 
-that time there was only one request so for all $X$ being valid changeset 
-$bank_{t_1} \leq 1$, which proves (1). For (2) see that the request can be both 
-negative and positive.
+We prove this lemma by induction on $t$, starting with $t_1 = \mathrm{begin_P} 
++1$. In 
+that time there was only one request, so for all $X$ being valid changeset 
+$bank_{t_1} \leq 1$, which proves (1). For (2) see that the request can't be 
+both negative and positive.
 
 To process with the induction step, first we prove following property:
 \begin{property}
@@ -131,15 +145,17 @@ algorithm \textbf{TRC} at time $t$.
 \begin{enumerate}
  \item \textbf{TRC} does not perform any action. That means that there was no 
 saturated (saturation is defined in algorithm \ref{alg:TRC} above) changeset 
-$X'$ for $C_t$ and $bank_t(X') \cdot \alpha$ for any $X'$. See that $C_t = 
+$X'$ for $C_t$ and $bank_t(X') \cdot \alpha < |X'| \cdot \alpha$ for any $X'$. 
+See that $C_t = 
 C_{t+1}$, therefore property follows trivially in that case.
   \item \textbf{TRC} fetches $X'$, so $C_{t+1} = C_t \cup X'$. Assume the 
 opposite, that there exists changeset $X$ for $C_{t+1}$ such that $bank_t(X) 
 \geq |X| \cdot \alpha$. It implies that $X \cup X'$ is positive changeset for 
 $C_t$ that might have been fetched instead of $X'$ at time $t$. That 
-contradicts the maximality property of algorithm.
+contradicts the maximality property of changesets applied by algorithm 
+\textbf{TRC}.
   \item \textbf{TRC} evicts $X'$, so $C_{t+1}  = C_t \setminus X'$. Assume 
-again the opposite of the property. It gives, that $X'' = X \ X'$ is valid 
+again the opposite. It implies, that $X'' = X \ X'$ is valid 
 positive changeset for $C_t$ which is saturated, because $bank_t(X'') = 
 bank_t(X) \geq |X| \cdot \alpha \geq |X''| \cdot \alpha$. We have both positive 
 and negative saturated changeset for $C_t$ which contradicts induction 
@@ -149,22 +165,25 @@ This property implies the lemma for $t+1$ since we have strict inequalities for
 $C_{t+1}$. When request comes in round $t+1$ it is either positive or negative, 
 so if it make a changset saturated it can be either positive or negative one. 
 Only one request cames during the round, so strict inequalities can only change 
-for equalities, so we have first part of lemma, too.
+to equalities, what gives as part (1) of lemma.
 \end{proof}
 The above lemma convince us that the algorithm is deterministic when choosing 
-changeset to apply.
+changeset to apply, cause there is at most one maximal saturated changeset at a 
+time.
 
 \subsubsection{Concept of fields}
 First notice that whenever there is a positive (negative) request to element 
-present (absent)in \textbf(TRC's) cache it neither influence the algorithm 
-behaviour nor cost. Therefor from now on we assume that in phase $P$ there are 
-no such requests.
-We extend the space of requests from nodes to pairs of nodes and time $(v, t)$ 
-calling them \textit{slots} and obtained space: \textit{event space}. If there 
+present (absent) in \textbf(TRC's) cache it neither influence the algorithm 
+behaviour nor cost. Therefore from now on we assume that in phase $P$ there 
+aren't 
+any such requests.
+We extend the space of requests from nodes to pairs of node and time $(v, t)$ 
+calling them \textit{slots} and we name obtained space \textit{event space}. 
+If there 
 is a request to node $v$ at time $t$ we say that slot $(v, t)$ is 
-\textit{occupied}. We can then see each phase $P$ as set of occupied slots. 
+\textit{occupied}. We can then see each phase $P$ as a set of occupied slots. 
 Figure \ref{fig:spacial_temporal} might help to familiarize with above 
-definitions.
+definitions for event space.
 \begin{figure}
  \begin{center}
   \includegraphics[width=0.7\textwidth]{spacial_temporal.png}
@@ -173,104 +192,129 @@ definitions.
  \label{fig:spacial_temporal}
 \end{figure}
 
-As we now know what event space and slots are, we can define $fields$. Fields 
-form disjoint partition of phase $P$ (meaning partition of corresponding 
-slots). Formally if $X_t$ is changeset applied by \textbf{TRC} at time $t$ we 
+As we know what event space and slots are, we can define $fields$. Fields 
+form disjoint partition of phase $P$ (partition of slots corresponding 
+to $P$). Formally if $X_t$ is changeset applied by \textbf{TRC} at time $t$ we 
 define related filed as:
-$$ F^t = \{(v, t'): v \in X^t \wedge last_v^t < t' \leq t\},$$
+$$F^t = \{(v, t'): v \in X^t \wedge last_v^t < t' \leq t\},$$
 where $last_v^{t'}$ denotes the last time strictly before $t'$ in phase $P$ 
 when node $v$ changed its state in cache either by being fetched or evicted. If 
-there was no such change for $v$ in phase $P$ we assign $last_v^{t'} = begin_P$.
-$F^t$ is \textit{positive} if changeset $X_t$ is positive, symmetrically for 
+there was no such change for $v$ in phase $P$ before $t'$ we assign 
+$last_v^{t'} = \mathrm{begin_P}$.
+$F^t$ is \textit{positive} if changeset $X_t$ is positive, similar for 
 \textit{negative}. We define $req(F^t)$ to be occupied slots from $F^t$. Notice 
-that $req(F^t)$ all exactly the requests that 'payed' for changeset $X_t$. 
-Together with Lemma \ref{thm:lemma1} we can summarize it in simple observation.
+that $req(F^t)$ all exactly the requests that 'paid' for changeset $X_t$. 
+Together with Lemma \ref{thm:lemma1} we can combine it into simple observation.
 \begin{observe}
 For field $F^t$ we have $req(F^t) = |X_t| \cdot \alpha$ and the requests 
 in one field are either all positive or all negative.
 \label{obs:observe1}
 \end{observe}
-The rest of event space, occupied slots that does not belong to any field $F^t$ 
-in phase $P$, we call \textit{open field} $F^{\infty}$. All fields except of 
-an 
-open field are denoted by $\mathcal{F}$ and $|\mathcal{F}| = \sum_{F^t \in 
+The rest of event space (occupied slots that does not belong to any field $F^t$ 
+in phase $P$), we call \textit{open field} and denote by $F^{\infty}$. All 
+fields except of 
+the open field are denoted by $\mathcal{F}$ and $|\mathcal{F}| = \sum_{F^t \in 
 \mathcal{F}} |X^t| \cdot \alpha$.
 Additionally for any field $F$, if $A$ is a set of nodes, $F \cap A = \{(v,t) 
 \in F: v \in A$ and if $T$ is set of rounds $F \cap T = \{(v, t) \in F: t \in 
-T\}$. To shorten notation we introduce $\tau$\textit{-restricted} subfields of 
-$F^t$ as:
+T\}$. We introduce another definition related to 
+fields: $\tau$\textit{-restricted} subfields of 
+$F^t$ which formally are equal
 $$F^t_{\leq \tau} = F^t \cap {t': t' \leq \tau}.$$
-We can think of it as stopping time at $\tau$ and looking what slots are 
-occupied up to this time in $F^t$.
-Fields are hard to visualize in general case, so we present them on a 
-Figure \ref{fig:fields} only for the case when the processed tree structure 
-forms a line.
+We can think of it as a snapshot of field taken at time $\tau$ showing which 
+slots are occupied up to this time in $F^t$.
 \begin{figure}
-\label{fig:fields}
 \begin{center}
   \includegraphics[width=1.1\textwidth]{fields.png}
 \end{center}
 \caption{Example of fields for tree being a line. $F^1$ is a positive field, 
 $F^2$ is negative. $F^{\infty}$ is an open field for presented phase.}
+\label{fig:fields}
 \end{figure}
+Fields are hard to visualize in general case, so we present them on a 
+Figure \ref{fig:fields} only for the case when the processed tree structure 
+forms a line.
 
 Now we are ready to upper bound the cost of \textbf{TRC} on phase $P$.
 \begin{lemma}
 Let $\mathcal{F} \cup F^{\infty}$ be a partition of $P$ into fields. We have:
-$$TRC(P) \leq 2 \cdot \alpha \cdot |\mathcal{F}| + req(F^{\infty}) + k_P \cdot 
+$$cost_{\mathrm{TRC}}(P) \leq 2 \cdot \alpha \cdot |\mathcal{F}| + 
+req(F^{\infty}) + k_P \cdot 
 \alpha.$$ 
+\label{thm:trc_cost}
 \end{lemma}
 \begin{proof}
-The cost on every field $F^t$ originates from serving requests belonging to it 
-and to reorganize the cache at the end of the field - both this costs are equal 
-$|X^t| \cdot \alpha$, which sums up to the first term in right side of 
-inequality. Expression $req(F^{\infty})$ captures all the cost associated with 
-open field in $P$ and $k_P$ is the cost of final eviction which does not 
+The cost on every field $F^t$ originates from serving requests belonging 
+to it 
+and reorganizing the cache at the end of the field (which ends with fetch or 
+eviction)- both this costs are equal 
+$|X^t| \cdot \alpha$, which sums up to the first term in right hand side of 
+inequality. Expression $req(F^{\infty})$ captures all of the cost associated 
+with open field in $P$ and $k_P$ is the cost of final eviction which does not 
 occur for the unfinished (last) phase. 
 \end{proof}
 
 \subsubsection{Shifting}
-Now we process to the most tricky part of our deduction. What we need to do is 
-relate the cost of \textbf{OPT} to fields. Just to show the motivation, imagine 
-for a moment that requests are evenly distributed within fields. What we mean, 
-is every node contained in every field $F^t$ has exactly $\alpha$ slots 
+Now we process to the main part of our deduction. What we need to do is 
+relate the cost of \textbf{OPT} to fields. Just to show intuition behind the 
+idea, imagine 
+for a moment that requests are evenly distributed within fields. What we mean 
+is, every node in every field $F^t$ has exactly $\alpha$ slots 
 saturated at time $t$ (so we distribute $|X^t| \cdot \alpha$ requests belonging 
-to $F^t$ evenly). What it gives us is that every node $v$ alternates between 
-periods spent in positive and negative field and on each such periods it is 
-requested $\alpha$ times. Moreover, we see that on two consecutive periods 
-(one positive and one negative) \textbf{OPT} pays at least $\alpha$ changing 
+to $F^t$ evenly). It gives us, that every node $v$ alternates between 
+periods spent in positive and negative field and on each such period it is 
+requested exactly $\alpha$ times. Moreover, we see that on two consecutive 
+periods 
+(first positive then negative one) \textbf{OPT} pays at least $\alpha$ 
+because of changing 
 the state of $v$ or paying for all positive or all negative requests. 
-Unfortunately, we do not have such fair distribution of requests. What we do is 
-we change phase $P$ to $P'$ which is not harder for \textbf{OPT} but will be 
-close enough to even distribution to lower bound the cost.
+Unfortunately, we do not have such fair distribution of requests. What we 
+will do is 
+we will change phase $P$ to $P'$ which is not harder for \textbf{OPT} but will 
+be closer to even distribution of requests. It will give us ability to lower 
+bound the cost of \textbf{OPT}.
 
-To achieve that we will change $P$ by applying \textit{legal shifts}. The 
+To achieve such $P'$ we will change $P$ by applying \textit{legal shifts}. 
+We say that 
 requests placed in slot $(v, t)$ can be legally shifted to slot $(m(v), t)$ if 
-$v = m(v)$ or for positive requests $m(v)$ is descendant of $v$, for negative 
-$m(v)$ is ascendant of $v$. See, that for fixed sequence of fetches and 
-removals, for any algorithm, the associated cost can only decrease when this 
-legal shifts are applied. For example for positive request, shifting it 'down' 
-in the tree can lead to a node which is already in cache and we can save on 
-that request. Similar example can be constructed for negative requests. So we 
-can make following observation:
+$v = m(v)$ or for positive requests $m(v)$ is descendant of $v$ or for negative 
+requests $m(v)$ is ascendant of $v$. See, that for fixed sequence of fetches 
+and 
+removals from cache, for any algorithm, the associated cost can only decrease 
+when the legal shifts are applied. For example, consider positive request. 
+Shifting it 'down' in the tree can lead to a node which is already in cache and 
+we can save on that request. Similar example can be constructed for negative 
+requests. We can now make following observation:
 \begin{observe}
- If $P'$ was created from $P$ by application of  legal shifts then 
-$cost_{OPT}(P') \leq cost_{OPT}(P)$.
+If $P'$ was created from $P$ by application of legal shifts then 
+$cost_{\mathrm{OPT}}(P') \leq cost_{\mathrm{OPT}}(P)$.
 \end{observe}
 
-We do not want $P'$ to lead \textbf{OPT} to have too small cost so we cannot 
-argue about it is sufficiently large. What we want to keep in our hands is that 
-there are still consecutive alternating periods of positive and negative 
-requests that are sufficiently 'long' in the sense of number of requests. 
-Therefore we will show that we can perform shifts within fields in such way 
-that there are exactly (for negative requests) or approximately (for positive 
-requests) distributed, so we can lower bound \textbf{OPT}.
+We do not want changing $P$ to $P'$ to drop $cost_{\mathrm{OPT}}$ value too 
+much, so we cannot 
+argue about it is sufficiently large. What we want to keep is property that 
+there are consecutive alternating periods of positive and negative 
+requests to node that are sufficiently 'long' in the sense of number of 
+requests. 
+We will show that we can perform shifts within fields in such way 
+that the requests are exactly (for negative requests) or approximately (for 
+positive 
+requests) evenly distributed, so we can lower bound \textbf{OPT}.
 
 Before we start shifting the requests we present a property of restricted 
-subfields and corresponding changeset. For any filed $F$ we say that $S 
+subfields and corresponding changesets. For any filed $F$ we say that $S 
 \subseteq F$ is \textit{overrequested} if $req(S) > |S| \cdot \alpha$. It turns 
 out that some subsets of fields are never overrequested.
-
+\begin{wrapfigure}{l}{0.5\textwidth}
+\vspace{-20pt}
+ \begin{center}
+  \includegraphics[width=0.5\textwidth]{density_pic.png}
+\end{center}
+\caption{This picture shows the average density of request in fields. The 
+darker colour the more request is in average in that part of changeset.}
+\vspace{-40pt}
+\label{fig:density}
+\end{wrapfigure}
 \begin{lemma}
 Fix $F^t$, $F^t_{\leq \tau}$ with $X^t$ corresponding changeset.
 \begin{itemize}
@@ -284,26 +328,16 @@ overrequested.
 \begin{proof}
 We prove the property for negative fields only. The proof for positive ones is 
 similar. From \ref{thm:lemma1}, because $T' \cap  F^t_{\leq \tau}$ is valid 
-changeset at $\tau$, $req(T' \cap  F^t_{\leq \tau}) = bank_{\tau}(T' \cap  
-F^t_{\leq \tau}) \leq |D \cap F^t_{\leq \tau}| \cdot \alpha$.
+changeset at $\tau$, we get $req(T' \cap  F^t_{\leq \tau}) = bank_{\tau}(T' 
+\cap F^t_{\leq \tau}) \leq |D \cap F^t_{\leq \tau}| \cdot \alpha$.
 \end{proof}
-\begin{wrapfigure}{l}{0.5\textwidth}
-\vspace{-20pt}
- \begin{center}
-  \includegraphics[width=0.5\textwidth]{density_pic.png}
-\end{center}
-\caption{This picture shows the average density of request in fields. The 
-darker colour the more request is in average in that part of changeset.}
-\vspace{-40pt}
-\label{fig:density}
-\end{wrapfigure}
 For $\tau = t$ we can apply this lemma and Observation \ref{obs:observe1} 
 what gives us a property of fields, intuitively saying that for positive 
-fields the saturation of slots in average is more dense the closer we are to 
+fields the saturation of slots in average is more dense closer to 
 the root, whereas the density of requests in negative field is higher in the 
-bottom (see Figure \ref{fig:density}).
+'bottom' (see Figure \ref{fig:density}).
 \begin{corollary}
- Fix $F^t$ filed with corresponding changeset $X_t$. Let $T'$ be tree cap of 
+Fix $F^t$ filed with corresponding changeset $X_t$. Let $T'$ be tree cap of 
 $X_t$, then if the field is:
  \begin{itemize}
   \item positive: $req(F^t \cap T') \geq |T'| \cdot \alpha$,
@@ -314,25 +348,28 @@ T'| \cdot \alpha$.
 \end{corollary}
 
 \myparagraph{Up-shifting of negative requests}
-With up shifting negative requests up, we can obtain an even distribution of 
-requests across nodes in changeset.
+With up shifting negative requests, we can obtain an even distribution of 
+requests across nodes in changeset corresponding to negative field.
 \begin{theorem}
-By legal shifts of negative requests we can move request within the field $F^t$ 
-and each node is requested exactly $\alpha$ times.
+By legal shifts of negative requests we can move request within the 
+negative field $F^t$ 
+and each node has exactly $\alpha$ requests.
 \label{thm:legal_shifting_up}
 \end{theorem}
-To prove this theorem we will first convince ourselves that we can always 
-shift requests that appeared after first $\alpha$ requests to leaf to its 
-parent. To make our deduction transparent we will say that tree cap $Y 
+To prove this theorem we will first argue that we can always 
+shift requests that appeared after first $\alpha$ requests at leaf to the 
+parent of that leaf. To make our argument transparent we will say that tree 
+cap $Y 
 \subseteq X_t$ is \textit{proper} if for any tree cap $Y' \subseteq Y$ and any 
 time $\tau \leq t$ it holds that $req(F^t_{\leq \tau} \cap Y') \leq |Y'| \cdot 
-\alpha$. Look that Corollary \ref{thm:proper_at_t} tells that at time $t$, 
+\alpha$. Look that Corollary \ref{thm:proper_at_t} tells that at time $t$ 
+being end of the field, 
 $X_t$ with all its tree caps are proper.
 
 Now we can present a lemma which will be then used as induction step to prove 
 Theorem \ref{thm:legal_shifting_up}.
 \begin{lemma}
- Let $Y$ be a proper tree cap of negative changeset $X_t$ and let $v_l$ be one 
+Let $Y$ be a proper tree cap of negative changeset $X_t$ and let $v_l$ be one 
 of $Y$'s leaves. If $v_l$ was requested $r_l \geq \alpha$ we can legally shift  
 $\delta_l = r_l - \alpha$ requests to parent of $v_l$ ($p(v_l)$), so they are 
 kept in $F^t$ and $Y \setminus \{v_l\}$ stays proper. 
@@ -346,37 +383,34 @@ contradicts Lemma \ref{thm:not_over_requested}. That means, after $\alpha$ first
 requests to $v_l$ the rest $\delta_l$ requests can be moved within field to 
 $p(v_l)$.
 
-What remains to be proven is that $Y' = Y \setminus {v_l}$ after that operation 
-is proper. Suppose it is not, and there exists tree cap $D \subseteq Y'$ which 
+What remains to be proven is that $Y' = Y \setminus {v_l}$ after
+operation described above
+is proper. Suppose it is not,so there exists tree cap $D \subseteq Y'$ which 
 is overrequested in some time $\tau$. First of all $\tau \geq t_l$ because we 
 do not change placement of any request up to time $t_l$ and $Y$ before change 
-was not overrequested. Also see that $p(v) \in D$ - we did not change the 
+was not overrequested. Also see that $p(v)$ has to an element of $D$ - we 
+did not change the 
 number of requests in any other node. After shift $req(F^t \cap Y) = req(F^t 
 \cap D) + \alpha$, and if $req(F^t \cap D) > |D| \cdot \alpha$, then $D \cup 
 v_l$ would be overrequested contradicting that $Y$ is proper before change.
 \end{proof}
-\begin{wrapfigure}{r}{0.5\textwidth}
-\vspace{-20pt}
- \begin{center}
-  \includegraphics[width=0.5\textwidth]{example_not_even.png}
-\end{center}
-\caption{Numbers indicate chronology of events.}
-\vspace{-20pt}
-\label{fig:example_not_even}
-\end{wrapfigure}
 Now above lemma, used as induction step, proves Theorem 
-\ref{thm:legal_shifting_up}. To see that remind that 
-Corollary \ref{thm:proper_at_t} ensures that in any proper tree cap $D$ of 
+\ref{thm:legal_shifting_up}. To see that recall, that 
+Corollary \ref{thm:proper_at_t} ensures, that in any proper tree cap $D$ of 
 $X_t$ there is a leaf with at least $\alpha$ requests. Going with bottom-up 
-manner through the field shifting requests from 'overrequested' the proof of 
-theorem is completed.   
+manner through the field shifting requests from 'overrequested' nodes leads to 
+evenly distributed requests - we leave $\alpha$ requests in every node. That 
+completes the proof.   
 \myparagraph{Down-shifting of positive requests}
-Unfortunately, we can not obtain such even distribution of requests by legal 
-shifts in a positive field as in the negative case. Specifically, we cannot 
+Unfortunately, we can not obtain such even distribution of requests using legal 
+shifts in positive fields as in the case of negative fields. Specifically, we 
+cannot 
 shift legally positive requests down and end up with $\alpha$ requests in every 
-node. Imagine we have a tree $T$ with root $r$ and two distinct subtrees $T_1$ 
-and $T_2$ both of size $s$ and having $l$ leaves. Consider following series on 
-events, assuming that initially whole tree $T$ is in \textbf{TRC's} cache.
+node. To see that, imagine we have a tree $T$ with root $r$ and two distinct 
+subtrees $T_1$ 
+and $T_2$, which both are of size $s$ and have $l$ leaves. Consider following 
+series of events (assuming that initially whole tree $T$ is in \textbf{TRC's} 
+cache).
 \begin{enumerate}
  \item $T_1 \cup \{r\}$ is evicted from cache.
  \item $(s+1) \cdot \alpha - l$ requests to root $r$ appear (no fetch occurs - 
@@ -386,19 +420,30 @@ there is not enough requests in $r$ to pay for whole $T_1 \cup \{r\}$).
  \item $l$ requests appear at root $r$ of tree $T$. $T$ is again in 
 \textbf{TRC's} cache.
 \end{enumerate}
-This example's picture can be found on Figure \ref{fig:example_not_even}. 
+\begin{wrapfigure}{r}{0.5\textwidth}
+\vspace{-20pt}
+ \begin{center}
+  \includegraphics[width=0.5\textwidth]{example_not_even.png}
+\end{center}
+\caption{Numbers indicate chronology of events.}
+\vspace{-20pt}
+\label{fig:example_not_even}
+\end{wrapfigure}
+The picture corresponding to this example can be found in Figure 
+\ref{fig:example_not_even}. 
 Notice that when first $(s+1) \cdot \alpha - l$ request to $r$ appear they can 
 only be shifted to $T_1$ nodes. After that root of $T_1$ is given requests 
-which can not be moved to $T_2$ - we are unable to do shift up with positive 
-requests. Therefore only $l$ last requests are left which can be moved to 
-$T_2$. Assuming that $\frac{l}{\alpha} \ll s$ we only managed to fill half of 
-the tree nodes with $\Omega(\alpha)$ requests.   
+which can not be moved to $T_2$ - we are unable to do shift up positive 
+requests. Therefore only $l$ last requests can be moved to 
+$T_2$. We only managed to fill half of the tree nodes with $\Omega(\alpha)$ 
+requests.   
 
-Convinced that shifting down request is not so easy, our goal is to prove that 
-we can get, by legal shifting within field $F^t$, 
-at least $\Omega(\frac{|F^t|}{h(T)})$ nodes having at least $\frac{\alpha}{2}$ 
-requests. To do that first we argue that from any node $v$ in the positive 
-field $F^t$ we can move down fraction of its requests that we stay in the field 
+Convinced that shifting positive request down is not so easy, our goal is to 
+prove that we can at least get, by legal shifting within field $F^t$, 
+$\Omega(\frac{|F^t|}{h(T)})$ nodes having $\frac{\alpha}{2}$ 
+requests or more. To do that first we argue that from any node $v$ in the 
+positive 
+field $F^t$ we can move down fraction of its requests so they stay in the field 
 and no node $u$ from $T(v)$ gets more then $\frac{\alpha}{2}$ (we do not count 
 the requests placed originally at $u$). Notice that to shift any request $(v, 
 t_v)$ from $F^t$ to node $v'$ we need to ensure that $v$ is outside the cache, 
@@ -408,23 +453,24 @@ what can be expressed by $t_v > last_u(t)$.
 Fix $F^t$ positive field with corresponding $X_t$ and $v \in X_t$ that has 
 been requested at least $c_v \cdot (\frac{\alpha}{2})$ times for some positive 
 natural number $c_v$. There exists legal shifting of $\lceil \frac{\alpha}{2} 
-\rceil \cdot (\frac{\alpha}{2})$ requests from the requests to $v$ to nodes 
-$T(v) \cap X^t$ and at least $\lceil \frac{\alpha}{2} \rceil$ of them is given 
+\rceil \cdot (\frac{\alpha}{2})$ requests to nodes 
+$T(v) \cap X^t$ chosen from requests sent to $v$ and at least $\lceil 
+\frac{\alpha}{2} \rceil$ of them is given 
 $\frac{\alpha}{2}$. All these shifts are within the field $F^t$.
 \label{thm:request_mapping}
 \end{lemma}
 \begin{proof}
 We sort the elements of $T(v) \cap X_t$ with respect to increasing time of last 
 eviction (function $last_v$), getting sequence of nodes $\{u_i\}_{i \geq 
-0}$. Since $v$ has to be on of the first elements that are evicted from cache 
+0}$. Since $v$ has to be one of the first elements that are evicted from cache 
 in that positive field, we assume $u_0 = v$. We sort the request sequence to 
-$v$ too to get the sequence with increasing arrival time. The resulting 
+$v$ too and get the sequence with increasing arrival time. The second 
 sequence will be denoted by $\{(v, t_j)\}_{j=0}^{c_v \cdot \frac{\alpha}{2} - 
 1}$. We define partial function \textit{sh} on latter sequence's 
 elements, that will say to which element of $T(v) \cap X_t$ request should be 
 pushed down. Specifically, $sh((v, t_{k \cdot \alpha + m})) = u_k$, where $m$ 
 values are from $[0, \frac{\alpha}{2})$. The function $sh$ is not defined on 
-the rest of requests, which mean we will not push those requests down. The 
+the rest of requests. We will not push those requests down. The 
 mapping definition is presented on Figure \ref{fig:req_map}.
 \begin{figure}
  \begin{center}
@@ -437,124 +483,146 @@ are mapped, whereas even parts are omitted in mapping}
  \label{fig:req_map}
 \end{figure}
 
-Now we need to prove that defined shifting is within the field, meaning that 
+Now we need to prove that defined shifting keeps requests within the field, 
+so 
 for shifted requests $t_j \geq last_{sh((v, t_j))}(t)$. Assume that it is not 
-true, so $t_j < last_{sh((v, t_j))}(t)$ for $j = k \cdot \alpha + m$ 
+true and $t_j < last_{sh((v, t_j))}(t)$ for $j = k \cdot \alpha + m$ 
 corresponding to shifted request. Since request are mapped with respect to 
 increasing order of sequence $\{u\}$, $|F^t_{\leq t_j}| \cap T(v)| <= k|$, but 
 the same time $req(F^t_{\leq t_j}| \cap T(v)) = j$ and $F^t_{\leq t_j}| \cap 
 T(v)$ is then overrequested. This with Lemma \ref{thm:not_over_requested} leads 
-us to contradiction.
+to contradiction.
 \end{proof}
-We are ready to prove the main lemma of this paragraph, which gives as 
-possibility of obtaining even distribution of positive request to the factor 
+We are ready to prove the main lemma of this paragraph, which gives us 
+possibility to obtain even distribution of positive request to the factor 
 $O(\frac{1}{h(T)})$.
 \begin{lemma}
 For any positive field $F^t$ it is possible to shift 
 legally $\frac{req(F^t)}{2}$ requests within the field, so at least 
-$\frac{|X^t|}{2 \cdot h(T)}$ nodes in $F^t$ have at least 
-$\frac{\alpha}{2}$ requests each.
+$\frac{|X^t|}{2 \cdot h(T)}$ nodes in $F^t$ have 
+$\frac{\alpha}{2}$ requests or more.
 \label{thm:legal_shifting_down}
 \end{lemma}
- \begin{figure}
- \begin{center}
-  \includegraphics[width=0.5\textwidth]{layers.png}
-\end{center}
-\caption{Division of requests to layers. Requests to nodes which have the same 
-distance from $X^t$ root are on the same level.}
-\label{fig:layers}
-\end{figure}
 \begin{proof}
 Let $X^t$ be corresponding changeset for $F^t$. We take all the requests in 
 every node and arrange them into groups of size $\frac{\alpha}{2}$ 
-chronologically, meaning first $\frac{\alpha}{2}$ requests to node are in first 
+chronologically, meaning, that first $\frac{\alpha}{2}$ requests to node are in 
+first 
 group and so on. If the last group is not full (it has less then  
 $\frac{\alpha}{2}$ requests) then it is omitted. The number of request that are 
 not omitted in set $X$ will be denoted by $\overline{req}(X)$. Notice that  
 $\overline{req}(F^t) \geq |X^t| \cdot \frac{\alpha}{2}$, since $req(F^t) = 
 |X^t| \cdot \alpha$ and we omit at most $\frac{\alpha}{2}$ requests at every 
 node.
+ \begin{figure}
+ \begin{center}
+  \includegraphics[width=0.5\textwidth]{layers.png}
+\end{center}
+\caption{Division of requests to layers. Requests to nodes, which have the same 
+distance from $X^t$'s root are on the same level.}
+\label{fig:layers}
+\end{figure}
 
 We partition the elements of $X^t$. In each part there are elements with the 
-same distance from root of $X^t$ and call them levels. The nodes that are 
-distance $i$ from root are on level $i$ and are denoted $X^t_i$. We therefore 
+same distance from root of $X^t$. We call the parts levels. The nodes that are 
+distance $i$ from root are on level $i$ and are denoted $X^t_i$. We 
 have exactly $h(T)$ layers. By pigeonhole principle there exists a level 
 $X^t_i$ for which $\overline{req}(F^t \cap X^t_i) \geq \frac{req(F^t)}{2} \cdot 
 h(T)$ (look at Figure \ref{fig:layers}). The subtrees rooted in nodes from 
-$X^t_i$ are distinct and to each of them we apply Lemma 
+$X^t_i$ are distinct and to each of them we can apply Lemma 
 \ref{thm:request_mapping}. Node $v \in X^t_i$ has $\overline{req}(F^t \cap 
 \{v\})$ requests so from the lemma we we can shift $\frac{\alpha}{2}$ of 
 them to $\lceil \overline{req}(F^t \cap \{v\} \rceil$ distinct nodes in $T(v)$. 
-Summing up the 'filled' nodes for each element from $X^t_i$ we get at least 
+Summing up the 'filled' nodes for each element from $X^t_i$, we get at least 
 $\lceil \overline{req}(F^t \cap X^t_i) \rceil \geq \frac{|X^t|}{2 \cdot h(T)}$ 
 with $\frac{\alpha}{2}$ requests.
 \end{proof}
 \subsubsection{Competitiveness of TRC}
 We will use results from previous subsection to lower bound \textbf{OPT's} cost 
-and finally getting the main theorem of the thesis about competitive ratio of 
+and finally getting the main theorem of this thesis about competitive ratio of 
 \textbf{TRC}. This proofs are mostly technical, but still intuitions from 
 previous sections might be useful to understand idea behind them.
 
 We will need one auxiliary lemma about \textbf{TRC's} cache at the end of the 
 phase. We remind that this last cache state is special - its size exceeds 
-$k_{ONL}$, because instead of normal fetch we perform artificial one 
-described earlier in this section.  
+$k_{\mathrm{ONL}}$, because instead of normal fetch we perform artificial one 
+described earlier.  
 \begin{lemma}
-Fix phase $P$ and $C$ cache state at the end of the phase ($end_P$). Any tree 
+Fix phase $P$ and $C$ cache state at the end of the phase ($\mathrm{end_P}$). 
+Any tree 
 cap $D \subseteq C$ received at least $|D| \cdot \alpha$ requests during phase 
 $P$.
 \label{thm:lots_of_req_in_tc_end_of_p}
 \end{lemma}
 \begin{proof}
 Let $X_1, X_2, \ldots, X_m$ be all positive chengesets from phase $P$. We make 
-separation by defining $X'_i = X_i \setminus \bigcup_{j=1}^{i-1} X_j$. Note 
+separation on them, defining $X'_i = X_i \setminus \bigcup_{j=1}^{i-1} X_j$. 
+Note 
 that $X'_i$ is tree cap of $X_i$. The sequence $X'_1, X'_2, \ldots, X'_m$ is 
-pairwise disjoint and covers $C$, meaning that $C \subseteq \bigsqcup_{j=1}^m 
+pairwise disjoint and covers $C$, so $C \subseteq \bigsqcup_{j=1}^m 
 X'_j$. Let $X_j^D = D \cap X'_j$, then $D = \bigsqcup_{j=1}^m X_j^D$ since $D 
-\subseteq C$. $X_j^D$ is tree cup of $X'_j$ so by transitivity of 
-being a tree cap relation, $X_j^D$ makes up a tree cap of $X_j$. From Corollary 
+\subseteq C$. $X_j^D$ is tree cup of $X'_j$, so by transitivity of relation of
+being a tree cap, $X_j^D$ makes up a tree cap of $X_j$. From Corollary 
 \ref{thm:proper_at_t} we have that $req(X_j^d \cap F_i) \geq |X_j^D| \cdot 
-\alpha$ so it can be even more on the whole phase - not only restricted to 
+\alpha$. There can be even more requests on the whole phase - not only 
+restricted to 
 field $F_i$. Since $X_j^D$ are pairwise disjoint, we can sum up requests over 
 all $j$ what proves the lemma.
 \end{proof}
 
 \myparagraph{Lower bound for OPT}
-In this paragraph we use a notation of $V_{OPT}$ - it will be the set of nodes 
-that appeared in \textbf{OPT's} cache during phase and $V_{OPT}^C$ will 
-denote the complement to the whole tree $T$ ($T \setminus V_{OPT}$). Notice, 
-that $V_{OPT}$ creates a proper cache state.
+Throughout this paragraph we use a notation of $V_{\mathrm{OPT}}$ - it will be 
+the set of nodes 
+that appeared in \textbf{OPT's} cache during phase.$V_{\mathrm{OPT}}^C$ will 
+denote the complement to the whole tree $T$ ($T \setminus V_{\mathrm{OPT}}$). 
+Notice, 
+that $V_{\mathrm{OPT}}$ creates a proper cache state.
 
 We get two different lower bounds for \textbf{OPT} presented in the next two 
 lemmas. 
 \begin{lemma}
-For any phase $P$, $cost_{OPT}(P) \geq (k_P - k_{OPT}) \cdot \alpha$. 
+For any phase $P$, $cost_{\mathrm{OPT}}(P) \geq (k_P - k_{\mathrm{OPT}}) \cdot 
+\alpha$.
+\label{thm:opt_bound_with_k}
 \end{lemma}
 \begin{proof}
-Let $C$ be the cache state of \textbf{TRC} at $end_P$ (after artificial fetch, 
+Let $C$ be the cache state of \textbf{TRC} at $\mathrm{end_P}$ (after 
+artificial fetch, 
 so it has $k_P$ elements in cache). We consider separately the cost 
-\textbf{OPT} obtained on the nodes $V_{OPT}$ and $V_{OPT}^c$. For the first 
-set, \textbf{OPT} had to fetch at least $|V_{OPT}| - k_{OPT}$ nodes during the 
+\textbf{OPT} obtained on the nodes $V_{\mathrm{OPT}}$ and $V_{\mathrm{OPT}}^c$. 
+For the first 
+set, \textbf{OPT} had to fetch at least $|V_{\mathrm{OPT}}| - k_{\mathrm{OPT}}$ 
+nodes during the 
 phase paying $\alpha$ for each of them. For the second one, see that 
-$C \setminus V_{OPT}$ is a subset of $V_{OPT}^c$. Moreover, $C \setminus 
-V_{OPT}$ is an union of disjoint tree caps of subtrees belonging to $C$. From 
+$C \setminus V_{\mathrm{OPT}}$ is a subset of $V_{\mathrm{OPT}}^c$. Moreover, 
+$C \setminus 
+V_{\mathrm{OPT}}$ is an union of disjoint tree caps of subtrees belonging to 
+$C$. From 
 Lemma \ref{thm:lots_of_req_in_tc_end_of_p} all those tree caps are dense, so 
-summing requests in them gives us at least $|C \setminus V_{OPT}| \cdot 
-\alpha$ requests to nodes in $C \setminus V_{OPT}$ which belongs to $V_{OPT}^c$ 
-as mentioned above. Joining results for both cases, $cost_{OPT}(P) \geq 
-(|V_{OPT}| - k_{OPT}) \cdot \alpha + |C \setminus V_{OPT}| \cdot 
-\alpha = (|C| - k_{OPT}) \cdot \alpha$ what ends the prove since $k_P$ is 
+summing requests in them gives us at least $|C \setminus V_{\mathrm{OPT}}| 
+\cdot 
+\alpha$ requests to nodes in $C \setminus V_{OPT}$ which belongs to 
+$V_{\mathrm{OPT}}^c$ 
+as mentioned above. Joining results for both cases, $cost_{\mathrm{OPT}}(P) 
+\geq 
+(|V_{\mathrm{OPT}}| - k_{\mathrm{OPT}}) \cdot \alpha + |C \setminus 
+V_{\mathrm{OPT}}| \cdot 
+\alpha = (|C| - k_{\mathrm{OPT}}) \cdot \alpha$ what ends the prove since $k_P$ 
+is 
 defined as $|C|$ after artificial fetch. 
 \end{proof}
 \begin{lemma}
-For any phase $P$, $cost_{OPT}(P) \geq (\frac{|\mathcal{F}|}{4 \cdot h(T)} 
--k_P) \cdot \frac{\alpha}{2}$. 
+For any phase $P$, $cost_{\mathrm{OPT}}(P) \geq (\frac{|\mathcal{F}|}{4 \cdot 
+h(T)} 
+-k_P) \cdot \frac{\alpha}{2}$.
+\label{thm:opt_bound_with_F}
 \end{lemma}
 \begin{proof}
 Let $P$ be a fixed phase. We perform shifting on $P$ so that Lemma 
 \ref{thm:legal_shifting_up} and Lemma \label{thm:legal_shifting_down} hold. The 
 result of this action will be called phase $P'$. From the previous discussion 
-it is sufficient to prove that $cost_{OPT}(P') \geq (\frac{|\mathcal{F}|}{4 
+it is sufficient to prove that $cost_{\mathrm{OPT}}(P') \geq 
+(\frac{|\mathcal{F}|}{4 
 \cdot h(T)}-k_P) \cdot \frac{\alpha}{2}$. To do that we first focus on each $v$ 
 node separately. See that it's history can be divided into alternating 
 intervals when it was out of the cache and was charged by receiving the positive 
@@ -565,26 +633,161 @@ periods form \textit{stripe}. Notice, that for every node $v$ only the last
 $OUT$ period in phase $P'$ might be unpaired, therefore there is at most $k_P$ 
 unpaired periods.
 
-Let's denote by $cnt_{IN}$ and $cnt_{OUT}$ the number of all $IN$ and $OUT$ 
-periods in $P$ respectively. From the above discussion, $cnt_{OUT} = cnt_{IN} + 
+Let's denote by $cnt_{\mathrm{IN}}$ and $cnt_{\mathrm{OUT}}$ the number of all 
+$IN$ and $OUT$ 
+periods in $P$ respectively. From the above discussion, $cnt_{\mathrm{OUT}} = 
+cnt_{\mathrm{IN}} + 
 k_P$. The sum of all periods (both $IN$ and $OUT$) is equal to the sum of sizes 
 of all fields (excluding the open one) which we denoted by $|\mathcal{F}|$. It 
-implies that $|\mathcal{F}| = cnt_{OUT} + cnt_{IN}$ so $cnt_{OUT} = 
+implies that $|\mathcal{F}| = cnt_{\mathrm{OUT}} + cnt_{\mathrm{IN}}$ so 
+$cnt_{\mathrm{OUT}} = 
 \frac{|\mathcal{F}| + k_P}{2} \geq \frac{|\mathcal{F}|}{2}.$
 
 Now we will use the lemmas about shifting. From them we know that in $P'$ all 
 $IN$ periods consist of $\alpha$ requests and there is at least 
 $\frac{1}{2h(T)}$ throughout $OUT$ periods paired with $IN$ periods that have 
 at least $\frac{\alpha}{2}$ requests. Therefore there are at least 
-$(\frac{cnt_{OUT}}{2h(T)} - k_P)$ pairs of $OUT$ and $IN$ periods that both 
+$(\frac{cnt_{\mathrm{OUT}}}{2h(T)} - k_P)$ pairs of $OUT$ and $IN$ periods that 
+both 
 have $\frac{\alpha}{2}$ requests or more. On each such pair \textbf{OPT} pays 
 at least $\frac{\alpha}{2}$ because of changing nodes state in cache (at cost 
 $\alpha$) or paying from either positive or negative requests from that stripe. 
 Stripes are distinct, so the cost of \textbf{OPT} can be bounded from below by 
-$(\frac{cnt_{OUT}}{2h(T)} - k_P) \cdot \frac{\alpha}{2} \geq 
+$(\frac{cnt_{\mathrm{OUT}}}{2h(T)} - k_P) \cdot \frac{\alpha}{2} \geq 
 (\frac{|\mathcal{F}|}{4h(T)} - k_P) \cdot  \frac{\alpha}{2}$.
 \end{proof}
 
 \myparagraph{Upper bound for open fields}
+To prove the competitiveness of \textbf{TRC} we have to deal with open fields. 
+Lemma below solves this problem.
+\begin{lemma}
+For any phase $P$ and its open field $F^{\infty}$, $req(F^{\infty}) \leq 
+(k_{\mathrm{ONL}} + k_{\mathrm{OPT}}) \cdot \alpha + 2 \cdot 
+cost_{\mathrm{OPT}}(P)$.
+\label{thm:inifinite_filed_bound}
+\end{lemma}
+\begin{proof}
+Let $X_{\mathrm{end_P}}$ be the	artificially applied changeset at time 
+$\mathrm{end_P}$. We divide open field $F^{\infty}$ into two disjoint sets. 
+First of them contains positive requests, the second: negative. Formally
+\begin{gather*}
+F^{\infty}_{+} = \{(v, t): v \notin C_{\mathrm{end_P}} \cup 
+X_{\mathrm{end_P}}, t \geq last_v(\mathrm{end_P})\}, \\
+F^{\infty}_{-} = \{(v, t): v \in C_{\mathrm{end_P}}, t \geq 
+last_v(\mathrm{end_P})\}. 
+\end{gather*}
+Now we divide requests from $F^{\infty}$ into three distinct sets 
+$F^{\infty}_{-}$, $F^{\infty}_{+} \cap V_{\mathrm{OPT}}$ and $F^{\infty}_{+} 
+\cap V_{\mathrm{OPT}}^c$. We will bound the requests in each of them 
+separately. We can do so, since the above division forms partition covering  
+$F^{\infty}$. Therefore $req(F^{\infty}) = req(F^{\infty}_{-}) + 
+req(F^{\infty}_{+} \cap V_{\mathrm{OPT}}) + req(F^{\infty}_{+} \cap 
+V_{\mathrm{OPT}}^c)$.
+
+Let's start with bounding $F^{\infty}_{-}$. Since its nodes are all in the 
+cache $C_{\mathrm{end_P}}$, the number of nodes in $F^{\infty}_{-}$ does not 
+exceed $k_{\mathrm{ONL}}$. These nodes were not evicted from the cache, which 
+means, that number of requests in $req(F^{\infty}_{-})$ is at most 
+$k_{\mathrm{ONL}} \cdot \alpha$.
+
+Now see, that $req(F^{\infty}_{+} \cap V_{\mathrm{OPT}}^c) \leq 
+req(V_{\mathrm{OPT}}^c)$. The nodes from $V_{\mathrm{OPT}}^c$ were never in 
+\textbf{OPT's} cache during phase $P$, so it has to pay for all of them. this 
+gives us $req(V_{\mathrm{OPT}}^c) \leq cost_{\mathrm{OPT}}(P)$ and finally 
+$req(F^{\infty}_{+} \cap V_{\mathrm{OPT}}^c) \leq cost_{\mathrm{OPT}}(P)$.
+
+To bound the last set, notice that $F^{\infty}_{+}$ is a valid changeset for 
+$C_{\mathrm{end_P}} \cup X_{\mathrm{end_P}}$. The same time $V_{\mathrm{OPT}}$ 
+forms a valid cache state. Combining this two observations, we conclude that 
+$F^{\infty}_{+} \cap V_{\mathrm{OPT}}$ is a valid changeset for 
+$C_{\mathrm{end_P}} \cup X_{\mathrm{end_P}}$ (and they intersect empty). Let 
+$X^{V}_{+}$ be the set of nodes in $F^{\infty}_{+} \cap V_{\mathrm{OPT}}$. If 
+$req(F^{\infty}_{+} \cap V_{\mathrm{OPT}})$ would be greater then $|X^{V}_{+}| 
+\cdot \alpha$ then we can extend changeset $X_{\mathrm{end_P}}$ by these nodes 
+contradicting the maximality property of changesets applied by \textbf{TRC}. 
+Therefore $req(F^{\infty}_{+} \cap V_{\mathrm{OPT}}) \leq |X^{V}_{+}| \cdot 
+\alpha \leq |V_{\mathrm{OPT}}| \cdot \alpha \leq k_{\mathrm{OPT}} \cdot \alpha 
++ (|V_{\mathrm{OPT}}| - k_{\mathrm{OPT}}) \leq k_{\mathrm{OPT}} \cdot \alpha 
++ cost_{\mathrm{OPT}}(P)$.
+
+Now we can combine the inequalities discussed above.
+\begin{multline*}
+req(F^{\infty}) = req(F^{\infty}_{-}) + 
+req(F^{\infty}_{+} \cap V_{\mathrm{OPT}}) + req(F^{\infty}_{+} \cap 
+V_{\mathrm{OPT}}^c) \\
+\leq (k_{\mathrm{ONL}} \cdot \alpha) + (k_{\mathrm{OPT}} \cdot \alpha 
++ cost_{\mathrm{OPT}}(P)) + (cost_{\mathrm{OPT}}(P)) \\ 
+= (k_{\mathrm{ONL}} + 
+k_{\mathrm{OPT}}) \cdot \alpha + 2 \cdot 
+cost_{\mathrm{OPT}}(P)
+\end{multline*}
+\end{proof}
 \myparagraph{Main result}
+Now we are ready to state and prove main result.
+\begin{theorem}
+Algorithm \textbf{TRC} is $O(\frac{h(T) \cdot k_{\mathrm{ONL}}}{k_{\mathrm{ONL}} 
+- k_{\mathrm{OPT}} + 1})$-competitive.
+\label{thm:main_theorem}
+\end{theorem}
+\begin{proof}
+It is sufficient to show that for any phase $P$, 
+$\frac{cost_{\mathrm{TRC}}}{cost_{\mathrm{ONL}}} = O(\frac{h(T) \cdot 
+k_{\mathrm{ONL}}}{k_{\mathrm{ONL}} - k_{\mathrm{OPT}} + 1})$. Then summing up 
+the cost over all the phases gives the desired result.
+
+We fix phase $P$. Recall, that from Lemma \ref{thm:trc_cost} we know that 
+$cost_{\mathrm{TRC}}(P)$ is bounded by sum $2 \cdot \alpha \cdot |\mathcal{F}| 
++ req(F^{\infty}) + k_P \cdot \alpha$. We bound the first two summands using 
+the inequalities from previously proved lemmas. Firstly, from Lemma 
+\ref{thm:opt_bound_with_F} we can derive, that $|\mathcal{F}| \leq 
+4h(T) \cdot (cost_{\mathrm{OPT}}(P) + k_P \cdot \alpha)$. Secondly, from Lemma 
+\ref{thm:inifinite_filed_bound} $req(F^{\infty}) \leq 
+(k_{\mathrm{ONL}} + k_{\mathrm{OPT}}) \cdot \alpha + 2 \cdot 
+cost_{\mathrm{OPT}}(P) \leq 2 \cdot (k_P \cdot \alpha + 
+cost_{\mathrm{OPT}}(P))$. Therefore $2 \cdot \alpha \cdot |\mathcal{F}| + 
+req(F^{\infty}) = O(h(T)) \cdot (k_P \cdot \alpha + cost_{\mathrm{OPT}}(P))$.
+\end{proof}
+
 \myparagraph{Lower bound for competitive ratio}
+It turns out the competitive ratio, which is a result of Theorem 
+\ref{thm:main_theorem} is optimal up to factor $O(h(T))$. We prove this 
+statement by showing that any online algorithm has to be at least 
+$\Omega (\frac{k_{\mathrm{ONL}}}{k_{\mathrm{ONL}}- k_{\mathrm{OPT}} + 1})$.
+\begin{theorem}
+For any $\alpha$ being a cost of changing one element's state in cache, any 
+online algorithm for tree caching problem is at least $\Omega 
+(\frac{k_{\mathrm{ONL}}}{k_{\mathrm{ONL}}- k_{\mathrm{OPT}} + 1})$-competitive.
+\end{theorem}
+\begin{proof}
+To prove this theorem we will use Theorem 5 from publication \cite{tarjan}. The 
+result from the article stays, that any online algorithm solving paging problem 
+(move from slow memory to fast memory costs $1$ and there is no bypassing) is 
+at least $\Omega(\frac{k_{\mathrm{ONL}}}{k_{\mathrm{ONL}}- k_{\mathrm{OPT}} + 
+1})$-competitive. The cache sizes are defined the same as for the tree caching 
+problem. What is sufficient to do is to show a bijective mapping from any 
+online algorithm for paging problem to an online algorithm for tree caching and 
+mapping from any input for paging problem to an input for tree caching 
+problem. We can loose only constant factor on cost when performing both 
+algorithms on corresponding inputs.
+
+We equate all pages $p$ from paging problem fixing a bijection $f$ with leaves 
+$l \in T$, so $f(p) = l$. Let's define the mapping between inputs. By $I$ 
+denote the input for paging and by $I'$: input for tree caching problem. We 
+change $I$ sequence going through its requests one by one. Whenever there is 
+request to $p$ we add to $I'$ exactly $\alpha$ requests to $f(p)$. Now we would 
+like to argue that for any online algorithm for paging problem $A$ that pays 
+$c$ on input $I$, we can construct algorithm $A'$ for tree caching problem, that 
+on input $I'$ pays $\theta(c \cdot \alpha)$. We define $A'$ as follows. 
+When $A$ serves request $r$ from $I$ and fetches $r$ to its cache, algorithm 
+$A'$ bypasses corresponding $\alpha$ requests to $f(r)$ and fetches $r$. If $A$ 
+evicts some pages, $A'$ evicts corresponding leaves. Notice, that $A'$ has the 
+same cache state as $A$ if we apply $f$ on its elements and look at its state 
+every $\alpha$ (for $A$ - every one) requests. Therefore, if $A$ does not pay 
+for some request, then $A'$ does not pay for it neither. $A'$ pays then at most 
+$O(\alpha)$ times more then $A$ (all eviction operations' cost on the sequence 
+$I'$ has asymptotically the same value as all fetch operations' cost).
+
+We can inverse the reduction above and see that $A$ pays on $I$ is 
+$O(\frac{1}{\alpha})$ times the cost of $A'$.  
+  
+\end{proof}
