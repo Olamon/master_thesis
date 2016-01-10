@@ -542,43 +542,42 @@ competitive ratio of \textbf{TRC} algorithm. The proofs from this subsection are
  mostly technical, but still intuitions from previous sections should be useful 
 to profoundly understand idea behind forthcoming calculations.
 
-We will need one auxiliary lemma about \textbf{TRC's} cache at the end of the 
-phase. We remind that this last cache state is special - its size exceeds 
-$k_{\mathrm{ONL}}$, because instead of normal fetch we perform artificial one 
-described earlier.  
+We will need one auxiliary lemma about the state of \textbf{TRC's} cache at the 
+end of the phase. We remind, that this last cache state is special - its size 
+exceeds $k_{\mathrm{ONL}}$, because, instead of normal fetch, we perform 
+artificial one as was described earlier.  
 \begin{lemma}
-Fix phase $P$ and $C$ cache state at the end of the phase ($\mathrm{end_P}$). 
-Any tree 
-cap $D \subseteq C$ received at least $|D| \cdot \alpha$ requests during phase 
-$P$.
+Fix phase $P$ and the cache state  $C$ at the end of the phase 
+($\mathrm{end_P}$). Any tree cap $D \subseteq C$ received at least 
+$|D| \cdot \alpha$ requests during phase the $P$.
 \label{thm:lots_of_req_in_tc_end_of_p}
 \end{lemma}
 \begin{proof}
-Let $X_1, X_2, \ldots, X_m$ be all positive chengesets from phase $P$. We make 
-separation on them, defining $X'_i = X_i \setminus \bigcup_{j=1}^{i-1} X_j$. 
-Note 
-that $X'_i$ is tree cap of $X_i$. The sequence $X'_1, X'_2, \ldots, X'_m$ is 
+Let $X_1, X_2, \ldots, X_m$ be all positive chengesets from phase the $P$. 
+We perform separation on them, defining 
+$X'_i = X_i \setminus \bigcup_{j=1}^{i-1} X_j$. Note 
+that $X'_i$ is a tree cap of $X_i$. The sequence $X'_1, X'_2, \ldots, X'_m$ is 
 pairwise disjoint and covers $C$, so $C \subseteq \bigsqcup_{j=1}^m 
-X'_j$. Let $X_j^D = D \cap X'_j$, then $D = \bigsqcup_{j=1}^m X_j^D$ since $D 
-\subseteq C$. $X_j^D$ is tree cup of $X'_j$, so by transitivity of relation of
-being a tree cap, $X_j^D$ makes up a tree cap of $X_j$. From Corollary 
+X'_j$. Let $X_j^D = D \cap X'_j$, then $D = \bigsqcup_{j=1}^m X_j^D$, since $D 
+\subseteq C$. $X_j^D$ is tree cup of $X'_j$, so by transitivity of the relation 
+of being a tree cap, $X_j^D$ makes up a tree cap of $X_j$. From Corollary 
 \ref{thm:proper_at_t} we have that $req(X_j^d \cap F_i) \geq |X_j^D| \cdot 
 \alpha$. There can be even more requests on the whole phase - not only 
 restricted to 
 field $F_i$. Since $X_j^D$ are pairwise disjoint, we can sum up requests over 
-all $j$ what proves the lemma.
+all $j$, what proves the lemma.
 \end{proof}
 
 \myparagraph{Lower bound for OPT}
-Throughout this paragraph we use a notation of $V_{\mathrm{OPT}}$ - it will be 
-the set of nodes 
-that appeared in \textbf{OPT's} cache during phase.$V_{\mathrm{OPT}}^C$ will 
+Throughout this paragraph we use a notation of $V_{\mathrm{OPT}}$. It will be 
+the set of nodes, that appeared in \textbf{OPT's} cache during the phase. 
+$V_{\mathrm{OPT}}^C$ will 
 denote the complement to the whole tree $T$ ($T \setminus V_{\mathrm{OPT}}$). 
 Notice, 
 that $V_{\mathrm{OPT}}$ creates a proper cache state.
 
-We get two different lower bounds for \textbf{OPT} presented in the next two 
-lemmas. 
+We get two different lower bounds for \textbf{OPT}, which are presented in the 
+next two lemmas. 
 \begin{lemma}
 For any phase $P$, $cost_{\mathrm{OPT}}(P) \geq (k_P - k_{\mathrm{OPT}}) \cdot 
 \alpha$.
@@ -587,28 +586,25 @@ For any phase $P$, $cost_{\mathrm{OPT}}(P) \geq (k_P - k_{\mathrm{OPT}}) \cdot
 \begin{proof}
 Let $C$ be the cache state of \textbf{TRC} at $\mathrm{end_P}$ (after 
 artificial fetch, 
-so it has $k_P$ elements in cache). We consider separately the cost 
-\textbf{OPT} obtained on the nodes $V_{\mathrm{OPT}}$ and $V_{\mathrm{OPT}}^c$. 
-For the first 
+so there is $k_P$ elements in the cache). We consider separately the cost 
+of \textbf{OPT} obtained on the nodes 
+$V_{\mathrm{OPT}}$ and $V_{\mathrm{OPT}}^c$. For the first 
 set, \textbf{OPT} had to fetch at least $|V_{\mathrm{OPT}}| - k_{\mathrm{OPT}}$ 
 nodes during the 
 phase paying $\alpha$ for each of them. For the second one, see that 
 $C \setminus V_{\mathrm{OPT}}$ is a subset of $V_{\mathrm{OPT}}^c$. Moreover, 
 $C \setminus 
-V_{\mathrm{OPT}}$ is an union of disjoint tree caps of subtrees belonging to 
-$C$. From 
-Lemma \ref{thm:lots_of_req_in_tc_end_of_p} all those tree caps are dense, so 
-summing requests in them gives us at least $|C \setminus V_{\mathrm{OPT}}| 
-\cdot 
-\alpha$ requests to nodes in $C \setminus V_{OPT}$ which belongs to 
-$V_{\mathrm{OPT}}^c$ 
-as mentioned above. Joining results for both cases, $cost_{\mathrm{OPT}}(P) 
-\geq 
+V_{\mathrm{OPT}}$ is an union of disjoint tree caps of subtrees, that belong to 
+$C$. From Lemma \ref{thm:lots_of_req_in_tc_end_of_p} all those tree caps are 
+'dense', so summing up requests from them gives us at least 
+$|C \setminus V_{\mathrm{OPT}}| \cdot 
+\alpha$ requests to nodes in $C \setminus V_{OPT}$, which belongs to 
+$V_{\mathrm{OPT}}^c$ as well, as mentioned above. Joining results for both 
+cases, $cost_{\mathrm{OPT}}(P) \geq 
 (|V_{\mathrm{OPT}}| - k_{\mathrm{OPT}}) \cdot \alpha + |C \setminus 
 V_{\mathrm{OPT}}| \cdot 
-\alpha = (|C| - k_{\mathrm{OPT}}) \cdot \alpha$ what ends the prove since $k_P$ 
-is 
-defined as $|C|$ after artificial fetch. 
+\alpha = (|C| - k_{\mathrm{OPT}}) \cdot \alpha$, what ends the prove, since 
+$k_P$ is defined as the size of the cache ($|C|$) after artificial fetch. 
 \end{proof}
 \begin{lemma}
 For any phase $P$, $cost_{\mathrm{OPT}}(P) \geq (\frac{|\mathcal{F}|}{4 \cdot 
@@ -617,40 +613,44 @@ h(T)}
 \label{thm:opt_bound_with_F}
 \end{lemma}
 \begin{proof}
-Let $P$ be a fixed phase. We perform shifting on $P$ so that Lemma 
-\ref{thm:legal_shifting_up} and Lemma \label{thm:legal_shifting_down} hold. The 
+Let $P$ be a fixed phase. We perform shifting on $P$, so that both Lemma 
+\ref{thm:legal_shifting_up} and Lemma \ref{thm:legal_shifting_down} hold. The 
 result of this action will be called phase $P'$. From the previous discussion 
-it is sufficient to prove that $cost_{\mathrm{OPT}}(P') \geq 
+it is sufficient to prove, that $cost_{\mathrm{OPT}}(P') \geq 
 (\frac{|\mathcal{F}|}{4 
-\cdot h(T)}-k_P) \cdot \frac{\alpha}{2}$. To do that we first focus on each $v$ 
-node separately. See that it's history can be divided into alternating 
-intervals when it was out of the cache and was charged by receiving the positive 
-requests or it was in the cache charged by negative requests. We call those 
-periods $OUT$ and $IN$ respectively. Cache is empty in the beginning of the 
-phase, so every node starts with $OUT$ period. Two consecutive $OUT$ and $IN$ 
-periods form \textit{stripe}. Notice, that for every node $v$ only the last 
-$OUT$ period in phase $P'$ might be unpaired, therefore there is at most $k_P$ 
+\cdot h(T)}-k_P) \cdot \frac{\alpha}{2}$. To do so, we first focus on each 
+node $v$ separately. See that any node's history can be divided into 
+alternating intervals of the time, when it was out of the cache (and was 
+therefore charged by receiving the positive requests) or it was in the cache 
+(charged by negative requests). We call those 
+periods $OUT$ and $IN$ respectively. The cache is empty at the beginning of the 
+phase, so every node's periods sequence starts with an $OUT$ period. Two 
+consecutive $OUT$ and $IN$ periods form a \textit{stripe}. Notice, that for 
+each node $v$ only the last 
+$OUT$ period in phase $P'$ might be unpaired, thus there is at most $k_P$ 
 unpaired periods.
 
 Let's denote by $cnt_{\mathrm{IN}}$ and $cnt_{\mathrm{OUT}}$ the number of all 
 $IN$ and $OUT$ 
-periods in $P$ respectively. From the above discussion, $cnt_{\mathrm{OUT}} = 
-cnt_{\mathrm{IN}} + 
-k_P$. The sum of all periods (both $IN$ and $OUT$) is equal to the sum of sizes 
-of all fields (excluding the open one) which we denoted by $|\mathcal{F}|$. It 
-implies that $|\mathcal{F}| = cnt_{\mathrm{OUT}} + cnt_{\mathrm{IN}}$ so 
+periods for all nodes in $P$  respectively. From the above discussion, 
+$cnt_{\mathrm{OUT}} = cnt_{\mathrm{IN}} + k_P$. The sum of all periods (both 
+$IN$ and $OUT$) is equal to the sum of sizes 
+of all fields (excluding the open field), which we already denoted by 
+$|\mathcal{F}|$. It implies, that 
+$|\mathcal{F}| = cnt_{\mathrm{OUT}} + cnt_{\mathrm{IN}}$ so 
 $cnt_{\mathrm{OUT}} = 
 \frac{|\mathcal{F}| + k_P}{2} \geq \frac{|\mathcal{F}|}{2}.$
 
 Now we will use the lemmas about shifting. From them we know that in $P'$ all 
 $IN$ periods consist of $\alpha$ requests and there is at least 
-$\frac{1}{2h(T)}$ throughout $OUT$ periods paired with $IN$ periods that have 
-at least $\frac{\alpha}{2}$ requests. Therefore there are at least 
-$(\frac{cnt_{\mathrm{OUT}}}{2h(T)} - k_P)$ pairs of $OUT$ and $IN$ periods that 
+$\frac{1}{2h(T)}$ $OUT$ periods, paired with $IN$ periods, that have 
+at least $\frac{\alpha}{2}$ requests. Therefore, there are at least 
+$(\frac{cnt_{\mathrm{OUT}}}{2h(T)} - k_P)$ stripes, whose both 
 both 
 have $\frac{\alpha}{2}$ requests or more. On each such pair \textbf{OPT} pays 
-at least $\frac{\alpha}{2}$ because of changing nodes state in cache (at cost 
-$\alpha$) or paying from either positive or negative requests from that stripe. 
+at least $\frac{\alpha}{2}$, because of changing nodes state in cache (thus 
+obtaining the cost equal to $\alpha \geq frac{\alpha}{2}$) or paying for either 
+positive or negative requests from that stripe. 
 Stripes are distinct, so the cost of \textbf{OPT} can be bounded from below by 
 $(\frac{cnt_{\mathrm{OUT}}}{2h(T)} - k_P) \cdot \frac{\alpha}{2} \geq 
 (\frac{|\mathcal{F}|}{4h(T)} - k_P) \cdot  \frac{\alpha}{2}$.
