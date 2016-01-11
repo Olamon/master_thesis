@@ -657,8 +657,8 @@ $(\frac{cnt_{\mathrm{OUT}}}{2h(T)} - k_P) \cdot \frac{\alpha}{2} \geq
 \end{proof}
 
 \myparagraph{Upper bound for open fields}
-To prove the competitiveness of \textbf{TRC} we have to deal with open fields. 
-Lemma below solves this problem.
+To prove the competitiveness of \textbf{TRC} we have to deal with the open 
+fields. Lemma below solves this problem.
 \begin{lemma}
 For any phase $P$ and its open field $F^{\infty}$, $req(F^{\infty}) \leq 
 (k_{\mathrm{ONL}} + k_{\mathrm{OPT}}) \cdot \alpha + 2 \cdot 
@@ -666,7 +666,7 @@ cost_{\mathrm{OPT}}(P)$.
 \label{thm:inifinite_filed_bound}
 \end{lemma}
 \begin{proof}
-Let $X_{\mathrm{end_P}}$ be the	artificially applied changeset at time 
+Let $X_{\mathrm{end_P}}$ be the	artificially applied changeset at the time 
 $\mathrm{end_P}$. We divide open field $F^{\infty}$ into two disjoint sets. 
 First of them contains positive requests, the second: negative. Formally
 \begin{gather*}
@@ -677,39 +677,42 @@ last_v(\mathrm{end_P})\}.
 \end{gather*}
 Now we divide requests from $F^{\infty}$ into three distinct sets 
 $F^{\infty}_{-}$, $F^{\infty}_{+} \cap V_{\mathrm{OPT}}$ and $F^{\infty}_{+} 
-\cap V_{\mathrm{OPT}}^c$. We will bound the requests in each of them 
-separately. We can do so, since the above division forms partition covering  
-$F^{\infty}$. Therefore $req(F^{\infty}) = req(F^{\infty}_{-}) + 
+\cap V_{\mathrm{OPT}}^c$. We will bound the number of requests in each of them 
+separately. We can do so, since the above division forms partition, that covers 
+$F^{\infty}$. Therefore, $req(F^{\infty}) = req(F^{\infty}_{-}) + 
 req(F^{\infty}_{+} \cap V_{\mathrm{OPT}}) + req(F^{\infty}_{+} \cap 
 V_{\mathrm{OPT}}^c)$.
 
 Let's start with bounding $F^{\infty}_{-}$. Since its nodes are all in the 
-cache $C_{\mathrm{end_P}}$, the number of nodes in $F^{\infty}_{-}$ does not 
+cache state $C_{\mathrm{end_P}}$, the number of nodes in $F^{\infty}_{-}$ does not 
 exceed $k_{\mathrm{ONL}}$. These nodes were not evicted from the cache, which 
-means, that number of requests in $req(F^{\infty}_{-})$ is at most 
+means, that number of requests in $req(F^{\infty}_{-})$ equals at most 
 $k_{\mathrm{ONL}} \cdot \alpha$.
 
-Now see, that $req(F^{\infty}_{+} \cap V_{\mathrm{OPT}}^c) \leq 
+Now notice, that $req(F^{\infty}_{+} \cap V_{\mathrm{OPT}}^c) \leq 
 req(V_{\mathrm{OPT}}^c)$. The nodes from $V_{\mathrm{OPT}}^c$ were never in 
-\textbf{OPT's} cache during phase $P$, so it has to pay for all of them. this 
+\textbf{OPT's} cache during phase $P$, so it has to pay for all of the positive 
+requests to them. This 
 gives us $req(V_{\mathrm{OPT}}^c) \leq cost_{\mathrm{OPT}}(P)$ and finally 
 $req(F^{\infty}_{+} \cap V_{\mathrm{OPT}}^c) \leq cost_{\mathrm{OPT}}(P)$.
 
-To bound the last set, notice that $F^{\infty}_{+}$ is a valid changeset for 
-$C_{\mathrm{end_P}} \cup X_{\mathrm{end_P}}$. The same time $V_{\mathrm{OPT}}$ 
-forms a valid cache state. Combining this two observations, we conclude that 
+To get the bound for the ramaining set note, that $F^{\infty}_{+}$ is a valid 
+changeset for $C_{\mathrm{end_P}} \cup X_{\mathrm{end_P}}$. At the same time, 
+$V_{\mathrm{OPT}}$ forms a valid cache state. Combining these two observations, 
+we can conclude, that 
 $F^{\infty}_{+} \cap V_{\mathrm{OPT}}$ is a valid changeset for 
-$C_{\mathrm{end_P}} \cup X_{\mathrm{end_P}}$ (and they intersect empty). Let 
-$X^{V}_{+}$ be the set of nodes in $F^{\infty}_{+} \cap V_{\mathrm{OPT}}$. If 
+$C_{\mathrm{end_P}} \cup X_{\mathrm{end_P}}$ (and these sets' intersection is 
+empty). Let $X^{V}_{+}$ be the set of nodes in $F^{\infty}_{+} \cap V_{\mathrm{OPT}}$. If 
 $req(F^{\infty}_{+} \cap V_{\mathrm{OPT}})$ would be greater then $|X^{V}_{+}| 
-\cdot \alpha$ then we can extend changeset $X_{\mathrm{end_P}}$ by these nodes 
-contradicting the maximality property of changesets applied by \textbf{TRC}. 
-Therefore $req(F^{\infty}_{+} \cap V_{\mathrm{OPT}}) \leq |X^{V}_{+}| \cdot 
+\cdot \alpha$, then we would have been able to extend changeset 
+$X_{\mathrm{end_P}}$ by these nodes, 
+contradicting the maximality property of changesets applied by \textbf{TRC} algorithm. 
+Therefore, $req(F^{\infty}_{+} \cap V_{\mathrm{OPT}}) \leq |X^{V}_{+}| \cdot 
 \alpha \leq |V_{\mathrm{OPT}}| \cdot \alpha \leq k_{\mathrm{OPT}} \cdot \alpha 
 + (|V_{\mathrm{OPT}}| - k_{\mathrm{OPT}}) \leq k_{\mathrm{OPT}} \cdot \alpha 
 + cost_{\mathrm{OPT}}(P)$.
 
-Now we can combine the inequalities discussed above.
+Now we can combine the inequalities discussed above and finalize the proof.
 \begin{multline*}
 req(F^{\infty}) = req(F^{\infty}_{-}) + 
 req(F^{\infty}_{+} \cap V_{\mathrm{OPT}}) + req(F^{\infty}_{+} \cap 
@@ -722,71 +725,71 @@ cost_{\mathrm{OPT}}(P)
 \end{multline*}
 \end{proof}
 \myparagraph{Main result}
-Now we are ready to state and prove main result.
+Now we are ready to state and prove the main result.
 \begin{theorem}
 Algorithm \textbf{TRC} is $O(\frac{h(T) \cdot k_{\mathrm{ONL}}}{k_{\mathrm{ONL}} 
 - k_{\mathrm{OPT}} + 1})$-competitive.
 \label{thm:main_theorem}
 \end{theorem}
 \begin{proof}
-It is sufficient to show that for any phase $P$, 
+It is sufficient to show, that for any phase $P$, 
 $\frac{cost_{\mathrm{TRC}}}{cost_{\mathrm{ONL}}} = O(\frac{h(T) \cdot 
 k_{\mathrm{ONL}}}{k_{\mathrm{ONL}} - k_{\mathrm{OPT}} + 1})$. Then summing up 
-the cost over all the phases gives the desired result.
+the cost over all the phases will give us the desired result.
 
-We fix phase $P$. Recall, that from Lemma \ref{thm:trc_cost} we know that 
+We fix phase $P$. Recall, that from Lemma \ref{thm:trc_cost} we know, that 
 $cost_{\mathrm{TRC}}(P)$ is bounded by sum $2 \cdot \alpha \cdot |\mathcal{F}| 
 + req(F^{\infty}) + k_P \cdot \alpha$. We bound the first two summands using 
-the inequalities from previously proved lemmas. Firstly, from Lemma 
+the inequalities from lemmas, that we stated in previous sections. Firstly, from Lemma 
 \ref{thm:opt_bound_with_F} we can derive, that $|\mathcal{F}| \leq 
 4h(T) \cdot (cost_{\mathrm{OPT}}(P) + k_P \cdot \alpha)$. Secondly, from Lemma 
-\ref{thm:inifinite_filed_bound} $req(F^{\infty}) \leq 
+\ref{thm:inifinite_filed_bound} we have $req(F^{\infty}) \leq 
 (k_{\mathrm{ONL}} + k_{\mathrm{OPT}}) \cdot \alpha + 2 \cdot 
 cost_{\mathrm{OPT}}(P) \leq 2 \cdot (k_P \cdot \alpha + 
-cost_{\mathrm{OPT}}(P))$. Therefore $2 \cdot \alpha \cdot |\mathcal{F}| + 
+cost_{\mathrm{OPT}}(P))$. Therefore, $2 \cdot \alpha \cdot |\mathcal{F}| + 
 req(F^{\infty}) = O(h(T)) \cdot (k_P \cdot \alpha + cost_{\mathrm{OPT}}(P))$.
 \end{proof}
 
 \myparagraph{Lower bound for competitive ratio}
-It turns out the competitive ratio, which is a result of Theorem 
+We will now show, that the competitive ratio, which is the result of the Theorem 
 \ref{thm:main_theorem} is optimal up to factor $O(h(T))$. We prove this 
-statement by showing that any online algorithm has to be at least 
+statement by justifying, that any online algorithm has to be at least 
 $\Omega (\frac{k_{\mathrm{ONL}}}{k_{\mathrm{ONL}}- k_{\mathrm{OPT}} + 1})$.
 \begin{theorem}
-For any $\alpha$ being a cost of changing one element's state in cache, any 
-online algorithm for tree caching problem is at least $\Omega 
+For any value $\alpha$ being a cost of changing one element's state in the cache, any 
+online algorithm for the tree caching problem is at least $\Omega 
 (\frac{k_{\mathrm{ONL}}}{k_{\mathrm{ONL}}- k_{\mathrm{OPT}} + 1})$-competitive.
 \end{theorem}
 \begin{proof}
-To prove this theorem we will use Theorem 5 from publication \cite{tarjan}. The 
-result from the article stays, that any online algorithm solving paging problem 
+To prove this theorem we will use the Theorem 5 from publication \cite{tarjan}. The 
+result from this article stays, that any online algorithm solving the standard paging problem 
 (move from slow memory to fast memory costs $1$ and there is no bypassing) is 
 at least $\Omega(\frac{k_{\mathrm{ONL}}}{k_{\mathrm{ONL}}- k_{\mathrm{OPT}} + 
-1})$-competitive. The cache sizes are defined the same as for the tree caching 
-problem. What is sufficient to do is to show a bijective mapping from any 
-online algorithm for paging problem to an online algorithm for tree caching and 
-mapping from any input for paging problem to an input for tree caching 
-problem. We can loose only constant factor on cost when performing both 
-algorithms on corresponding inputs.
+1})$-competitive. The cache sizes' designation is defined the same as for the tree caching 
+problem. What is sufficient to do is to construct a bijective mapping from any 
+online algorithm for paging problem to an online algorithm forthe tree caching problem and 
+mapping from any input for the paging problem to an input for the tree caching 
+problem. We can loose only constant factor on the cost, when performing both 
+algorithms on the corresponding inputs.
 
-We equate all pages $p$ from paging problem fixing a bijection $f$ with leaves 
+We equate all pages $p$ from the paging problem fixing a bijection $f$ from the pages to leaves 
 $l \in T$, so $f(p) = l$. Let's define the mapping between inputs. By $I$ 
-denote the input for paging and by $I'$: input for tree caching problem. We 
-change $I$ sequence going through its requests one by one. Whenever there is 
-request to $p$ we add to $I'$ exactly $\alpha$ requests to $f(p)$. Now we would 
-like to argue that for any online algorithm for paging problem $A$ that pays 
-$c$ on input $I$, we can construct algorithm $A'$ for tree caching problem, that 
+denote the input for the paging and by $I'$: input for the tree caching problem. We 
+change $I$ sequence, going through its requests one by one. Whenever there is 
+request to $p$, we add to $I'$ exactly $\alpha$ requests to $f(p)$. Now we would 
+like to argue that, for any online algorithm for the paging problem $A$, that pays 
+$c$ on input $I$, we can construct algorithm $A'$ for the tree caching problem, that 
 on input $I'$ pays $\theta(c \cdot \alpha)$. We define $A'$ as follows. 
 When $A$ serves request $r$ from $I$ and fetches $r$ to its cache, algorithm 
 $A'$ bypasses corresponding $\alpha$ requests to $f(r)$ and fetches $r$. If $A$ 
-evicts some pages, $A'$ evicts corresponding leaves. Notice, that $A'$ has the 
-same cache state as $A$ if we apply $f$ on its elements and look at its state 
+evicts some pages, $A'$ evicts leaves corresponding to that pages. Notice, that 
+$A'$ has the 
+same cache state as $A$, as long as we apply $f$ on its elements and look at its state 
 every $\alpha$ (for $A$ - every one) requests. Therefore, if $A$ does not pay 
 for some request, then $A'$ does not pay for it neither. $A'$ pays then at most 
 $O(\alpha)$ times more then $A$ (all eviction operations' cost on the sequence 
 $I'$ has asymptotically the same value as all fetch operations' cost).
 
 We can inverse the reduction above and see that $A$ pays on $I$ is 
-$O(\frac{1}{\alpha})$ times the cost of $A'$.  
-  
+$O(\frac{1}{\alpha})$ times the cost of $A'$.    
 \end{proof}
