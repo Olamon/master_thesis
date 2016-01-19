@@ -21,10 +21,10 @@ memory paying non-zero cost. Sometimes it is required to place any requested
 element immediately in cache. If there is no place in fast memory (cache) for 
 the element, we have to move some items from fast memory back to slow memory. 
 If such requirement does not exist and we can serve item without putting it to 
-the cache (obtaining some big cost instead) we say that the model is 
+the cache (paying some possibly big cost instead) we say that the model is 
 \textit{with bypassing}.
 
-It is not hard to see many application of the paging problem. We can map it to 
+It is not hard to see many applications of the paging problem. We can map it to 
 the memory management problem in computer operating systems. Here slow memory 
 is disc and the fast memory is RAM. Another example is web browsers cache which 
 store some previous responses from the server in fast memory and is able to 
@@ -45,26 +45,32 @@ correctly. The number of such rules is dramatically increasing in modern
 routers and the memory storing FIB is known to be expensive and to need a lot 
 of energy. Technology of Software-Defined Networking (SDN) introduces the idea 
 of keeping 'most popular' FIB rules in faster and more expensive memory. 
-Clearly, FIB forms a tree, in that way solving our model is strongly connected 
-to improving SDN performance.
+As we explain later, FIB forms a tree, in that way solving our model is strongly
+connected to improving SDN performance.
 
 We present an online algorithm \textbf{TRC} to solve the caching problem 
 for presented model. To measure its performance we use the \textbf{competitive 
 analysis}. Its basic idea is to compute cost ratio (which is called 
 \textit{competitive ratio}) between cost of online algorithm to cost of 
 \textit{offline algorithm}, which knows whole the input sequence from the 
-beginning. The main result presented is online algorithm \textbf{TRC}, whose 
-competitive ratio we prove is $O(\frac{height(T) \cdot k_{ONL}}{k_{ONL} - k_{OPT} 
-+ 1})$.
+beginning. Let $\kind{OPT}$ and $\kind{ONL}$ denote size of the cache of
+offline optimal and online algorithm respectively. If these values are equal, we
+will use $k$ instead. The main result presented is online algorithm 
+\textbf{TRC},whose competitive ratio we prove is 
+$O(\frac{h(T) \cdot \kind{OPT}}{\kind{ONL} - \kind{OPT} + 1})$, where $h(T)$ is
+the height of the tree $T$.
 
 In section \ref{caching_problems} we review competitive analysis basic 
 definitions. We also give brief survey of online algorithm and their analysis 
 for standard paging problem. We consider both deterministic and randomized 
-solutions for this problem. In section \ref{tree_caching_algo} we present 
-deterministic algorithm \textbf{TRC} for our model of tree caching with 
-dependencies and two kinds of requests. Then we prove the theorem about its 
+solutions for this problem. In section \ref{tree_caching_algo} we start by 
+presenting the model of tree caching with dependencies and two kinds of 
+requests. Then we give more precise description of motivation and importance of
+that model. Next, we show deterministic algorithm \textbf{TRC} for the tree 
+caching problem. We prove the theorem about \textbf{TRC}'s  
 competitive ratio and show lower bound on competitive ratio for any online 
-algorithm solving our problem. \textbf{TRC} turns out to be optimal up to the 
-factor $O(h(T))$, where $h(T)$ is the hight of input tree. The last section 
-gives a more precise description of motivation and importance of tree caching 
-problem.
+algorithm solving the tree caching problem. \textbf{TRC} turns out to be 
+optimal up to the factor $O(h(T))$.
+
+This thesis was written based on the not yet published paper \cite{mypap}, 
+of which I am co-author.

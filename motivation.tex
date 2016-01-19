@@ -1,15 +1,15 @@
-\section{Motivation}
+\subsection{Motivation}
 Motivation of the model we studied can be found in the IP-based computer networks 
 problems. Router has to store enormous number of forwarding rule and this number is 
 still growing. The fast router memory is expensive and requires a lot of energy, 
 which is a big problem for Internet Service Providers. As a solution to this 
 problem there comes Software-Defined Networking (SDN) technology. It consists of two 
 types of memory: the fast memory, which is kept in router and the slow one, which is 
-places in so called controller. The latter one keeps information about all FIB rules. On the other hand, 
-router keeps only the part of FIB tree. Whenever a packet comes, it is firstly 
-processed in the router. If its forwarding rule is found in the router's cache, then it 
+placed in so called controller. The latter one keeps information about all of the FIB rules. 
+On the other hand, router keeps only the part of the FIB tree. Whenever a packet comes, it is firstly 
+processed by the router. If its forwarding rule is found in the router's cache, then it 
 is immediately forwarded to its final destination. In the case of not finding the appropriate
-rule for packet, we fetch that rule from the slow memory paying $1$ for each such request. At some points of 
+rule for the packet, we fetch that rule from the slow memory paying $1$ for each such request. At some points of 
 time the controller may decide to change the router's cache by inserting or deleting 
 a rule. Any such operation costs us $\alpha$. Figure \ref{fig:motivation} shows 
 the crucial concepts, that were just briefly described. More detailed and 

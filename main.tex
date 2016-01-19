@@ -8,7 +8,7 @@
 \usepackage{amsthm}
 \usepackage{amsmath}
 \usepackage{comment}
-
+\usepackage{enumitem}
 \usepackage{graphicx}
 \usepackage{wrapfig}
 \usepackage{pst-grad,multido}
@@ -29,6 +29,7 @@ sorting=ynt
 \newtheorem{lemma}[theorem]{Lemma}
 \renewcommand\algorithmicthen{}
 \newcommand{\csigma}[1]{$C_{\mathrm{#1}}(\sigma)$}
+\newcommand{\kind}[1]{\ensuremath{k_{\mathrm{#1}}}}
 
 \newcommand{\myparagraph}[1]{\paragraph{#1}\mbox{}\\}
 
@@ -59,6 +60,5 @@ algorithm, respectively.
 \include{introduction}
 \include{caching_problems}
 \include{tree_caching_algo}
-\include{motivation}
 \printbibliography
 \end{document}

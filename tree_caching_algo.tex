@@ -1,8 +1,8 @@
 \section{Tree caching with dependencies}
 \label{tree_caching_algo}
-The problem, that we consider (called \textit{tree caching problem}), 
+The problem that we consider (called \textit{tree caching problem}), 
 introduces an extension of standard caching problem with bypassing, 
-which was recalled in section 2. The main difference between them is, that 
+which was described in section 2. The main difference between them is, that 
 requested items have some inter-dependencies. Specifically, their 
 universe forms rooted tree $T$ and the requested items are placed in its nodes. 
 Whenever $v \in T$ is fetched, all of its descendants $T(v)$, that are not 
@@ -20,7 +20,7 @@ element, which is evicted or fetched.
 The goal is to find an online algorithm, that solves this problem and minimizes 
 the obtained cost. We present a deterministic algorithm \textbf{TRC}, which 
 we prove is $O(h(T) \times R)$-competitive, where $h(T)$ is height of input tree 
-and $R = k_{\mathrm{ONL}}/(k_{\mathrm{ONL}} - k_{\mathrm{OPT}} +1$ with 
+and $R = k_{\mathrm{ONL}}/(k_{\mathrm{ONL}} - k_{\mathrm{OPT}} +1)$ with 
 $k_{\mathrm{ONL}}$ and $k_{\mathrm{OPT}}$ denoting the size of 
 online and optimal offline algorithm's cache respectively.
 
@@ -38,23 +38,24 @@ definition does not depend on the cache size, so $C$ can be valid cache state an
 the same time might not fit into the cache size.
 
 The \textbf{TRC} algorithm, after each request, can change the state of its 
-cache. The only changes, that are possible, leave the cache in a valid state. 
+cache. The only changes that are possible leave the cache in a valid state. 
 Depending on the character of change (eviction vs. fetch), we can apply either 
 \textit{valid negative changeset} or \textit{valid positive changeset}  on the 
-cache $C$. The valid positive changeset $X$ (you ma think of it, as a set, that 
+cache $C$. The valid positive changeset $X$ (you may think of it as a set that 
 can be fetched legally) is a set for which $X \cap C = \varnothing$ and $C \cup X$ 
 is a valid cache state, the negative one (related to eviction) is a set $X 
 \subseteq C$ such that $C \setminus X$ is a valid cache state.
 
-We process the input one request by one and assume, that each request $\sigma(t)$ 
+We process the input one request by one and assume, that each request $\sigma_t$ 
 comes in the time interval $(t-1, t)$. The next request comes in the time 
 interval $(t, t + 1)$ and so forth. At time $t$ algorithm changes its cache state 
 from $C_{t}$ to $C_{t+1}$. The cache state is well defined for round $t$ (which 
 contains time interval $(t-1, t)$), because, as we can see, the cache may change 
 only between rounds.
 
-Some of the definition, which appeared in this section, are presented on figure 
-~\ref{fig:TreeCacheDefinitions}.
+Some of the definition, which appeared in this section, are presented on Figure ~\ref{fig:TreeCacheDefinitions}.
+
+\input{motivation.tex}
 
 \subsection{Algorithm TRC}
 
@@ -75,8 +76,8 @@ start of each phase the \textbf{TRC}'s cache is empty.
 \label{alg:TRC}
 \begin{algorithmic}[1]
 \ForAll{$t \in \{1 \ldots |\sigma|\}$}
-  \State Serve request $\sigma(t)$.
-  \State Actualize $bank_t(v)$ values for $v \in T$.
+  \State Serve request $\sigma_t$.
+  \State Update $bank_t(v)$ values for $v \in T$.
   \If{exists valid changeset $X$ such that: \begin{itemize}
     \item $bank_t(X) \geq |X| \times \alpha$ (saturation),
     \item $bank_t(Y) < |Y| \times \alpha$ for any valid changeset $Y 
@@ -95,7 +96,8 @@ start of each phase the \textbf{TRC}'s cache is empty.
 
 In line 6 of the algorithm above we do not literally exceed the cache. Instead, 
 we do not apply last valid changeset, but we empty the cache and start new 
-phase. Each phase ends whenever applying valid changeset $X$ would lead to cache 
+phase. This not performed fetch will be from now on called \textit{an artificial fetch}.
+Each phase ends whenever applying valid changeset $X$ would lead to cache 
 overload. Only the last phase is treated differently: it can be \textit{unfinished}. 
 
 In the body of the algorithm \ref{alg:TRC} there are two properties defined: 
@@ -106,7 +108,7 @@ formulation of \textbf{TRC}, every changeset applied by the algorithm fulfills
 both saturation and maximality property.
 
 If $P$ is a phase, additionally by $\mathrm{begin_P}$ and $\mathrm{end_P}$ we 
-denote time, when the phase $P$ started and finished respectively.
+denote times, when the phase $P$ started and finished respectively.
 
 \subsection{Analysis}
 Throughout all the analysis, we fix the input sequence $I$ and its division into 
@@ -120,16 +122,20 @@ introduce the concept of \textit{fields}, which will help us proving
 algorithm's competitiveness.
 
 \subsubsection{Elementary properties}
-Remind, that $C_t$ denotes the cache state of \textbf{TRC} at round $t$ and that 
+Recall, that $C_t$ denotes the cache state of \textbf{TRC} at round $t$ and that 
 any cache change takes place between rounds at discrete points of time. 
 Having that in mind, we prove, that there cannot be both saturated 
 positive and negative changesets at the same time.
 \begin{lemma}
 \label{thm:lemma1}
-Fix phase $P$. For any $t \in \{\mathrm{begin_P} +1, \mathrm{begin_P} + 2, 
+Fix phase $P$. 
+\begin{enumerate}[label=(\arabic*)]
+  \item For any $t \in \{\mathrm{begin_P} +1, \mathrm{begin_P} + 2, 
 \ldots, \mathrm{end_P}\}$ and any valid changeset $X$ for the cache $C_t$ 
-we have $bank_t(X) \leq |X| \cdot \alpha$ (1). Moreover, changesets $Y$ for
-$C_t$, for which equality holds, are all either positive or negative (2).
+we have $bank_t(X) \leq |X| \cdot \alpha$.
+  \item Changesets $Y$ for
+$C_t$, for which equality holds in inequality above, are all either positive or negative.
+\end{enumerate} 
 \end{lemma}
 \begin{proof}
 We prove this lemma by induction on $t$, starting with $t_1 = \mathrm{begin_P} 
@@ -186,21 +192,24 @@ above definitions for the event space.
  \begin{center}
   \includegraphics[width=0.7\textwidth]{spacial_temporal.png}
  \end{center}
- \caption{Event space for node $v$.}
+ \caption{Event space presented for node $v$. Nodes whose color is black form 
+the tree from the tree caching problem.  We add new dimension - time. Every node
+is replaced by slots $(v, t)$ for discrete values of $t$, which are rounds 
+numbers. On the picture the new dimension is presented only for $v$.}
  \label{fig:spacial_temporal}
 \end{figure}
 
 As we now know, what the event space and slots are, we can define $fields$. Fields 
 form disjoint partition of phase $P$ (partition of slots corresponding 
 to $P$). Formally, if $X_t$ is changeset applied by \textbf{TRC} at time $t$, we 
-define related filed as:
+define related field as:
 $$F^t = \{(v, t'): v \in X^t \wedge last_v^t < t' \leq t\},$$
 where $last_v^{t'}$ stands for the last time strictly before $t'$ in phase $P$, 
 when node $v$ changed its state in the cache either by being fetched or evicted. If 
 there was no such change for $v$ in phase $P$ before $t'$, we assign 
 $last_v^{t'} = \mathrm{begin_P}$. $F^t$ is \textit{positive} if corresponding 
 changeset $X_t$ is positive, similar for \textit{negative}. We define $req(F^t)$ 
-to be the occupied slots from $F^t$. Notice that $req(F^t)$ all exactly the
+to be the occupied slots from $F^t$. Notice that $req(F^t)$ is exactly the
 requests that 'paid' for changeset $X_t$, so it could be applied. With Lemma \ref{thm:lemma1},
 we can summarize discussion above in a simple observation.
 \begin{observe}
@@ -231,7 +240,7 @@ Fields are hard to visualize in general case, so we present them
 only for the case when the processed tree structure forms a line (look at the figure 
 Figure \ref{fig:fields}).
 
-Now we are ready to upper bound the cost of \textbf{TRC} obtained during phase $P$.
+Now we upper bound the cost of \textbf{TRC} obtained during phase $P$.
 \begin{lemma}
 Let $\mathcal{F} \cup F^{\infty}$ be a partition of $P$ into fields. We have:
 $$cost_{\mathrm{TRC}}(P) \leq 2 \cdot \alpha \cdot |\mathcal{F}| + 
@@ -251,7 +260,7 @@ cost for \textbf{TRC}'s algorithm.
 \end{proof}
 
 \subsubsection{Shifting}
-Now we process to the main part of our deduction. What we need to do is to 
+Now we proceed to the main part of our deduction. What we need to do is to 
 relate the cost of \textbf{OPT} with the fields. Just to show intuition behind the 
 idea, imagine 
 for a moment, that requests are evenly distributed within fields. What we mean
@@ -306,7 +315,7 @@ requests) evenly distributed and consequently we can lower bound \textbf{OPT}.
 
 Before we start presenting the way, in which we shift the requests, we
 demonstrate a property of restricted subfields and their corresponding changesets.
-For any filed $F$ we say that $S \subseteq F$ is \textit{overrequested}
+For any field $F$ we say that $S \subseteq F$ is \textit{overrequested}
 if $req(S) > |S| \cdot \alpha$. It turns out, that some subsets of fields
 are never overrequested.
 \begin{lemma}
@@ -314,16 +323,19 @@ Fix $F^t$, $F^t_{\leq \tau}$ with $X^t$ corresponding changeset.
 \begin{itemize}
  \item If $F^t$ is negative, then for any tree cap $T'$ of $X^t$, $T' \cap 
 F^t_{\leq \tau}$ is not overrequested.
-\item If $F^t$ is positive, then for any subtree $T'\cap F^t_{\leq \tau}$ is not 
+\item If $F^t$ is positive, then for any subtree $T'$ of $X^t$, $T'\cap F^t_{\leq \tau}$ is not 
 overrequested.
 \end{itemize}
 \label{thm:not_over_requested}
 \end{lemma}
 \begin{proof}
-We prove the property for negative fields only. The proof for positive fields
-is similar. From \ref{thm:lemma1}, because $T' \cap  F^t_{\leq \tau}$ is a valid 
+We start with the proof of the property for negative fields. 
+From \ref{thm:lemma1}, because $T' \cap  F^t_{\leq \tau}$ is a valid 
 changeset at $\tau$, we get $req(T' \cap  F^t_{\leq \tau}) = bank_{\tau}(T' 
-\cap F^t_{\leq \tau}) \leq |D \cap F^t_{\leq \tau}| \cdot \alpha$.
+\cap F^t_{\leq \tau}) \leq |T' \cap F^t_{\leq \tau}| \cdot \alpha$. For the positive
+field we have similar observation, that for any subtree $T'$ of the positive field
+$T'\cap F^t_{\leq \tau}$ is a valid positive changeset, thus we apply again
+\ref{thm:lemma1} obtaining desired result.
 \end{proof}
 
 Above lemma provide us a helpful attribute of the fields. Instinctively, for positive 
@@ -345,6 +357,7 @@ T'| \cdot \alpha$.
 \end{corollary}
 
 \myparagraph{Up-shifting of negative requests}
+
 With procedure of shifting up negative requests, we can obtain an even 
 distribution of requests across nodes in changeset, that  correspond to 
 a negative field.
@@ -407,6 +420,7 @@ manner through the field, shifting requests from 'overrequested' nodes on the
 way, leads to an even distribution of the requests - we leave $\alpha$ requests 
 in every node. That completes the proof.   
 \myparagraph{Down-shifting of positive requests}
+
 Unfortunately, we can not obtain such perfectly even distribution of requests,
  when using legal shifts in positive fields, as in the case of negative fields. 
 Specifically, we cannot shift legally positive requests down in such a way, that
@@ -430,12 +444,12 @@ The picture corresponding to this example can be found at Figure
 Notice that when first $(s+1) \cdot \alpha - l$ request to $r$ appear, they can 
 only be shifted to $T_1$ nodes. After that root of $T_1$ is given requests, 
 which can not be moved to $T_2$. Recall, we are unable to do shift positive 
-requests up. Such movement would be illegal, Therefore only $l$ last requests 
+requests up. Such movement would be illegal, therefore only $l$ last requests 
 can be moved to $T_2$. Hence we managed to fill only half of the tree nodes 
 with =$\Omega(\alpha)$ requests.   
 
 Convinced, that shifting positive request down is not so easy, our goal is to 
-prove, that we can at least get, by legal shifting within field $F^t$, 
+prove that we can at least get, by legal shifting within field $F^t$, 
 $\Omega(\frac{|F^t|}{h(T)})$ nodes having $\frac{\alpha}{2}$ 
 requests or more. To do that first we argue, that from any node $v$ in the 
 positive field $F^t$ we can move down fraction of its requests so they stay 
@@ -448,7 +462,7 @@ the inequality $t_v > last_u(t)$.
 \begin{lemma}
 Fix $F^t$ positive field with corresponding $X_t$ and $v \in X_t$ that has 
 been requested at least $c_v \cdot (\frac{\alpha}{2})$ times for some positive 
-natural number $c_v$. There exists legal shifting of $\lceil \frac{c_v}{2} 
+integer $c_v$. There exists legal shifting of $\lceil \frac{c_v}{2} 
 \rceil \cdot (\frac{\alpha}{2})$ requests to nodes 
 $T(v) \cap X^t$ chosen from requests sent to $v$. Furthermore, at least $\lceil 
 \frac{c_v}{2} \rceil$ of these nodes are given $\frac{\alpha}{2}$ requests. All 
@@ -553,7 +567,7 @@ $|D| \cdot \alpha$ requests during phase the $P$.
 \label{thm:lots_of_req_in_tc_end_of_p}
 \end{lemma}
 \begin{proof}
-Let $X_1, X_2, \ldots, X_m$ be all positive chengesets from phase the $P$. 
+Let $X_1, X_2, \ldots, X_m$ be all positive changesets from phase the $P$. 
 We perform separation on them, defining 
 $X'_i = X_i \setminus \bigcup_{j=1}^{i-1} X_j$. Note 
 that $X'_i$ is a tree cap of $X_i$. The sequence $X'_1, X'_2, \ldots, X'_m$ is 
@@ -569,6 +583,7 @@ all $j$, what proves the lemma.
 \end{proof}
 
 \myparagraph{Lower bound for OPT}
+
 Throughout this paragraph we use a notation of $V_{\mathrm{OPT}}$. It will be 
 the set of nodes, that appeared in \textbf{OPT's} cache during the phase. 
 $V_{\mathrm{OPT}}^C$ will 
@@ -657,6 +672,7 @@ $(\frac{cnt_{\mathrm{OUT}}}{2h(T)} - k_P) \cdot \frac{\alpha}{2} \geq
 \end{proof}
 
 \myparagraph{Upper bound for open fields}
+
 To prove the competitiveness of \textbf{TRC} we have to deal with the open 
 fields. Lemma below solves this problem.
 \begin{lemma}
@@ -713,18 +729,21 @@ Therefore, $req(F^{\infty}_{+} \cap V_{\mathrm{OPT}}) \leq |X^{V}_{+}| \cdot
 + cost_{\mathrm{OPT}}(P)$.
 
 Now we can combine the inequalities discussed above and finalize the proof.
-\begin{multline*}
-req(F^{\infty}) = req(F^{\infty}_{-}) + 
+\begin{equation*}
+\begin{split}
+req(F^{\infty}) & = req(F^{\infty}_{-}) + 
 req(F^{\infty}_{+} \cap V_{\mathrm{OPT}}) + req(F^{\infty}_{+} \cap 
 V_{\mathrm{OPT}}^c) \\
-\leq (k_{\mathrm{ONL}} \cdot \alpha) + (k_{\mathrm{OPT}} \cdot \alpha 
+& \leq (k_{\mathrm{ONL}} \cdot \alpha) + (k_{\mathrm{OPT}} \cdot \alpha 
 + cost_{\mathrm{OPT}}(P)) + (cost_{\mathrm{OPT}}(P)) \\ 
-= (k_{\mathrm{ONL}} + 
+& = (k_{\mathrm{ONL}} + 
 k_{\mathrm{OPT}}) \cdot \alpha + 2 \cdot 
 cost_{\mathrm{OPT}}(P)
-\end{multline*}
+\end{split}
+\end{equation*}
 \end{proof}
 \myparagraph{Main result}
+
 Now we are ready to state and prove the main result.
 \begin{theorem}
 Algorithm \textbf{TRC} is $O(\frac{h(T) \cdot k_{\mathrm{ONL}}}{k_{\mathrm{ONL}} 
@@ -750,7 +769,7 @@ cost_{\mathrm{OPT}}(P))$. Therefore, $2 \cdot \alpha \cdot |\mathcal{F}| +
 req(F^{\infty}) = O(h(T)) \cdot (k_P \cdot \alpha + cost_{\mathrm{OPT}}(P))$.
 \end{proof}
 
-\myparagraph{Lower bound for competitive ratio}
+\subsection{Lower bound for competitive ratio}
 We will now show, that the competitive ratio, which is the result of the Theorem 
 \ref{thm:main_theorem} is optimal up to factor $O(h(T))$. We prove this 
 statement by justifying, that any online algorithm has to be at least 
@@ -762,11 +781,10 @@ online algorithm for the tree caching problem is at least $\Omega
 \end{theorem}
 \begin{proof}
 To prove this theorem we will use the Theorem 5 from publication \cite{tarjan}. The 
-result from this article stays, that any online algorithm solving the standard paging problem 
+result from this article states that any online algorithm solving the standard paging problem 
 (move from slow memory to fast memory costs $1$ and there is no bypassing) is 
 at least $\Omega(\frac{k_{\mathrm{ONL}}}{k_{\mathrm{ONL}}- k_{\mathrm{OPT}} + 
-1})$-competitive. The cache sizes' designation is defined the same as for the tree caching 
-problem. What is sufficient to do is to construct a bijective mapping from any 
+1})$-competitive. What is sufficient to do is to construct a bijective mapping from any 
 online algorithm for paging problem to an online algorithm forthe tree caching problem and 
 mapping from any input for the paging problem to an input for the tree caching 
 problem. We can loose only constant factor on the cost, when performing both 

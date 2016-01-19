@@ -10,35 +10,36 @@ whole.
 We shall remind ourselves about basic concepts of online algorithms theory. 
 Let $\sigma = \sigma(1), \sigma(2), \ldots, \sigma(n)$ be a sequence of 
 requests. An \textit{online algorithm} $A$ has to process requests one by one, 
-\textit{online} without any knowledge of the future requests. Formally, when 
+without any knowledge of the future requests. Formally, when 
 serving request 
 $\sigma(t), 1 \leq t \leq n,$ the algorithm does not know any request 
 $\sigma(t')$ for $t'>t$. Handling any request incurs $cost$ whose value is 
 depends on request and algorithm state. The goal is to minimize the overall 
 $cost$.
 
-Publication written by Sleator and Tarjan proposes 
+Publication written by Sleator and Tarjan \cite{tarjan} proposes 
 \textit{competitive analysis} as a way to evaluate performance of online 
 algorithms. In this approach we compare \csigma{A}, cost of online algorithm 
 $A$ on input $\sigma$, with \csigma{OPT} of optimal offline algorithm, 
-which knows all the input sequence beforehand. We call algorithm $r-competitive$ 
-if there exists constant $c$, such that
+which knows all the input sequence beforehand. We call algorithm 
+\textit{r-competitive} if there exists constant $c$, such that
 $$C_{\mathrm{A}}(\sigma) \leq r \times C_{\mathrm{OPT}}(\sigma) + c$$
-for any request sequence $\sigma$. We call $r$ a \textit{competitive ratio}. 
-The goal is therefore to minimize $r$.
+for any request sequence $\sigma$. We say that $r$ a \textit{competitive ratio}
+of an algorithm if it is a minimal value, such that the algorithm is 
+\textit{r-competitive}. The goal is therefore to minimize $r$.
 
 \subsection{Caching and model variants}
 Caching problem can be described as follows. We are given two types of memory: 
 fast memory which has size $k$ and slow memory (secondary storage) with size $N 
 \gg k$. We can 
 assume that number of request $n$ fulfills $N \geq n \gg k$. When getting a 
-request $\sigma_{it}$ to an item $it$ that is already in cache we serve it 
+request $\sigma_{e}$ to an item $e$ that is already in cache we serve it 
 without any cost (or at the cost $c \ll 1$). 
-Otherwise, we have to retrieve $it$ from the slower memory and pay 
-$1$. Sometimes we require, whenever $it$ is not in the cache, before 
-serving $\sigma_{it}$ we have to place $it$ in cache, therefore to have enough 
+Otherwise, we have to retrieve $e$ from the slower memory and pay 
+$1$. Sometimes we require, whenever $e$ is not in the cache, before 
+serving $\sigma_{e}$ we have to place $e$ in cache, therefore to have enough 
 free space in fast memory to move it there. If there is no such requirement 
-(and $\sigma_{it}$ can 'omit' moving into cache) we say that model is 
+(and $\sigma_{e}$ can 'omit' moving into cache) we say that model is 
 \textit{with bypassing}. Usually omitting cache is very expensive. After serving 
 request the algorithm can change its cache by evicting and fetching elements 
 from secondary storage. Some cost is assigned to these operations, too.
@@ -48,15 +49,15 @@ on some other elements. Specifically, they depend on its descendant in a
 way, that when we decide to fetch $v$ we have to fetch all nodes from $T(v)$ 
 that are not already in cache.
 
-There is another generalization of caching problem that we consider. It is 
-called $(k_{\mathrm{ONL}}, k_{\mathrm{OPT}})$\textit{-paging generalization}. 
-It gives online and 
-optimal offline algorithm different resources: online cache has size $k_{ONL}$, 
-while optimal offline cache has size $k_{\mathrm{OPT}} \leq k_{\mathrm{ONL}}$. 
-It might seems 
+There is another generalization of caching problem that we mostly focus on in 
+this thesis. It is called 
+$(k_{\mathrm{ONL}}, k_{\mathrm{OPT}})$\textit{-paging generalization}. It gives 
+online and optimal offline algorithm different resources: online cache has size 
+$\kind{ONL}$, while optimal offline cache has size 
+$k_{\mathrm{OPT}} \leq k_{\mathrm{ONL}}$. It might seem 
 unfair to give the optimal solution less space, but sometimes it can give us 
 some information how resources can influence the performance. (Remember 
-that offline algorithm has much more power: it knows all the future). 
+that offline algorithm has much more power: it knows all the future).
 
 \subsection{Deterministic algorithms}
 We remind well-known algorithms that solve caching problem without bypassing, 
@@ -134,30 +135,31 @@ In any marking algorithm, during a phase, we mark a page when it is first
 requested in the phase. Finally, marking algorithm that 
 never evicts marked page during a phase. Now we will show theorem 
 characterizing this class of marking algorithms.
-\begin{theorem}
-For any marking algorithm $A_{\mathrm{mark}}$ with cache of size $k$, if $OPT$ 
-cache 
-size is $h \leq k$, $A_{\mathrm{mark}}$ is $O(\frac{k}{k-h+1})$-competitive.
+\begin{theorem}\cite{torng}
+For any marking algorithm $A_{\mathrm{mark}}$ with cache of size 
+$\kind{ONL}$, if $OPT$ 
+cache size is $\kind{OPT} \leq \kind{ONL}$, $A_{\mathrm{mark}}$ is 
+$O(\frac{\kind{OPT}}{\kind{ONL}-\kind{OPT}+1})$-competitive.
 \end{theorem}
 \begin{proof}
-Fix any input sequence $\sigma$ and divide it into $k$-phases as described 
-above. $A_{\mathrm{mark}}$ on any such phase pays at most $k$ (because there is 
+Fix any input sequence $\sigma$ and divide it into $\kind{ONL}$-phases as described 
+above. $A_{\mathrm{mark}}$ on any such phase pays at most $\kind{ONL}$ (because there is 
 at most 
-$k$ distinct requests in one phase). To bound the $OPT$ cost we will bound it with 
+$\kind{ONL}$ distinct requests in one phase). To bound the $OPT$ cost we will bound it with 
 respect to \textit{shifted phases}. Shifted phase $i$ consists 
 of first element of phase $i+1$ (call it $f_{i+1}$) and all requests from phase 
 $i$th except the first one (call it $f_i$). Figure 
-~\ref{fig:PhaseDeterministic} shows phases and shifted phases for $k=3$. See 
+~\ref{fig:PhaseDeterministic} shows phases and shifted phases for $\kind{ONL}=3$. See 
 that to obtain shifted phase window we moved phase window by one element. At 
 the beginning of $i$ shifted phase $OPT$ has to have $f_i$ in it's cache. 
-Therefore it can have at most $h-1$ distinct elements from shifted phase $i$. 
-Shifted phase has at least $k$ distinct elements therefore $OPT$ has at least 
-$k-h+1$ page faults during shifted phase (there can be at most two shifted 
+Therefore it can have at most $\kind{OPT}-1$ distinct elements from shifted phase $i$. 
+Shifted phase has at least $\kind{ONL}$ distinct elements therefore $OPT$ has at least 
+$\kind{ONL}-\kind{OPT}+1$ page faults during shifted phase (there can be at most two shifted 
 phases that do not have this property, we omit them, cause the cost can be put 
 into the constant when comparing costs).
 Summing up costs for $A_{\mathrm{mark}}$ by phases and $OPT$ by shifted phases 
 we get:
-$$ A_{\mathrm{mark}}(\sigma) \leq \frac{k}{k-h+1} \cdot OPT(\sigma) + const,$$
+$$ A_{\mathrm{mark}}(\sigma) \leq \frac{\kind{ONL}}{\kind{ONL}-\kind{OPT}+1} \cdot OPT(\sigma) + const,$$
 where we put all the cost obtained at requests not covered by phases (or 
 shifted phases).
 \end{proof}
@@ -167,11 +169,11 @@ marking algorithms.
  \textbf{FWF} and \textbf{LRU} are marking algorithms.
 \end{propo}
 \begin{proof}
- We fix request sequence $\sigma$ and consider its $k$-phase division 
-(where $k$ is cache size).
+ We fix request sequence $\sigma$ and consider its $\kind{ONL}$-phase division 
+(where $\kind{ONL}$ is cache size of any of the two online algorithms).
 
 First, see that \textbf{FWF} is marking algorithm. At the start of each phase 
-it's cache is empty and it does not evict any pages during whole phase, 
+its cache is empty and it does not evict any pages during whole phase, 
 therefore it certainly does not evict any marked page.
 
 Now suppose that \textbf{LRU} is not marking algorithm. Then there exists a 
@@ -180,11 +182,11 @@ the phase ends. Assume that both $p$ and $x$ are first such phase and element.
 Consider the moment when $x$ is marked (first time it was requested in $p$). 
 For that time it is the most recently requested element. For the \textbf{LRU} to 
 evict $x$, it has to be 'the oldest' element in cache, therefore there must be 
-$k$ elements distinct from $x$ requested. The eviction takes place 
+$\kind{ONL}$ elements distinct from $x$ requested. The eviction takes place 
 during $p$ so, it must contain 
-at least $k+1$ distinct elements which contradicts with $k$-phase definition. 
+at least $\kind{ONL}+1$ distinct elements which contradicts with $\kind{ONL}$-phase definition. 
 \end{proof}
-This gives us that both algorithms are $O(\frac{k}{k-h+1})$-competitive. Not 
+This gives us that both algorithms are $O(\frac{\kind{ONL}}{\kind{ONL}-\kind{OPT}+1})$-competitive. Not 
 only marking algorithms obtain this ratio. One example of such algorithm is 
 \textbf{First-in First-out} (FIFO), which evicts a page that was in cache for 
 the longest time.
@@ -241,7 +243,8 @@ algorithms the adversary can be given less or more power. Does he have to
 provide all the sequence explicitly or can it generate it in on-line fashion? 
 Does he knows the algorithm and randomization used by it? Having this questions 
 in mind we define different adversaries when dealing with randomized 
-algorithms. Usually we recognize three types of adversaries:
+algorithms. Usually we recognize three types of adversaries
+(see also ~\ref{bbktw}):
 \begin{itemize}
 \item \textbf{Oblivious Adversary:} The adversary has to show all the request 
 sequence before any of them is processed my online algorithm, which is known to 
@@ -322,7 +325,7 @@ each of $k$ entries in cache.
 \end{algorithmic}
 \end{algorithm}
 \begin{theorem}
- Algorithm \textbf{MARK} is $2 \cdot H_k$-competitive against oblivious 
+\cite{markcom} Algorithm \textbf{MARK} is $2 \cdot H_k$-competitive against oblivious 
 adversary.
 \end{theorem}
 \begin{proof}
@@ -343,7 +346,7 @@ We can see that old pages are somehow beneficial for \textbf{MARK}. If it keeps
 an old page sufficiently long (up to the moment when it is first time requested 
 in phase $i$), it does not pay for this page through whole phase. Seeing that 
 leads us to conclusion that the worst case is when all the new 
-$m_i$ elements are requested, then th old pages, so the probability of an old 
+$m_i$ elements are requested, then the old pages, so the probability of an old 
 page being still in cache is smallest possible. More specifically the 
 probability that the $jth$ old page (their order is the order of first 
 occurrence 
