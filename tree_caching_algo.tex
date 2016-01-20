@@ -277,16 +277,14 @@ will do is
 we will change phase $P$ to $P'$, which is not harder for \textbf{OPT} (in the sense
 of cost), but will be closer to even distribution of requests. It will give us then 
 ability to lower bound the cost of \textbf{OPT}.
-\begin{wrapfigure}{l}{0.5\textwidth}
-\vspace{-20pt}
+\begin{figure}
  \begin{center}
-  \includegraphics[width=0.5\textwidth]{density_pic.png}
+  \includegraphics[width=0.8\textwidth]{density_pic.png}
 \end{center}
 \caption{This picture shows the average density of request in fields. The 
 darker colour the more request is in average in that part of changeset.}
-\vspace{-10pt}
 \label{fig:density}
-\end{wrapfigure}
+\end{figure}
 
 To achieve such $P'$, we will change $P$ by application of \textit{legal shifts}. 
 We say, that requests placed in slot $(v, t)$ can be legally shifted to slot $(m(v), t)$,
@@ -402,15 +400,13 @@ node. After shift $req(F^t \cap Y) = req(F^t \cap D) + \alpha$, and if
 $req(F^t \cap D) > |D| \cdot \alpha$, then $D \cup v_l$ would be overrequested, 
 contradicting the fact, that $Y$ is proper before change.
 \end{proof}
-\begin{wrapfigure}{r}{0.5\textwidth}
-\vspace{-20pt}
+\begin{figure}
  \begin{center}
-  \includegraphics[width=0.5\textwidth]{example_not_even.png}
+  \includegraphics[width=0.8\textwidth]{example_not_even.png}
 \end{center}
 \caption{Numbers indicate chronology of events.}
-\vspace{-20pt}
 \label{fig:example_not_even}
-\end{wrapfigure}
+\end{figure}
 
 Now above lemma, used as induction step, proves Theorem 
 \ref{thm:legal_shifting_up}. To find out about it, recall the Corollary 
