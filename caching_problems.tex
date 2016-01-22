@@ -24,7 +24,7 @@ $A$ on input $\sigma$, to \csigma{OPT}, the cost of the optimal offline algorith
 which knows all the input sequence beforehand. We call an algorithm 
 \textit{r-competitive} if there exists a constant $c$ such that
 $$C_{\mathrm{A}}(\sigma) \leq r \times C_{\mathrm{OPT}}(\sigma) + c$$
-for any request sequence $\sigma$. We say that $r$ a \textit{competitive ratio}
+for any request sequence $\sigma$. We say that $r$ is a \textit{competitive ratio}
 of an algorithm if it is a minimal value, such that the algorithm is 
 \textit{r-competitive}. The goal is therefore to minimize $r$.
 
@@ -46,7 +46,7 @@ from secondary storage. Some cost is assigned to these operations, as well.
 
 In the tree caching problem that we study, a requested element $v$ can depend 
 on some other elements. Specifically, it depends on its descendants such that 
-when we decide to fetch $v$ we have to fetch all nodes from $T(v)$ 
+when we decide to fetch $v$ we have to fetch all nodes from $T(v)$ (maximal subtree of $T$ rooted in $v$ with respect to set inclusion)
 that are not already in the cache.
 
 There is another generalization of the caching problem that we mostly focus on in 
@@ -56,19 +56,19 @@ the online and optimal offline algorithms different resources: the online cache 
 size $\kind{ONL}$, while the optimal offline cache has size 
 $k_{\mathrm{OPT}} \leq k_{\mathrm{ONL}}$. It might seem 
 unfair to give the optimal solution less space, but sometimes it can give us 
-some information about how resources can influence the performance. (Remember 
-that the offline algorithm has much more power as it knows all the future).
+some information about how resources can influence the performance. Remember 
+that the offline algorithm has much more power as it knows all the future.
 
 \subsection{Deterministic algorithms}
 We review well-known algorithms that solve the caching problem without bypassing, 
 where every requested item has to be placed in the cache and any reference to 
-slow memory has unit cost 1.
+the slow memory has unit cost 1.
 \subsubsection{Longest Forward Distance (LFD) - offline optimal solution}
-Consider following \textit{lazy} (evicts a page if and only if it has no space  
-offline algorithm): 
+Consider following \textit{lazy} (evicts a page if and only if it has no space for a new one) 
+offline algorithm: 
 \begin{myalgo}
 Whenever there is a cache miss (an item requested is not 
-present in fast memory), evict the element whose next request is latest among other 
+present in fast memory), evict the element whose next request is the latest among other 
 cached elements.
 \end{myalgo}
 
@@ -126,15 +126,15 @@ We divide the input sequence $\sigma$ into $k$\textit{-phases} dependent on valu
 (cache size). We define the $i$th phase as a maximal input sequence, following 
 phase $i-1$ such that it contains at most $k$ different items requested. So, 
 excluding the last phase, each phase ends when the next request $r$ would 
-increase the number of distinct pages in phase to $k+1$. A useful observation is 
+increase the number of distinct pages in the phase to $k+1$. A useful observation is 
 that $r$ has to be \textit{new}, meaning it is different then any item requested 
 in phase $i$.
 \input{phase_deterministic_pic}
 
 In any marking algorithm, during a phase, we mark a page when it is first 
-requested in the phase. Finally, a marking algorithm
-never evicts a page marked during a phase. Now we will show a theorem 
-characterizing this class of marking algorithms.
+requested in the phase. Finally, in the phase time a marking algorithm
+never evicts a page, that was marked during the phase. Now we will show a theorem 
+characterizing the class of marking algorithms.
 \begin{theorem}\cite{torng}
 For any marking algorithm $A_{\mathrm{mark}}$ with cache of size 
 $\kind{ONL}$, if $OPT$ 
@@ -148,22 +148,22 @@ at most
 $\kind{ONL}$ distinct requests in one phase). To bound the $OPT$ cost, we will bound it with 
 respect to \textit{shifted phases}. A shifted phase $i$ consists 
 of the first element of phase $i+1$ (call it $f_{i+1}$) and all requests from phase 
-$i$th except the first (call it $f_i$). Figure 
-~\ref{fig:PhaseDeterministic} shows the phases and shifted phases for $\kind{ONL}=3$. Observe 
+$i$th except the first one (call it $f_i$). Figure 
+~\ref{fig:PhaseDeterministic} shows the phases and shifted phases for $\kind{ONL}=3$. Observe, 
 that to obtain the shifted phase window we moved the phase window by one element. At 
-the beginning of $i$ shifted phase $OPT$ has to have $f_i$ in its cache. 
-Therefore, it can have at most $\kind{OPT}-1$ distinct elements from shifted phase $i$. 
+the beginning of $i$-th shifted phase $OPT$ has to have $f_i$ in its cache. 
+Therefore, it can have at most $\kind{OPT}-1$ distinct elements, that are different then $f_i$ before shifted phase $i$ starts. 
 A shifted phase has at least $\kind{ONL}$ distinct elements therefore $OPT$ has at least 
 $\kind{ONL}-\kind{OPT}+1$ page faults during the shifted phase (there can be at most two shifted 
-phases that do not have this property, and we omit them because the cost can be put 
+phases at the end, that do not have this property, and we omit them because the cost can be put 
 into the constant when comparing costs).
 Summing up costs for $A_{\mathrm{mark}}$ by phases and $OPT$ by shifted phases 
 we get:
 $$ A_{\mathrm{mark}}(\sigma) \leq \frac{\kind{ONL}}{\kind{ONL}-\kind{OPT}+1} \cdot OPT(\sigma) + const,$$
-where we put all the costs obtained from requests not covered by phases (or 
-shifted phases).
+where we put to the $const$ value all the costs obtained from requests not covered by phases (or 
+shifted phases). This cost is bounded, since the number of not covered phases and shifted phases is at most 3.
 \end{proof}
-Now we should prove that both \textbf{FWF} and \textbf{LRU} are
+Now we should prove, that both \textbf{FWF} and \textbf{LRU} are
 marking algorithms.
 \begin{propo}
  \textbf{FWF} and \textbf{LRU} are marking algorithms.
@@ -184,11 +184,11 @@ For that time it is the most recently requested element. For the \textbf{LRU} to
 evict $x$, it has to be 'the oldest' element in cache, therefore there must be 
 $\kind{ONL}$ elements distinct from $x$ requested. The eviction takes place 
 during $p$ so, it must contain 
-at least $\kind{ONL}+1$ distinct elements which contradicts with $\kind{ONL}$-phase definition. 
+at least $\kind{ONL}+1$ distinct elements, what contradicts with the $\kind{ONL}$-phase definition. 
 \end{proof}
 This gives us that both algorithms are $O(\frac{\kind{ONL}}{\kind{ONL}-\kind{OPT}+1})$-competitive. Not 
 only marking algorithms obtain this ratio. One example of such algorithm is 
-\textbf{First-in First-out} (FIFO), which evicts a page that was in cache for 
+\textbf{First-in First-out} (FIFO), which evicts a page, that was in cache for 
 the longest time.
 
 \subsubsection{Non competitive algorithms examples}
