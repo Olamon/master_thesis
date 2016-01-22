@@ -86,16 +86,16 @@ sorting=ynt
 \begin{abstract}
 In this thesis we study caching problem for items with dependencies.
 More precisely, the universe of items forms a tree structure $T$, and whenever
-we fetch node $v$ to the cache, we are required to fetch all its descendants
-(subtree $T(v)$ rooted in $v$). This setting is interesting from both practical 
-and theoretical point of view. We can see direct application for improving 
-utilization of the Forwarding Information Base (FIB) in routers which can be 
+we fetch node $v$ to the cache, we are required to fetch all of its descendants
+(subtree $T(v)$ rooted in $v$). This setting is interesting from both a practical 
+and a theoretical point of view. We can see a direct application for improving 
+the utilization of the Forwarding Information Base (FIB) in routers, which can be 
 viewed exactly as a tree where we must not omit the most specific rules. We 
-present deterministic algorithm for Tree Caching (called \textbf{TRC}), which 
+present a deterministic algorithm for Tree Caching (called \textbf{TRC}), which 
 we 
 prove to be $O(\frac{height(T) \cdot k_{ONL}}{k_{ONL} - k_{OPT} + 
 1})$-competitive, 
-where $k_{ONL}$ and $k_{OPT}$ are cache sizes of online and optimal offline 
+where $k_{ONL}$ and $k_{OPT}$ are the cache sizes of the online and the optimal offline 
 algorithm, respectively. 
 \end{abstract}
 
