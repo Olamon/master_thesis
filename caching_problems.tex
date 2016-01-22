@@ -192,7 +192,7 @@ only marking algorithms obtain this ratio. One example of such algorithm is
 the longest time.
 
 \subsubsection{Non competitive algorithms examples}
-In this part we consider two well known strategies that turn out to be not 
+In this part we consider two well known strategies, that turn out to be not 
 competitive at all.
 \begin{myalgo}
  \textbf{Last-in First-out (LIFO)}
@@ -203,104 +203,105 @@ recently.
 \begin{myalgo}
  \textbf{Least Frequently Used (LFU)}
  \newline
-Remove the element that which was least frequently requested since start of its 
+If removal is necassary, remove the element which was least frequently requested since start of its 
 presence in cache.
 \end{myalgo}
 
-To prove that those algorithms are not competitive, we have to show a sequence 
-of requests that potentially occur infinite cost when compared to cost of 
-\textbf{OPT}, which is finite. In cases of both algorithms presented above we 
+To prove, that those algorithms are not competitive, it is sufficient to show a sequence 
+of requests, that potentially occur infinite cost when compared to the cost of 
+\textbf{OPT}, which is finite. In the case of both algorithms presented above we 
 will use only 
-$k+1$ different pages, denoted $p_1, p_2, \ldots, p_{k+1}$ where $k$ is the 
-size of cache.
+$k+1$ different pages, denoted $p_1, p_2, \ldots, p_{k+1}$, where $k$ is the 
+size of the cache.
 
 We start with \textbf{LIFO}. Suppose that at the beginning \textbf{LIFO} holds
 elements $p_1, p_2, \ldots p_k$ in its cache (we can always renumber the 
 elements, so we can 
 assume that). Consider the following sequence of requests:
 $$ \sigma = (p_1, p_2, \ldots, p_k, p_{k+1}, p_k, p_{k+1}, \ldots).$$
-The idea is we request the elements that \textbf{LIFO} just removed from the 
+The idea is, that we request the elements that \textbf{LIFO} just removed from the 
 cache. See that on every request after first $p_{k+1}$ this algorithm pays 1, 
 so the total cost tends to infinity, whereas \textbf{OPT}, keeping $p_k$ 
-and $p_{k+1}$ in its cache gets only one page fault on this subsequence. 
+and $p_{k+1}$ in its cache gets maximal one page fault on this subsequence starting at the first element $p_{k+1}$. 
 This proves the non-competitiveness of \textbf{LIFO}.
 
 In the case of \textbf{LFU}, fix any constant integer $c$ and sequence:
 $$\sigma = (p_1^c, p_2^c, \ldots, p_{k-1}^c, (p_k, p_{k+1})^{c-1}),$$
 where superscript means how many times we repeat the request. We can see that 
 after first $(k-1) \cdot c + 1$ requests \textbf{LFU} will pay for each of the 
-following requests, so it pays $O(c)$ for all the sequence. On the other hand 
+next requests, so it pays $O(c)$ for all the sequence. On the other hand 
 \textbf{OPT} will pay only for one page fault when $p_{k+1}$ occurs for the 
-first time. Since we can fix $c$ to be any value and we can repeat this 
-sequence many times, we can get infinite sequence for which 
-$\frac{cost(LFU)}{cost(OPT)} = c \rightarrow \infty$. 
+first time, keeping both $p_k$ and $p_{k+1}$ in its cahce. Since we can fix $c$ to be any value and we can repeat this 
+sequence many times as well, we can get infinite sequence $\sigma$ for which 
+$\frac{\csigma{LFU}}{\csigma{OPT}} = c \rightarrow \infty$. 
 \textbf{LFU} is then not competitive.
 \subsection{Randomized algorithms (RAND, MARK)}
-When analyzing deterministic algorithms we had only one model of 
+When we analyzed deterministic algorithms we had only one model of 
 \textit{adversary}. His task was to figure out a sequence of requests to 
 maximize the competitive ratio of online algorithms. Looking at randomized 
-algorithms the adversary can be given less or more power. Does he have to 
-provide all the sequence explicitly or can it generate it in on-line fashion? 
-Does he knows the algorithm and randomization used by it? Having this questions 
-in mind we define different adversaries when dealing with randomized 
-algorithms. Usually we recognize three types of adversaries
-(see also ~\ref{bbktw}):
+algorithms the considered adversary can be given less or more power. It means,
+when describing an adversary we should answer few questions: Does he have to 
+provide all the input sequence explicitly or it can generate the sequence in the on-line fashion? 
+Does he know the algorithm and randomization used by the online algorithm? Having this questions 
+in mind, we define different adversaries the randomized algorithm may deal with.
+Usually we recognize three types of adversaries
+(see also \cite{bbktw}):
 \begin{itemize}
 \item \textbf{Oblivious Adversary:} The adversary has to show all the request 
-sequence before any of them is processed my online algorithm, which is known to 
-adversary. The adversary cost is the cost of optimal offline algorithm on that 
-sequence. Notice that this adversary is similar to the one used when analyzing
+sequence before any of them is processed the online algorithm. The online algorithm is known to 
+adversary. The adversary's cost is the cost of optimal offline algorithm on the 
+sequence. Notice, that this adversary is similar to the one used when analyzing
 deterministic algorithms.
 \item \textbf{Adaptive Online Adversary:} This one can observe the online 
 algorithm and generate next request using knowledge about previous (randomized) 
 answers of online algorithm. It has to serve requests online though, without 
-knowing online algorithm action on present and future requests.
-\item \textbf{Adaptive Offline Adversary:} Same as above with the difference in 
-way of charging adversary: it obtains cost equal to optimal offline algorithm 
-on generated sequence.
+knowing online algorithm action on the present and any future requests.
+\item \textbf{Adaptive Offline Adversary:} Same as above despite the 
+way of charging adversary: it obtains cost, that equals the optimal offline algorithm's cost
+on the generated sequence.
 \end{itemize}
 The competitive ratio for randomized algorithm is dependent on the type of 
-adversary we choose. The easiest definition is for oblivious adversary. We say 
-that online algorithm $A$ id $c$-competitive against oblivious adversary if for 
-all sequences $\sigma$ generated by this adversary, we have:
+adversary we choose. The easiest definition is for the oblivious adversary. We say 
+that an online algorithm $A$ is $c$-competitive against the oblivious adversary if for 
+all input sequences $\sigma$ generated by this adversary, we have:
 $$\mathbb{E}[cost_{\mathrm{A}}(\sigma)] \leq c\cdot cost_{\mathrm{OPT}}(\sigma) 
 + const,$$
 where the expected value is taken over the random choices of $A$. For adaptive 
 adversaries on the other hand we say $A$ is $c$-competitive if:
 $$\mathbb{E}[cost_{\mathrm{A}}(\sigma) - c \cdot cost_{\mathrm{ADV}}(\sigma)]
 \leq const.$$
-Here the expected value is still taken over the choices of $A$. The difference 
-is that the $cost_{\mathrm{ADV}}$ is random variable dependent on randomization 
+Here the expected value is still taken over the random choices of $A$. The difference 
+is that the $cost_{\mathrm{ADV}}$ is random variable as well and depends on randomization 
 of $A$. 
 In case of adaptive offline adversary at least we know that 
 $cost_{\mathrm{ADV}}(\sigma)$ and $cost_{\mathrm{OPT}}(\sigma)$ has the same 
 distribution, whereas for online 
-adaptive adversary so simple nature of its cost random variable is not known.
+adaptive adversary such simple nature of the cost's random variable is not known.
 
-It turns out that randomization can't give an improvement on competitive 
-ration in the case of adaptive offline adversary. The following theorem was 
+It turns out, that randomization can't give an improvement on competitive 
+ratio in the case of adaptive offline adversary. The following theorem was 
 presented in \cite{power}:
 \begin{theorem}
 If there is a $c$-competitive algorithm against adaptive offline adversary then 
 there exists a $c$-competitive deterministic online algorithm. 
 \end{theorem}
 The relation between adversaries is captured in the same paper and presented in 
-theorem above.
+theorem below.
 \begin{theorem}
 Suppose $A$ is $c$-competitive randomized algorithm against any adaptive online 
 adversary and additionally there exists $d$-competitive algorithm against any 
 oblivious adversary then $A$ is $c \cdot d$-competitive against adaptive 
 offline adversary.
 \end{theorem}
-Usually we say the oblivious adversary 'weak', adaptive online 'medium' and 
+Usually we call the oblivious adversary 'weak', adaptive online 'medium' and 
 adaptive offline: 'strong'. This informal names are consistent with intuition: 
 oblivious adversary is the easiest to compete with, whereas adaptive offline is 
-the hardest being the most powerful one.
+the hardest, as it is the most powerful one.
 
-Now we present a randomized algorithm \textbf{MARK} which turns out to be 
-$2 \cdot H_k$-competitive against oblivious adversary. $H_k$ is the called $k$
+Now we present a randomized algorithm \textbf{MARK}, which turns out to be 
+$2 \cdot H_k$-competitive against the oblivious adversary. $H_k$ is the called $k$
 \textit{th harmonic number} and is defined as $H_k = \sum^k_{i=1} \frac{1}{i}$. 
-This series has a really nice property that $\ln k < H_k \leq \ln k + 1$. 
+This series has a really nice property, that $\ln k < H_k \leq \ln k + 1$. 
 Algorithm \textbf{MARK} is a marking algorithm so it has a bit associated with 
 each of $k$ entries in cache.
 
@@ -325,7 +326,7 @@ each of $k$ entries in cache.
 \end{algorithmic}
 \end{algorithm}
 \begin{theorem}
-\cite{markcom} Algorithm \textbf{MARK} is $2 \cdot H_k$-competitive against oblivious 
+\cite{markcom} Algorithm \textbf{MARK} is $2 \cdot H_k$-competitive against the oblivious 
 adversary.
 \end{theorem}
 \begin{proof}
@@ -336,39 +337,38 @@ cache can be done with constant cost not influencing the competitive ratio).
 
 Consider the $i$th phase. We call \textbf{old pages} all the elements requested 
 in 
-phase $i$th that were requested in phase $i-1$. All the other pages requested 
-in phase $i$ are \textit{new}. For the first phase, all the pages are new. We 
-denote the number of new pages for phase $i$ by $m_i$. The picture of above 
-definition can be found in Figure \ref{fig:PhasesRandomized}.
+phase $i$th, that were also requested in phase $i-1$. All the other pages requested 
+in phase $i$ are called \textit{new}. For the first phase, all the pages are new. We 
+denote the number of new pages for the phase $i$ by $m_i$. The picture of the 
+definitions can be found at Figure \ref{fig:PhasesRandomized}.
 \input{phase_randomized_pic}
 
 We can see that old pages are somehow beneficial for \textbf{MARK}. If it keeps 
-an old page sufficiently long (up to the moment when it is first time requested 
-in phase $i$), it does not pay for this page through whole phase. Seeing that 
-leads us to conclusion that the worst case is when all the new 
-$m_i$ elements are requested, then the old pages, so the probability of an old 
-page being still in cache is smallest possible. More specifically the 
-probability that the $jth$ old page (their order is the order of first 
-occurrence 
-in phase) is still in cache when requested can be bounded from below by 
-$\frac{k-m_i-(j-1)}{k-(j-1)}$ since $k-m_i-(j-1)$ is the number of old pages in 
-the cache that are unmarked and  $k-(j-1)$ is the number of unmarked old pages 
-up to the time $j$th page is requested for the first time. This gives us that 
-the probability of page fault on that request is equal to $1 - 
+an old page sufficiently long (up to the moment when it is requested 
+in phase $i$ for the first time), it does not pay for this page throughout the whole phase. Seeing that 
+leads us to conclusion, that the worst case is when all the new 
+$m_i$ elements are requested first, then the old pages, so the probability of an old 
+page being still in the cache is the smallest possible. More specifically, the 
+probability that the $jth$ old page (they are ordered by their first 
+occurrence in the phase) is still in the cache when it is requested can be bounded from below by 
+$\frac{k-m_i-(j-1)}{k-(j-1)}$, since $k-m_i-(j-1)$ is the smallest possible number of the old pages in 
+the cache that are unmarked and  $k-(j-1)$ is the biggest possible number of the unmarked pages 
+up to the time the $j$th old page is requested for the first time. This gives us that 
+the probability of the page fault on that request is equal to $1 - 
 \frac{k-m_i-(j-1)}{k-(j-1)} = \frac{m_i}{k-(j-1)}$, so the expected number of 
-page faults in whole phase is (recall that we pay $1$ for every new page):
+page faults in the whole phase equals (recall that we pay $1$ for every new page):
 $$ m_i + \sum_{j=1}^{k - m_i}\frac{m_i}{k-(j-1)} = m_i\cdot(1+H_k-H_{m_i}) \leq 
 m_i \cdot H_k.$$
 
 Now we have to lower bound the cost of \textbf{OPT}. Consider two consecutive 
-phases $i-1$ and $i$. There are $k + m_i$ distinct pages requested in that two 
-phases. Since \textbf{OPT} cache size is $k$, there are at least $m_i$ faults. 
+phases $i-1$ and $i$. There are $k + m_i$ distinct pages requested during these two 
+phases. Since \textbf{OPT} cache size is $k$, there are at least $m_i$ page faults. 
 During the first phase \textbf{OPT} has at least $m_1$ faults. Summing up the 
-number of faults in 
-the pairs of phases $(i-1, i)$ we get $\sum m_i$ page faults. Since each phase 
-is counted at most twice 
+number of faults for all
+the pairs of phases $(i-1, i)$ we get, that \textbf{OPT} has at least $\sum m_i$ page faults. Since each phase 
+is counted at most twice in this sum
 (except first one, which is counted once), the lower bound for 
-\textbf{OPT} cost is $\frac{1}{2} \cdot \sum m_i$. As we know \textbf{MARK's} 
-number of page faults, taking sum from every phase, is at most $H_k \cdot \sum 
-m_i$ which proves the theorem. 
+\textbf{OPT} cost is $\frac{1}{2} \cdot \sum m_i$. As we know, \textbf{MARK's} 
+number of page faults, when we take sum over the phases, is at most $H_k \cdot \sum 
+m_i$, what proves the theorem.
 \end{proof}
