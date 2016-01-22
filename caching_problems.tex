@@ -1,10 +1,10 @@
 \section{Caching problems}
 \label{caching_problems}
-In this section we make an overview of caching problems. The basic paging 
+In this section, we present an overview of caching problems. The basic paging 
 problem setting is well studied from the competitive analysis perspective. 
 Both deterministic and randomized optimal solutions are already known. We focus 
-on deterministic algorithms, although we give a sketch of randomized solutions 
-because of their popularity and importance in the online algorithm theory as a 
+here on deterministic algorithms, although we give a sketch of randomized solutions 
+because of their popularity and importance in online algorithm theory as a 
 whole. 
 \subsection{Basic definitions}
 We shall remind ourselves about basic concepts of online algorithms theory. 
@@ -14,92 +14,92 @@ without any knowledge of the future requests. Formally, when
 serving request 
 $\sigma(t), 1 \leq t \leq n,$ the algorithm does not know any request 
 $\sigma(t')$ for $t'>t$. Handling any request incurs $cost$ whose value is 
-depends on request and algorithm state. The goal is to minimize the overall 
+depends on the request and algorithm state. The goal is to minimize the overall 
 $cost$.
 
-Publication written by Sleator and Tarjan \cite{tarjan} proposes 
-\textit{competitive analysis} as a way to evaluate performance of online 
-algorithms. In this approach we compare \csigma{A}, cost of online algorithm 
-$A$ on input $\sigma$, with \csigma{OPT} of optimal offline algorithm, 
-which knows all the input sequence beforehand. We call algorithm 
-\textit{r-competitive} if there exists constant $c$, such that
+Sleator and Tarjan \cite{tarjan} propose
+\textit{competitive analysis} as a way to evaluate the performance of online 
+algorithms. In this approach, we compare \csigma{A}, the cost of online algorithm 
+$A$ on input $\sigma$, to \csigma{OPT}, the cost of the optimal offline algorithm, 
+which knows all the input sequence beforehand. We call an algorithm 
+\textit{r-competitive} if there exists a constant $c$ such that
 $$C_{\mathrm{A}}(\sigma) \leq r \times C_{\mathrm{OPT}}(\sigma) + c$$
 for any request sequence $\sigma$. We say that $r$ a \textit{competitive ratio}
 of an algorithm if it is a minimal value, such that the algorithm is 
 \textit{r-competitive}. The goal is therefore to minimize $r$.
 
 \subsection{Caching and model variants}
-Caching problem can be described as follows. We are given two types of memory: 
-fast memory which has size $k$ and slow memory (secondary storage) with size $N 
+The caching problem can be described as follows. We are given two types of memory: 
+fast memory, which has size $k$, and slow memory (secondary storage) with size $N 
 \gg k$. We can 
-assume that number of request $n$ fulfills $N \geq n \gg k$. When getting a 
-request $\sigma_{e}$ to an item $e$ that is already in cache we serve it 
+assume that the number of requests $n$ fulfills $N \geq n \gg k$. When getting a 
+request $\sigma_{e}$ for an item $e$ that is already in the cache, we serve it 
 without any cost (or at the cost $c \ll 1$). 
-Otherwise, we have to retrieve $e$ from the slower memory and pay 
-$1$. Sometimes we require, whenever $e$ is not in the cache, before 
-serving $\sigma_{e}$ we have to place $e$ in cache, therefore to have enough 
-free space in fast memory to move it there. If there is no such requirement 
-(and $\sigma_{e}$ can 'omit' moving into cache) we say that model is 
-\textit{with bypassing}. Usually omitting cache is very expensive. After serving 
-request the algorithm can change its cache by evicting and fetching elements 
-from secondary storage. Some cost is assigned to these operations, too.
+Otherwise, we have to retrieve $e$ from the slow memory and pay 
+$1$. Sometimes, whenever $e$ is not in the cache, we require that before 
+serving $\sigma_{e}$, we must place $e$ in the cache, and therefore must have 
+enough free space in fast memory to move it there. If there is no such requirement 
+(and $\sigma_{e}$ can 'omit' moving into cache) we say that the model is 
+\textit{with bypassing}. Usually, bypassing the cache is very expensive. After serving 
+a request the algorithm can change its cache by evicting and fetching elements 
+from secondary storage. Some cost is assigned to these operations as well.
 
-In tree caching problem, that we study, requested element $v$ can depend 
+In the tree caching problem that we study, a requested element $v$ can depend 
 on some other elements. Specifically, they depend on its descendant in a 
 way, that when we decide to fetch $v$ we have to fetch all nodes from $T(v)$ 
 that are not already in cache.
 
-There is another generalization of caching problem that we mostly focus on in 
+There is another generalization of the caching problem that we mostly focus on in 
 this thesis. It is called 
 $(k_{\mathrm{ONL}}, k_{\mathrm{OPT}})$\textit{-paging generalization}. It gives 
-online and optimal offline algorithm different resources: online cache has size 
-$\kind{ONL}$, while optimal offline cache has size 
+the online and optimal offline algorithms different resources: the online cache has
+size $\kind{ONL}$, while the optimal offline cache has size 
 $k_{\mathrm{OPT}} \leq k_{\mathrm{ONL}}$. It might seem 
 unfair to give the optimal solution less space, but sometimes it can give us 
-some information how resources can influence the performance. (Remember 
-that offline algorithm has much more power: it knows all the future).
+some information about how resources can influence the performance. (Remember 
+that the offline algorithm has much more power as it knows all the future).
 
 \subsection{Deterministic algorithms}
-We remind well-known algorithms that solve caching problem without bypassing, 
-so every requested item has to be placed in cache and any reference to 
+We review well-known algorithms that solve the caching problem without bypassing, 
+where every requested item has to be placed in the cache and any reference to 
 slow memory has unit cost 1.
 \subsubsection{Longest Forward Distance (LFD) - offline optimal solution}
 Consider following \textit{lazy} (evicts a page if and only if it has no space  
 offline algorithm): 
 \begin{myalgo}
-Whenever there is a cache miss (item requested is not 
-present in fast memory), evict element whose next request is latest among other 
+Whenever there is a cache miss (an item requested is not 
+present in fast memory), evict the element whose next request is latest among other 
 cached elements.
 \end{myalgo}
 
-This algorithm is called \textbf{Longest Distance Forward} (LDF) and it turns 
-out it is the offline optimal solution. That is really uncommon to know the 
-optimal offline solution which really helps in competitive analysis giving us 
-a lot of knowledge about the problem. Moreover, this algorithm has polynomial 
+This algorithm is called \textbf{Longest Distance Forward} (LDF), and it turns 
+out that it is the optimal offline solution. It is very uncommon to know the 
+optimal offline solution, and this knowledge really helps in competitive analysis.
+Moreover, this algorithm has polynomial 
 time complexity, whereas most online theory problem are not solvable in 
 polynomial time. The optimality of \textbf{LFD} was proven by Belady 
 \cite{LFDBelady}.
 \begin{theorem} 
- \textbf{LFD} is optimal offline algorithm for paging.
+ \textbf{LFD} is the optimal offline algorithm for paging.
 \end{theorem}
 \begin{proof}
- The proof is based on applying following lemma (its proof can be found in 
+ The proof is based on applying the following lemma (its proof can be found in 
 \cite{czarodziej}).
 \begin{lemma}
 Let $A$ be any offline algorithm for paging, $\sigma$ - request sequence. For 
-any $i \in \{1 \ldots |\sigma|\}$ we can construct offline algorithm $A_i$ such 
+any $i \in \{1 \ldots |\sigma|\}$ we can construct an offline algorithm $A_i$ such 
 that:
 \begin{itemize}
  \item[(a)] $A_i$ serves first $i-1$ items the same as $A$,
- \item[(b)] If $i$th request results in page fault, $A_i$ evicts from cache 
-item from items in cache which will be latest requested (with 'longest distance 
+ \item[(b)] If the $i$th request results in a page fault, $A_i$ evicts from cache 
+items in the cache which will be latest requested (with 'longest distance 
 forward'),
   \item[(c)] $A_i(\sigma) \leq A(\sigma)$.
 \end{itemize}
 \end{lemma}
 Having this lemma, we can prove the theorem by applying it $|\sigma|$ times. 
 We start with any $OPT$ algorithm and apply the lemma, so we get $OPT_1$. Then 
-we apply lemma to $OPT_1$ for $i=2$ getting $OPT_2$ and so on. It is easy to 
+we apply the lemma to $OPT_1$ for $i=2$ getting $OPT_2$, and so on. It is easy to 
 see that $OPT_{|\sigma|}$ acts like \textbf{LFD} and pays cost at most the 
 same 
 as $OPT$.
@@ -116,24 +116,24 @@ earliest among cached items.
 \begin{myalgo}
   \textbf{Flush When Full (FWF)}
   \newline
-Whenever there is page fault and cache is full evict all elements from cache.
+Whenever there is a page fault and the cache is full, evict all elements from the cache.
 \end{myalgo}
-Both of them belong to a class of algorithms which are called \textit{marking}. 
-It is characterized by associating a bit to each page and we call 
-it its mark. Initially all pages are unmarked. 
+Both of these algorithms belong to a class of algorithms called \textit{marking}. 
+They are characterized by associating a bit to each page called
+its mark. Initially all pages are unmarked. 
 
-We divide input sequence $\sigma$ into $k$\textit{-phases} dependent on value $k$ 
-(cache size). We define $i$th phase as a maximal input sequence, following 
+We divide the input sequence $\sigma$ into $k$\textit{-phases} dependent on value $k$ 
+(cache size). We define the $i$th phase as a maximal input sequence, following 
 phase $i-1$ such that it contains at most $k$ different items requested. So, 
-except of the last phase, each phase ends when the next request $r$ would 
-increase the number of distinct pages in phase to $k+1$. Useful observation is 
+excluding the last phase, each phase ends when the next request $r$ would 
+increase the number of distinct pages in phase to $k+1$. A useful observation is 
 that $r$ has to be \textit{new}, meaning it is different then any item requested 
 in phase $i$.
 \input{phase_deterministic_pic}
 
 In any marking algorithm, during a phase, we mark a page when it is first 
-requested in the phase. Finally, marking algorithm that 
-never evicts marked page during a phase. Now we will show theorem 
+requested in the phase. Finally, a marking algorithm
+never evicts a page marked during a phase. Now we will show a theorem 
 characterizing this class of marking algorithms.
 \begin{theorem}\cite{torng}
 For any marking algorithm $A_{\mathrm{mark}}$ with cache of size 
@@ -143,24 +143,24 @@ $O(\frac{\kind{OPT}}{\kind{ONL}-\kind{OPT}+1})$-competitive.
 \end{theorem}
 \begin{proof}
 Fix any input sequence $\sigma$ and divide it into $\kind{ONL}$-phases as described 
-above. $A_{\mathrm{mark}}$ on any such phase pays at most $\kind{ONL}$ (because there is 
+above. $A_{\mathrm{mark}}$ on any such phase pays at most $\kind{ONL}$ (because there are 
 at most 
-$\kind{ONL}$ distinct requests in one phase). To bound the $OPT$ cost we will bound it with 
-respect to \textit{shifted phases}. Shifted phase $i$ consists 
-of first element of phase $i+1$ (call it $f_{i+1}$) and all requests from phase 
-$i$th except the first one (call it $f_i$). Figure 
-~\ref{fig:PhaseDeterministic} shows phases and shifted phases for $\kind{ONL}=3$. See 
-that to obtain shifted phase window we moved phase window by one element. At 
-the beginning of $i$ shifted phase $OPT$ has to have $f_i$ in it's cache. 
-Therefore it can have at most $\kind{OPT}-1$ distinct elements from shifted phase $i$. 
-Shifted phase has at least $\kind{ONL}$ distinct elements therefore $OPT$ has at least 
-$\kind{ONL}-\kind{OPT}+1$ page faults during shifted phase (there can be at most two shifted 
-phases that do not have this property, we omit them, cause the cost can be put 
+$\kind{ONL}$ distinct requests in one phase). To bound the $OPT$ cost, we will bound it with 
+respect to \textit{shifted phases}. A shifted phase $i$ consists 
+of the first element of phase $i+1$ (call it $f_{i+1}$) and all requests from phase 
+$i$th except the first (call it $f_i$). Figure 
+~\ref{fig:PhaseDeterministic} shows the phases and shifted phases for $\kind{ONL}=3$. Observe 
+that to obtain the shifted phase window we moved the phase window by one element. At 
+the beginning of $i$ shifted phase $OPT$ has to have $f_i$ in its cache. 
+Therefore, it can have at most $\kind{OPT}-1$ distinct elements from shifted phase $i$. 
+A shifted phase has at least $\kind{ONL}$ distinct elements therefore $OPT$ has at least 
+$\kind{ONL}-\kind{OPT}+1$ page faults during the shifted phase (there can be at most two shifted 
+phases that do not have this property, and we omit them because the cost can be put 
 into the constant when comparing costs).
 Summing up costs for $A_{\mathrm{mark}}$ by phases and $OPT$ by shifted phases 
 we get:
 $$ A_{\mathrm{mark}}(\sigma) \leq \frac{\kind{ONL}}{\kind{ONL}-\kind{OPT}+1} \cdot OPT(\sigma) + const,$$
-where we put all the cost obtained at requests not covered by phases (or 
+where we put all the costs obtained from requests not covered by phases (or 
 shifted phases).
 \end{proof}
 Now we should prove that both \textbf{FWF} and \textbf{LRU} are
