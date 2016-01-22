@@ -5,16 +5,16 @@ introduces an extension of standard caching problem with bypassing,
 which was described in section 2. The main difference between them is, that 
 requested items have some inter-dependencies. Specifically, their 
 universe forms rooted tree $T$ and the requested items are placed in its nodes. 
-Whenever $v \in T$ is fetched, all of its descendants $T(v)$, that are not 
-in cache, have to be fetched as well. We say, that the cache with property 
+Whenever $v \in T$ is fetched, all of its descendants (denoted $T(v)$), that are not 
+in the cache, have to be fetched as well. We say, that the cache with property 
 described above, is \textit{bottom-contiguous}.
 
 Moreover, we consider two types of requests: \textit{negative} and 
 \textit{positive}. If incoming request is positive we pay 1, if and only if 
-it is not present in the cache (like in previously considered settings). On the 
+it is not present in the cache (so like in previously considered settings). On the 
 other hand, we have to pay for negative requests, if and only if the item is 
-present in the cache (so in the opposite situation to the positive case). After 
-serving request, we can reorganize cache, paying $\alpha \geq 1$ for every 
+present in the cache at that time (so in the opposite situation to the positive requests). After 
+serving the request, we can reorganize the cache, paying $\alpha \geq 1$ for every 
 element, which is evicted or fetched. 
 
 The goal is to find an online algorithm, that solves this problem and minimizes 
@@ -22,25 +22,25 @@ the obtained cost. We present a deterministic algorithm \textbf{TRC}, which
 we prove is $O(h(T) \times R)$-competitive, where $h(T)$ is height of input tree 
 and $R = k_{\mathrm{ONL}}/(k_{\mathrm{ONL}} - k_{\mathrm{OPT}} +1)$ with 
 $k_{\mathrm{ONL}}$ and $k_{\mathrm{OPT}}$ denoting the size of 
-online and optimal offline algorithm's cache respectively.
+the online and the optimal offline algorithm's cache respectively.
 
 \subsection{Model}
 \input{definition_pic}
 For ease of the algorithm description and readability of presented proofs, 
-we introduce bunch of useful definitions. First of all, by $T(r)$ we indicate 
-subtree of $T$ rooted in $r$ and by $h(T)$ the height of tree $T$. 
+we introduce bunch of useful definitions. First of all, by $T(r)$ we indicate the
+subtree of $T$ rooted in $r$ and by $h(T)$ the height of the tree $T$. 
 \textit{Tree cap} is a tree $T_c \subseteq T$, such that root $r$ of $T$ belongs
 to $T_c$ and the fact, that $v \in T_c$ 
-implies, that all the nodes, which lie on the path from $v$ to $r$, belong to $T_c$. 
+implies, that all of the nodes, that lie on the path from $v$ to $r$, belong to $T_c$. 
 We say, that set $C \subseteq T$ is \textit{bottom contiguous}, if $v \in C$ implies 
 $T(v) \subseteq C$ and we call $C$ a \textit{valid cache state}. Notice that this 
 definition does not depend on the cache size, so $C$ can be valid cache state and at 
-the same time might not fit into the cache size.
+the same time may not fit into the cache size.
 
 The \textbf{TRC} algorithm, after each request, can change the state of its 
 cache. The only changes that are possible leave the cache in a valid state. 
-Depending on the character of change (eviction vs. fetch), we can apply either 
-\textit{valid negative changeset} or \textit{valid positive changeset}  on the 
+Depending on the character of change (eviction vs. fetch), we can apply either a 
+\textit{valid negative changeset} or a \textit{valid positive changeset} on the 
 cache $C$. The valid positive changeset $X$ (you may think of it as a set that 
 can be fetched legally) is a set for which $X \cap C = \varnothing$ and $C \cup X$ 
 is a valid cache state, the negative one (related to eviction) is a set $X 
@@ -48,12 +48,11 @@ is a valid cache state, the negative one (related to eviction) is a set $X
 
 We process the input one request by one and assume, that each request $\sigma_t$ 
 comes in the time interval $(t-1, t)$. The next request comes in the time 
-interval $(t, t + 1)$ and so forth. At time $t$ algorithm changes its cache state 
+interval $(t, t + 1)$ and so on and so forth. At time $t$ algorithm changes its cache state 
 from $C_{t}$ to $C_{t+1}$. The cache state is well defined for round $t$ (which 
-contains time interval $(t-1, t)$), because, as we can see, the cache may change 
-only between rounds.
+contains time interval $(t-1, t)$), because as we can see, the cache may only change between rounds.
 
-Some of the definition, which appeared in this section, are presented on Figure ~\ref{fig:TreeCacheDefinitions}.
+Some of the definitions, which were introduced above, are presented in the Figure ~\ref{fig:TreeCacheDefinitions}.
 
 \input{motivation.tex}
 
@@ -96,19 +95,19 @@ start of each phase the \textbf{TRC}'s cache is empty.
 
 In line 6 of the algorithm above we do not literally exceed the cache. Instead, 
 we do not apply last valid changeset, but we empty the cache and start new 
-phase. This not performed fetch will be from now on called \textit{an artificial fetch}.
-Each phase ends whenever applying valid changeset $X$ would lead to cache 
-overload. Only the last phase is treated differently: it can be \textit{unfinished}. 
+phase. From now on this not performed fetch will be called \textit{an artificial fetch}.
+Each phase ends whenever applying valid changeset $X$ would lead to the cache 
+overload. Only the last phase is treated differently: it can be \textit{unfinished} (do not end with exceeding the cache size). 
 
 In the body of the algorithm \ref{alg:TRC} there are two properties defined: 
 \textit{saturation} and \textit{maximality}. The first one is used to express, 
 that (saturated) changeset is ready to be applied. The latter one ensures, that
-applied changeset is the maximal possible, when ordered by inclusion. From the 
+applied changeset is the maximal possible at the moment, where the changesets are ordered by the inclusion order. From the 
 formulation of \textbf{TRC}, every changeset applied by the algorithm fulfills
 both saturation and maximality property.
 
 If $P$ is a phase, additionally by $\mathrm{begin_P}$ and $\mathrm{end_P}$ we 
-denote times, when the phase $P$ started and finished respectively.
+denote times, when the phase $P$ starts and finishes respectively.
 
 \subsection{Analysis}
 Throughout all the analysis, we fix the input sequence $I$ and its division into 
@@ -134,13 +133,13 @@ Fix phase $P$.
 \ldots, \mathrm{end_P}\}$ and any valid changeset $X$ for the cache $C_t$ 
 we have $bank_t(X) \leq |X| \cdot \alpha$.
   \item Changesets $Y$ for
-$C_t$, for which equality holds in inequality above, are all either positive or negative.
+$C_t$, for which inequality above changes to equality, are all either positive or negative.
 \end{enumerate} 
 \end{lemma}
 \begin{proof}
 We prove this lemma by induction on $t$, starting with $t_1 = \mathrm{begin_P} 
-+1$. At that time, there was only one request, so for all $X$ being valid changeset 
-$bank_{t_1} \leq 1$, which proves (1). For (2) see, that one request can't be 
++1$. At that time, there was only one request in the phase so far, therefore for all $X$ being valid changeset 
+$bank_{t_1} \leq 1$, which proves point (1). For the proof of (2) see, that one request can't be
 both negative and positive.
 
 To process with the induction step, first we prove the following property:
@@ -152,7 +151,7 @@ is symmetric. We consider three cases, depending on the action taken by
 algorithm \textbf{TRC} at time $t$.
 \begin{enumerate}
  \item \textbf{TRC} does not perform any action. That means that there was no 
-saturated changeset $X'$ for the cache $C_t$ and $bank_t(X') \cdot \alpha < |X'| \cdot 
+saturated changeset $X'$ for the cache $C_t$ and hence $bank_t(X') \cdot \alpha < |X'| \cdot 
 \alpha$ for any changeset $X'$. Notice, that $C_t = C_{t+1}$, therefore property
 follows trivially in that case.
   \item \textbf{TRC} fetches $X'$, so $C_{t+1} = C_t \cup X'$. Assume the 
@@ -170,9 +169,9 @@ assumption (2).
 \end{enumerate}
 This property implies the lemma for $t+1$, since we have strict inequalities for 
 $C_{t+1}$. When request comes in round $t+1$, it is either positive or negative, 
-so if it make a changset being saturated, it can be either positive or negative one. 
+so if it makes a changset be saturated, it can be either positive or negative chanegeset. 
 Only one request cames during each round, so strict inequalities can only change 
-to equalities, what gives us part (1) of the lemma.
+to equalities, what implies the first point of the lemma.
 \end{proof}
 The above lemma should convince us, that the algorithm is deterministic. When it chooses 
 a changeset to apply, there is at most one both maximal and saturated changeset at that 
@@ -182,12 +181,12 @@ time.
 First notice, that whenever there is a positive (negative) request to element 
 present (absent) in \textbf{TRC}'s cache it does not influence neither the 
 algorithm's behaviour nor its cost. Therefore, from now on, we assume, that in
-phase $P$ there aren't any such requests. We extend the space of requests from nodes to pairs
-consisting of a node and time point $(v, t)$. We will call these pairs \textit{slots} and we 
+phase $P$ there aren't any such no-cost requests. We extend the space of requests from nodes to pairs
+consist of a node and a time point $(v, t)$. We will call these pairs \textit{slots} and
 the newly obtained space: \textit{the event space}. If there is a request to node $v$ at time
 $t$, we say that slot $(v, t)$ is \textit{occupied}. We can then think of each phase $P$ as
 a set of occupied slots. Figure \ref{fig:spacial_temporal} might help to familiarize with
-above definitions for the event space.
+above definitions of the event space.
 \begin{figure}
  \begin{center}
   \includegraphics[width=0.7\textwidth]{spacial_temporal.png}
@@ -207,10 +206,10 @@ $$F^t = \{(v, t'): v \in X^t \wedge last_v^t < t' \leq t\},$$
 where $last_v^{t'}$ stands for the last time strictly before $t'$ in phase $P$, 
 when node $v$ changed its state in the cache either by being fetched or evicted. If 
 there was no such change for $v$ in phase $P$ before $t'$, we assign 
-$last_v^{t'} = \mathrm{begin_P}$. $F^t$ is \textit{positive} if corresponding 
-changeset $X_t$ is positive, similar for \textit{negative}. We define $req(F^t)$ 
-to be the occupied slots from $F^t$. Notice that $req(F^t)$ is exactly the
-requests that 'paid' for changeset $X_t$, so it could be applied. With Lemma \ref{thm:lemma1},
+$last_v^{t'} = \mathrm{begin_P}$. $F^t$ is \textit{positive} if the corresponding 
+changeset $X_t$ is positive, similar for the \textit{negative} field. We define $req(F^t)$ 
+to be the occupied slots from $F^t$. Notice that $req(F^t)$ are exactly the
+requests that 'paid' for changeset $X_t$, so it could have been applied. With Lemma \ref{thm:lemma1},
 we can summarize discussion above in a simple observation.
 \begin{observe}
 For field $F^t$ we have $req(F^t) = |X_t| \cdot \alpha$ and the requests 
@@ -218,16 +217,16 @@ in one field are either all positive or all negative.
 \label{obs:observe1}
 \end{observe}
 The rest of the event space (occupied slots that does not belong to any field $F^t$ 
-in phase $P$), we call \textit{the open field} and denote by $F^{\infty}$. All 
+of the phase $P$), we call \textit{the open field} and denote by $F^{\infty}$. All 
 fields except of the open field are denoted by $\mathcal{F}$ and their overall size
 by $|\mathcal{F}| = \sum_{F^t \in \mathcal{F}} |X^t| \cdot \alpha$.
 Additionally, for any field $F$, if $A$ is a set of nodes, $F \cap A = \{(v,t) 
-\in F: v \in A\}$ and if $T$ is set of rounds $F \cap T = \{(v, t) \in F: t \in 
+\in F: v \in A\}$ and if $T$ is a set of rounds $F \cap T = \{(v, t) \in F: t \in 
 T\}$. We introduce another definition related to fields: $\tau$\textit{-restricted} subfields of 
 $F^t$, which formally are equal
-$$F^t_{\leq \tau} = F^t \cap {t': t' \leq \tau}.$$
-We can think of a $\tau$-restricted subfields as a snapshot of field, that was taken at time $\tau$
-showing, which slots are occupied up to that time in $F^t$.
+$$F^t_{\leq \tau} = F^t \cap \{t': t' \leq \tau\}.$$
+We can think of a $\tau$-restricted subfield as a snapshot of field, that was taken at time $\tau$
+showing which slots are occupied in $F^t$ up to the time point $\tau$.
 \begin{figure}
 \begin{center}
   \includegraphics[width=1.1\textwidth]{fields.png}
@@ -237,7 +236,7 @@ $F^2$ is negative. $F^{\infty}$ is an open field for presented phase.}
 \label{fig:fields}
 \end{figure}
 Fields are hard to visualize in general case, so we present them 
-only for the case when the processed tree structure forms a line (look at the figure 
+only for the case when the processed tree structure forms a line (look at the
 Figure \ref{fig:fields}).
 
 Now we upper bound the cost of \textbf{TRC} obtained during phase $P$.
@@ -256,7 +255,7 @@ $|X^t| \cdot \alpha$, what substantiates the first term in right hand side of th
 inequality. Expression $req(F^{\infty})$ captures all of the cost associated 
 with the open field in $P$ and $k_P \cdot \alpha$ is the cost of the final eviction, 
 which does not occur for the unfinished (last) phase. There are no other sources of
-cost for \textbf{TRC}'s algorithm.
+cost for \textbf{TRC}'s algorithm, so it end the proof of the lemmma.
 \end{proof}
 
 \subsubsection{Shifting}
@@ -435,7 +434,7 @@ occurs - there is not enough requests in $r$ to pay for whole $T_1 \cup \{r\}$).
 \textbf{TRC's} cache.
 \end{enumerate}
 
-The picture corresponding to this example can be found at Figure 
+The picture corresponding to this example can be found in the Figure 
 \ref{fig:example_not_even}. 
 Notice that when first $(s+1) \cdot \alpha - l$ request to $r$ appear, they can 
 only be shifted to $T_1$ nodes. After that root of $T_1$ is given requests, 
@@ -478,7 +477,7 @@ element among the elements of  $T(v) \cap X_t$ given argument (request) should
 be pushed down. Precisely, $sh((v, t_{k \cdot \alpha + m})) = u_k$, where $m$ 
 values are integers taken from interval $[0, \frac{\alpha}{2})$. The function 
 $sh$ is not defined on the rest of the requests. We will not push those 
-requests down. The mapping definition given above is presented at Figure 
+requests down. The mapping definition given above is presented in the Figure 
 \ref{fig:req_map}.
 \begin{figure}
  \begin{center}
