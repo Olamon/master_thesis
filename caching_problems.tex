@@ -13,7 +13,7 @@ requests. An \textit{online algorithm} $A$ has to process requests one by one,
 without any knowledge of the future requests. Formally, when 
 serving request 
 $\sigma(t), 1 \leq t \leq n,$ the algorithm does not know any request 
-$\sigma(t')$ for $t'>t$. Handling any request incurs $cost$ whose value is 
+$\sigma(t')$ for $t'>t$. Handling any request incurs $cost$ whose value  
 depends on the request and algorithm state. The goal is to minimize the overall 
 $cost$.
 
@@ -41,13 +41,13 @@ serving $\sigma_{e}$, we must place $e$ in the cache, and therefore must have
 enough free space in fast memory to move it there. If there is no such requirement 
 (and $\sigma_{e}$ can 'omit' moving into cache) we say that the model is 
 \textit{with bypassing}. Usually, bypassing the cache is very expensive. After serving 
-a request the algorithm can change its cache by evicting and fetching elements 
-from secondary storage. Some cost is assigned to these operations as well.
+a request, the algorithm can change its cache by evicting and fetching elements 
+from secondary storage. Some cost is assigned to these operations, as well.
 
 In the tree caching problem that we study, a requested element $v$ can depend 
-on some other elements. Specifically, they depend on its descendant in a 
-way, that when we decide to fetch $v$ we have to fetch all nodes from $T(v)$ 
-that are not already in cache.
+on some other elements. Specifically, it depends on its descendants such that 
+when we decide to fetch $v$ we have to fetch all nodes from $T(v)$ 
+that are not already in the cache.
 
 There is another generalization of the caching problem that we mostly focus on in 
 this thesis. It is called 
