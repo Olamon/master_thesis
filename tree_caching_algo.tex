@@ -457,30 +457,36 @@ $X^t_i$, we obtain at least $\lceil \overline{req}(F^t \cap X^t_i) \rceil \geq
 \frac{|X^t|}{2 \cdot h(T)}$ with at least $\frac{\alpha}{2}$ requests.
 \end{proof} 
 \subsubsection{Competitiveness of TRC} We will use results from
-previous subsection to lower bound \textbf{OPT's} cost and finally get the main
-theorem of this thesis, which provide bound on competitive ratio of \textbf{TRC}
+previous subsection to lower bound \textbf{OPT's} cost and finally get to the main
+theorem of this thesis, which provide a bound on the competitive ratio of \textbf{TRC}
 algorithm. The proofs from this subsection are mostly technical, but still
-intuitions from previous sections should be useful to profoundly understand idea
-behind forthcoming calculations.
+intuitions from previous sections should be useful to profoundly understand the idea
+hidden behind forthcoming calculations.
 
 We will need one auxiliary lemma about the state of \textbf{TRC's} cache at the
-end of the phase. We remind, that this last cache state is special - its size
-exceeds $k_{\mathrm{ONL}}$, because, instead of normal fetch, we perform
-artificial one as was described earlier.  \begin{lemma} Fix phase $P$ and the
+end of the phase. We remind, that this last cache state is somehow special - its size
+exceeds $k_{\mathrm{ONL}}$, because instead of normal fetch we perform
+artificial one as it was described earlier. 
+\begin{lemma} 
+Fix phase $P$ and the
 cache state  $C$ at the end of the phase ($\mathrm{end_P}$). Any tree cap $D
-\subseteq C$ received at least $|D| \cdot \alpha$ requests during phase the $P$.
-\label{thm:lots_of_req_in_tc_end_of_p} \end{lemma} \begin{proof} Let $X_1, X_2,
-\ldots, X_m$ be all positive changesets from phase the $P$.  We perform
+\subseteq C$ received at least $|D| \cdot \alpha$ requests during the phase $P$.
+\label{thm:lots_of_req_in_tc_end_of_p} 
+\end{lemma}
+\begin{proof}
+Let $X_1, X_2,
+\ldots, X_m$ be all positive changesets from the phase $P$.  We perform
 separation on them, defining $X'_i = X_i \setminus \bigcup_{j=1}^{i-1} X_j$.
 Note that $X'_i$ is a tree cap of $X_i$. The sequence $X'_1, X'_2, \ldots, X'_m$
 is pairwise disjoint and covers $C$, so $C \subseteq \bigsqcup_{j=1}^m X'_j$.
+Let $D$ be a tree cap of $C$.
 Let $X_j^D = D \cap X'_j$, then $D = \bigsqcup_{j=1}^m X_j^D$, since $D
 \subseteq C$. $X_j^D$ is tree cup of $X'_j$, so by transitivity of the relation
-of being a tree cap, $X_j^D$ makes up a tree cap of $X_j$. From Corollary
+of forming a tree cap, $X_j^D$ makes up a tree cap of $X_j$. From Corollary
 \ref{thm:proper_at_t} we have that $req(X_j^d \cap F_i) \geq |X_j^D| \cdot
 \alpha$. There can be even more requests on the whole phase - not only
 restricted to field $F_i$. Since $X_j^D$ are pairwise disjoint, we can sum up
-requests over all $j$, what proves the lemma.  \end{proof}
+requests over all $j$ and obtain the expected result.  \end{proof}
 
 \myparagraph{Lower bound for OPT}
 
@@ -491,25 +497,31 @@ $V_{\mathrm{OPT}}^C$ will denote the complement to the whole tree $T$ ($T
 cache state.
 
 We get two different lower bounds for \textbf{OPT}, which are presented in the
-next two lemmas.  \begin{lemma} For any phase $P$, $cost_{\mathrm{OPT}}(P) \geq
-(k_P - k_{\mathrm{OPT}}) \cdot \alpha$.  \label{thm:opt_bound_with_k}
-\end{lemma} \begin{proof} Let $C$ be the cache state of \textbf{TRC} at
-$\mathrm{end_P}$ (after artificial fetch, so there is $k_P$ elements in the
+next two lemmas.
+\begin{lemma}
+For any phase $P$, $cost_{\mathrm{OPT}}(P) \geq
+(k_{\mathrm{P}} - k_{\mathrm{OPT}}) \cdot \alpha$.  \label{thm:opt_bound_with_k}
+\end{lemma}
+\begin{proof}
+Let $C$ be the cache state of \textbf{TRC} at
+$\mathrm{end_P}$ (after artificial fetch, so there is $k_{\mathrm{P}}$ elements in the
 cache). We consider separately the cost of \textbf{OPT} obtained on the nodes
 $V_{\mathrm{OPT}}$ and $V_{\mathrm{OPT}}^c$. For the first set, \textbf{OPT} had
 to fetch at least $|V_{\mathrm{OPT}}| - k_{\mathrm{OPT}}$ nodes during the phase
-paying $\alpha$ for each of them. For the second one, see that $C \setminus
+paying $\alpha$ for the fetch of each element. For the second one, see that $C \setminus
 V_{\mathrm{OPT}}$ is a subset of $V_{\mathrm{OPT}}^c$. Moreover, $C \setminus
 V_{\mathrm{OPT}}$ is an union of disjoint tree caps of subtrees, that belong to
-$C$. From Lemma \ref{thm:lots_of_req_in_tc_end_of_p} all those tree caps are
+$C$. From Lemma \ref{thm:lots_of_req_in_tc_end_of_p} all these tree caps are
 'dense', so summing up requests from them gives us at least $|C \setminus
-V_{\mathrm{OPT}}| \cdot \alpha$ requests to nodes in $C \setminus V_{OPT}$,
-which belongs to $V_{\mathrm{OPT}}^c$ as well, as mentioned above. Joining
-results for both cases, $cost_{\mathrm{OPT}}(P) \geq (|V_{\mathrm{OPT}}| -
+V_{\mathrm{OPT}}| \cdot \alpha$ requests to the nodes in $C \setminus V_{OPT}$,
+which belong to $V_{\mathrm{OPT}}^c$ as well, as we mentioned above. Joining
+results from both cases, $cost_{\mathrm{OPT}}(P) \geq (|V_{\mathrm{OPT}}| -
 k_{\mathrm{OPT}}) \cdot \alpha + |C \setminus V_{\mathrm{OPT}}| \cdot \alpha =
 (|C| - k_{\mathrm{OPT}}) \cdot \alpha$, what ends the prove, since $k_P$ is
-defined as the size of the cache ($|C|$) after artificial fetch.  \end{proof}
-\begin{lemma} For any phase $P$, $cost_{\mathrm{OPT}}(P) \geq
+defined as the size of the cache ($|C|$) after artificial fetch.
+\end{proof}
+\begin{lemma}
+For any phase $P$, $cost_{\mathrm{OPT}}(P) \geq
 (\frac{|\mathcal{F}|}{4 \cdot h(T)} -k_P) \cdot \frac{\alpha}{2}$.
 \label{thm:opt_bound_with_F} \end{lemma} \begin{proof} Let $P$ be a fixed phase.
 We perform shifting on $P$, so that both Lemma \ref{thm:legal_shifting_up} and
