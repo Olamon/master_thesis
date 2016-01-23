@@ -500,7 +500,8 @@ We get two different lower bounds for \textbf{OPT}, which are presented in the
 next two lemmas.
 \begin{lemma}
 For any phase $P$, $cost_{\mathrm{OPT}}(P) \geq
-(k_{\mathrm{P}} - k_{\mathrm{OPT}}) \cdot \alpha$.  \label{thm:opt_bound_with_k}
+(k_{\mathrm{P}} - k_{\mathrm{OPT}}) \cdot \alpha$.
+\label{thm:opt_bound_with_k}
 \end{lemma}
 \begin{proof}
 Let $C$ be the cache state of \textbf{TRC} at
@@ -554,22 +555,25 @@ $\frac{\alpha}{2}$ requests. Therefore, there are at least
 $(\frac{cnt_{\mathrm{OUT}}}{2h(T)} - k_{\mathrm{P}})$ stripes, whose both periods have
 $\frac{\alpha}{2}$ requests or more. On each such pair \textbf{OPT} pays at
 least $\frac{\alpha}{2}$, because of changing nodes state in cache (thus
-obtaining the cost equal to $\alpha \geq frac{\alpha}{2}$) or paying for either
-entire positive or negative request sequence from that stripe.  Stripes are distinct, so the
-cost of \textbf{OPT} can be bounded from below by by the sum of cost taken over all stripes, so
+obtaining the cost equal to $\alpha \geq \frac{\alpha}{2}$) or paying for either
+entire positive or negative request sequence from that stripe, so again paying at least $\frac{\alpha}{2}$.  Stripes are distinct, so the
+cost of \textbf{OPT} can be bounded from below by by the sum of cost taken over all stripes and then
 $(\frac{cnt_{\mathrm{OUT}}}{2h(T)} - k_{\mathrm{P}}) \cdot \frac{\alpha}{2} \geq
 (\frac{|\mathcal{F}|}{4h(T)} - k_{\mathrm{P}}) \cdot  \frac{\alpha}{2}$.  \end{proof}
 
 \myparagraph{Upper bound for open fields}
 
 To prove the competitiveness of \textbf{TRC} we have to deal with the open
-fields. Lemma below solves this problem.  \begin{lemma} For any phase $P$ and
+fields. Lemma below solves this problem.
+\begin{lemma} For any phase $P$ and
 its open field $F^{\infty}$, $req(F^{\infty}) \leq (k_{\mathrm{ONL}} +
 k_{\mathrm{OPT}}) \cdot \alpha + 2 \cdot cost_{\mathrm{OPT}}(P)$.
-\label{thm:inifinite_filed_bound} \end{lemma} \begin{proof} Let
-$X_{\mathrm{end_P}}$ be the	artificially applied changeset at the time
+\label{thm:inifinite_filed_bound}
+\end{lemma}
+\begin{proof} Let
+$X_{\mathrm{end_P}}$ be the artificially applied changeset at the time
 $\mathrm{end_P}$. We divide open field $F^{\infty}$ into two disjoint sets.
-First of them contains positive requests, the second: negative. Formally
+First of them contains positive requests, the second: negative requests. Formally
 \begin{gather*} F^{\infty}_{+} = \{(v, t): v \notin C_{\mathrm{end_P}} \cup
 X_{\mathrm{end_P}}, t \geq last_v(\mathrm{end_P})\}, \\ F^{\infty}_{-} = \{(v,
 t): v \in C_{\mathrm{end_P}}, t \geq last_v(\mathrm{end_P})\}.  \end{gather*}
@@ -590,11 +594,11 @@ $k_{\mathrm{ONL}} \cdot \alpha$.
 Now notice, that $req(F^{\infty}_{+} \cap V_{\mathrm{OPT}}^c) \leq
 req(V_{\mathrm{OPT}}^c)$. The nodes from $V_{\mathrm{OPT}}^c$ were never in
 \textbf{OPT's} cache during phase $P$, so it has to pay for all of the positive
-requests to them. This gives us $req(V_{\mathrm{OPT}}^c) \leq
+requests sent to these nodes. This gives us $req(V_{\mathrm{OPT}}^c) \leq
 cost_{\mathrm{OPT}}(P)$ and finally $req(F^{\infty}_{+} \cap V_{\mathrm{OPT}}^c)
 \leq cost_{\mathrm{OPT}}(P)$.
 
-To get the bound for the ramaining set note, that $F^{\infty}_{+}$ is a valid
+To get the bound for the ramaining set of requests note, that $F^{\infty}_{+}$ is a valid
 changeset for $C_{\mathrm{end_P}} \cup X_{\mathrm{end_P}}$. At the same time,
 $V_{\mathrm{OPT}}$ forms a valid cache state. Combining these two observations,
 we can conclude, that $F^{\infty}_{+} \cap V_{\mathrm{OPT}}$ is a valid
@@ -606,7 +610,7 @@ changeset $X_{\mathrm{end_P}}$ by these nodes, contradicting the maximality
 property of changesets applied by \textbf{TRC} algorithm.  Therefore,
 $req(F^{\infty}_{+} \cap V_{\mathrm{OPT}}) \leq |X^{V}_{+}| \cdot \alpha \leq
 |V_{\mathrm{OPT}}| \cdot \alpha \leq k_{\mathrm{OPT}} \cdot \alpha +
-(|V_{\mathrm{OPT}}| - k_{\mathrm{OPT}}) \leq k_{\mathrm{OPT}} \cdot \alpha +
+(|V_{\mathrm{OPT}}| - k_{\mathrm{OPT}}) \cdot \alpha \leq k_{\mathrm{OPT}} \cdot \alpha +
 cost_{\mathrm{OPT}}(P)$.
 
 Now we can combine the inequalities discussed above and finalize the proof.
@@ -618,10 +622,13 @@ V_{\mathrm{OPT}}^c) \\ & \leq (k_{\mathrm{ONL}} \cdot \alpha) +
 \alpha + 2 \cdot cost_{\mathrm{OPT}}(P) \end{split} \end{equation*} \end{proof}
 \myparagraph{Main result}
 
-Now we are ready to state and prove the main result.  \begin{theorem} Algorithm
+Now we are ready to state and prove the main result.  
+\begin{theorem} Algorithm
 \textbf{TRC} is $O(\frac{h(T) \cdot k_{\mathrm{ONL}}}{k_{\mathrm{ONL}} -
-k_{\mathrm{OPT}} + 1})$-competitive.  \label{thm:main_theorem} \end{theorem}
-\begin{proof} It is sufficient to show, that for any phase $P$,
+k_{\mathrm{OPT}} + 1})$-competitive.
+\label{thm:main_theorem}
+\end{theorem}
+\begin{proof} It is sufficient to show, that for any phase $P$
 $\frac{cost_{\mathrm{TRC}}}{cost_{\mathrm{ONL}}} = O(\frac{h(T) \cdot
 k_{\mathrm{ONL}}}{k_{\mathrm{ONL}} - k_{\mathrm{OPT}} + 1})$. Then summing up
 the cost over all the phases will give us the desired result.
@@ -636,44 +643,73 @@ Lemma \ref{thm:opt_bound_with_F} we can derive, that $|\mathcal{F}| \leq 4h(T)
 + k_{\mathrm{OPT}}) \cdot \alpha + 2 \cdot cost_{\mathrm{OPT}}(P) \leq 2 \cdot
 (k_{\mathrm{P}} \cdot \alpha + cost_{\mathrm{OPT}}(P))$. Therefore, $2 \cdot \alpha \cdot
 |\mathcal{F}| + req(F^{\infty}) = O(h(T)) \cdot (k_{\mathrm{P}} \cdot \alpha +
-cost_{\mathrm{OPT}}(P))$.  \end{proof}
+cost_{\mathrm{OPT}}(P))$. Recall, that from Lemma ~\ref{thm:opt_bound_with_k}
+we have that $cost_{\mathrm{OPT}}(P) \geq (k_{\mathrm{P}} - k_{\mathrm{OPT}}) \cdot \alpha$, thus $k_{\mathrm{P}} \cdot \alpha \leq
+\frac{k_{\mathrm{P}}}{k_{\mathrm{P}} - k_{\mathrm{OPT}}} \cdot
+cost_{\mathrm{OPT}}(P) \leq \frac{k_{\mathrm{ONL}} + 1}{k_{\mathrm{ONL}} + 1 -
+k_{\mathrm{OPT}}} \cdot cost_{\mathrm{OPT}}(P)$, where the last inequality uses the fact, that
+$k_{\mathrm{P}}$ is strictly higher then $\kind{ONL}$ and both values are
+integers. Cimbining the results of above computation we conclude:
+\begin{equation*}
+\begin{split}
+cost_{\mathrm{TRC}}(P) & =  O(h(T)) \cdot (k_{\mathrm{P}} \cdot \alpha +
+cost_{\mathrm{OPT}}(P)) + k_{\mathrm{P}} \cdot \alpha \\
+& \leq O(h(T)) \cdot \frac{2 \cdot(k_{\mathrm{ONL}} + 1)}{k_{\mathrm{ONL}} + 1 -
+k_{\mathrm{OPT}}} \cdot cost_{\mathrm{OPT}}(P) \\
+& = O(\frac{h(T) \cdot k_{\mathrm{ONL}}}{k_{\mathrm{ONL}} + 1 -
+k_{\mathrm{OPT}}}) \cdot cost_{\mathrm{OPT}}(P)
+\end{split}
+\end{equation*}  
+\end{proof}
 
-\subsection{Lower bound for competitive ratio} We will now show, that the
-competitive ratio, which is the result of the Theorem \ref{thm:main_theorem} is
-optimal up to factor $O(h(T))$. We prove this statement by justifying, that any
+\subsection{Lower bound for competitive ratio}
+We will now show, that the
+competitive ratio, which is the result of the Theorem \ref{thm:main_theorem}, is
+optimal up to the factor $O(h(T))$. We prove this statement by justifying, that any
 online algorithm has to be at least $\Omega
-(\frac{k_{\mathrm{ONL}}}{k_{\mathrm{ONL}}- k_{\mathrm{OPT}} + 1})$.
-\begin{theorem} For any value $\alpha$ being a cost of changing one element's
+(\frac{k_{\mathrm{ONL}}}{k_{\mathrm{ONL}}- k_{\mathrm{OPT}} + 1})$ competitive.
+\begin{theorem}
+For any value of $\alpha$ being a cost of changing one element's
 state in the cache, any online algorithm for the tree caching problem is at
 least $\Omega (\frac{k_{\mathrm{ONL}}}{k_{\mathrm{ONL}}- k_{\mathrm{OPT}} +
-1})$-competitive.  \end{theorem} \begin{proof} To prove this theorem we will use
+1})$-competitive.
+\end{theorem}
+\begin{proof}
+To prove this theorem we will use
 the Theorem 5 from publication \cite{tarjan}. The result from this article
-states that any online algorithm solving the standard paging problem (move from
-slow memory to fast memory costs $1$ and there is no bypassing) is at least
+states, that any online algorithm solving the standard paging problem (the move of an element from
+the slow memory to the fast memory costs $1$ and there is no bypassing) is at least
 $\Omega(\frac{k_{\mathrm{ONL}}}{k_{\mathrm{ONL}}- k_{\mathrm{OPT}} +
 1})$-competitive. What is sufficient to do is to construct a bijective mapping
-from any online algorithm for paging problem to an online algorithm forthe tree
-caching problem and mapping from any input for the paging problem to an input
-for the tree caching problem. We can loose only constant factor on the cost,
-when performing both algorithms on the corresponding inputs.
+from any online algorithm for the paging problem to an online algorithm for the tree
+caching problem and simultaneously define mapping from any input for the paging problem to an input
+for the tree caching problem. We are allowed to loose only constant factor on the cost
+when performing both algorithms on the associated inputs.
 
-We equate all pages $p$ from the paging problem fixing a bijection $f$ from the
-pages to leaves $l \in T$, so $f(p) = l$. Let's define the mapping between
-inputs. By $I$ denote the input for the paging and by $I'$: input for the tree
-caching problem. We change $I$ sequence, going through its requests one by one.
-Whenever there is request to $p$, we add to $I'$ exactly $\alpha$ requests to
-$f(p)$. Now we would like to argue that, for any online algorithm for the paging
-problem $A$, that pays $c$ on input $I$, we can construct algorithm $A'$ for the
-tree caching problem, that on input $I'$ pays $\theta(c \cdot \alpha)$. We
+We equate all of the pages $p$ from the paging problem defining a bijection $f$ from the
+pages to the leaves from our model's tree structure $l \in T$, so $f(p) = l$. Let's define the mapping between the
+inputs. By $I$ denote the input for the standard paging problem and by $I'$: input for the tree
+caching problem. We transform $I$ sequence to $I'$, going through its requests one by one.
+Whenever there is a request to $p$, we add to $I'$ exactly $\alpha$ positive requests to the node
+$f(p)$. Now we would like to argue, that for any online algorithm for the paging
+problem $A$, which pays $c$ on the input $I$, we can construct algorithm $A'$ for the
+tree caching problem, that on the input $I'$ pays $\theta(c \cdot \alpha)$. We
 define $A'$ as follows.  When $A$ serves request $r$ from $I$ and fetches $r$ to
-its cache, algorithm $A'$ bypasses corresponding $\alpha$ requests to $f(r)$ and
-fetches $r$. If $A$ evicts some pages, $A'$ evicts leaves corresponding to that
+its cache, algorithm $A'$ bypasses corresponding $\alpha$ requests to $f(r)$ and then
+fetches $f(r)$. If $A$ evicts some pages, $A'$ evicts leaves corresponding to that
 pages. Notice, that $A'$ has the same cache state as $A$, as long as we apply
-$f$ on its elements and look at its state every $\alpha$ (for $A$ - every one)
-requests. Therefore, if $A$ does not pay for some request, then $A'$ does not
+$f$ on its elements and look at its state every $\alpha$ requests (for $A$ - after each request).
+Therefore, if $A$ does not pay for some request, then $A'$ does not
 pay for it neither. $A'$ pays then at most $O(\alpha)$ times more then $A$ (all
 eviction operations' cost on the sequence $I'$ has asymptotically the same value
 as all fetch operations' cost).
 
 We can inverse the reduction above and see that $A$ pays on $I$ is
-$O(\frac{1}{\alpha})$ times the cost of $A'$.    \end{proof}
+$O(\frac{1}{\alpha})$ times the cost of $A'$ on $I'$. Do do so fix algorithm
+$A'$ and transform it the algorithm $A''$ in such a way, that $A''$ keeps only leaves in its cache and
+makes changes to the cache state only between consecutive chunks of $\alpha$ requests.
+Notice, that on such transformation we can loose only constant factor on the cost, since the requests in the
+sequence $I'$ are only to the leaves and being able only to change of the cache's state every $\alpha$ requests
+can increase the cost at most twice. Then fix a chunk of $\alpha$ requests to a leaf $v$,
+which is followed by $A''$'s cache update. When $A$ gets the corresponding request to $f^{-1}(v)$ 
+it performs the same series of fetches and evictions, paying $1$ for each of them and therefore at least $O(\frac{1}{\alpha})$ times the cost of $A''$.\end{proof}
