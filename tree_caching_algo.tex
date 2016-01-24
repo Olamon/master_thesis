@@ -59,14 +59,14 @@ Figure ~\ref{fig:TreeCacheDefinitions}.
 Before defining the \textbf{TRC} algorithm, we bind to each node $v \in T$ a
 $bank_{t}(v)$ value. At the beginning of the algorithm, for each $v \in T$ we
 have $bank_{0}(v) = 0$. If node $v$ gets a negative or a positive request at
-time $t$, whose processing cost us 1, we increase $bank_{t}(v)$ value by 1 (so
+time $t$ whose processing cost us 1, we increase $bank_{t}(v)$ value by 1 (so
 $bank_{t}(v) = bank_{t-1}(v) + 1$), leaving the value assigned to any other node
 unchanged (so for $v' \neq v bank_{t-1}(v') = bank_{t}(v')$). When we change the
 state of node $v$ (either by evicting or fetching it into the cache) we 'clear'
-its bank value (change it to $0$). For set of nodes $V \subseteq T$, we denote
+its bank value (change it to $0$). For a set of nodes $V \subseteq T$, we denote
 sum $\sum_{v \in V} bank_{t}(v)$ by $bank_{t}(V)$.
 
-The \textbf{TRC} proceeds in phases. First phase starts at time 0 and at the
+The \textbf{TRC} proceeds in phases. The first phase starts at time 0 and at the
 start of each phase the \textbf{TRC}'s cache is empty.  \begin{algorithm}
 \caption{\textbf{TRC}} \label{alg:TRC} \begin{algorithmic}[1] \ForAll{$t \in \{1
 \ldots |\sigma|\}$} \State Serve request $\sigma_t$.  \State Update $bank_t(v)$
@@ -78,36 +78,36 @@ exceeded}: \State Empty the cache.  \State Reset all $bank_t$ values to 0.
 \State Start new phase.  \EndIf \EndIf \EndFor \end{algorithmic} \end{algorithm}
 
 In line 6 of the algorithm above we do not literally exceed the cache. Instead,
-we do not apply last valid changeset, but we empty the cache and start new
-phase. From now on this not performed fetch will be called \textit{an artificial
-fetch}.  Each phase ends whenever applying valid changeset $X$ would lead to the
+we do not apply last valid changeset, but we empty the cache and start a new
+phase. From now on this unperformed fetch will be called \textit{an artificial
+fetch}. Each phase ends whenever applying a valid changeset $X$ would lead to the
 cache overload. Only the last phase is treated differently: it can be
-\textit{unfinished} (do not end with exceeding the cache size). 
+\textit{unfinished} (does not end with exceeding the cache size). 
 
 In the body of the algorithm \ref{alg:TRC} there are two properties defined:
-\textit{saturation} and \textit{maximality}. The first one is used to express,
-that (saturated) changeset is ready to be applied. The latter one ensures, that
-applied changeset is the maximal possible at the moment, where the changesets
+\textit{saturation} and \textit{maximality}. The first one is used to express
+that a (saturated) changeset is ready to be applied. The latter one ensures that
+an applied changeset is the maximal possible at the moment, where the changesets
 are ordered by the inclusion order. From the formulation of \textbf{TRC}, every
-changeset applied by the algorithm fulfills both saturation and maximality
-property.
+changeset applied by the algorithm fulfills both the saturation and maximality
+properties.
 
-If $P$ is a phase, additionally by $\mathrm{begin_P}$ and $\mathrm{end_P}$ we
-denote times, when the phase $P$ starts and finishes respectively.
+If $P$ is a phase, $\mathrm{begin_P}$ and $\mathrm{end_P}$ 
+denote the times when the phase $P$ starts and finishes, respectively.
 
 \subsection{Analysis} Throughout all the analysis, we fix the input sequence $I$
 and its division into phases. We compare \textbf{TRC} with \textbf{OPT},
 analyzing both on a single phase $P$. By $k_{\mathrm{P}}$ we denote the number of elements
-in \textbf{TRC's} cache after artificial fetch at $\mathrm{end_P}$, just before
+in \textbf{TRC's} cache after the artificial fetch at $\mathrm{end_P}$, just before the
 eviction of all cached elements.
 
 We start the discussion with some basic properties of changesets. Then we
-introduce the concept of \textit{fields}, which will help us proving algorithm's
-competitiveness.
+introduce the concept of \textit{fields}, which will help us in proving 
+the algorithm's competitiveness.
 
-\subsubsection{Elementary properties} Recall, that $C_t$ denotes the cache state
+\subsubsection{Elementary properties} Recall that $C_t$ denotes the cache state
 of \textbf{TRC} at round $t$ and that any cache change takes place between
-rounds at discrete points of time.  Having that in mind, we prove, that there
+rounds at discrete points of time. With this in mind, we prove that there
 cannot be both saturated positive and negative changesets at the same time.
 \begin{lemma} \label{thm:lemma1} Fix phase $P$.
 \begin{enumerate}[label=(\arabic*)] \item For any $t \in \{\mathrm{begin_P} +1,
@@ -116,87 +116,87 @@ the cache $C_t$ we have $bank_t(X) \leq |X| \cdot \alpha$.  \item Changesets $Y$
 for $C_t$, for which inequality above changes to equality, are all either
 positive or negative.  \end{enumerate} \end{lemma} \begin{proof} We prove this
 lemma by induction on $t$, starting with $t_1 = \mathrm{begin_P} +1$. At that
-time, there was only one request in the phase so far, therefore for all $X$
+time, there was only one request in the phase so far. Therefore, for all $X$
 being valid changeset $bank_{t_1} \leq 1$, which proves point (1). For the proof
-of (2) see, that one request can't be both negative and positive.
+of (2) see that one request can't be both negative and positive.
 
 To process with the induction step, first we prove the following property:
-\begin{property} For any changeset $X$ for $C_{t+1}$ we have $bank_t(X) < |X|
-\cdot \alpha$.  \end{property} We prove it only for $X$ being positive
+\begin{property} For any changeset $X$, for $C_{t+1}$ we have $bank_t(X) < |X|
+\cdot \alpha$.  \end{property} We prove it only for $X$ being a positive
 changeset. For negative ones the proof is symmetric. We consider three cases,
 depending on the action taken by algorithm \textbf{TRC} at time $t$.
 \begin{enumerate} \item \textbf{TRC} does not perform any action. That means
 that there was no saturated changeset $X'$ for the cache $C_t$ and hence
-$bank_t(X') \cdot \alpha < |X'| \cdot \alpha$ for any changeset $X'$. Notice,
-that $C_t = C_{t+1}$, therefore property follows trivially in that case.  \item
+$bank_t(X') \cdot \alpha < |X'| \cdot \alpha$ for any changeset $X'$. Notice 
+that $C_t = C_{t+1}$, and therefore the property follows trivially in that case.  \item
 \textbf{TRC} fetches $X'$, so $C_{t+1} = C_t \cup X'$. Assume the opposite, that
 there exists changeset $X$ for $C_{t+1}$ such that $bank_t(X) \geq |X| \cdot
-\alpha$. It implies, that $X \cup X'$ is a positive changeset for the cache
-$C_t$, that might have been fetched instead of $X'$ at time $t$. That
-contradicts the maximality property, that is fufilled by all of the changesets
+\alpha$. This implies that $X \cup X'$ is a positive changeset for the cache
+$C_t$ that might have been fetched instead of $X'$ at time $t$. That
+contradicts the maximality property that is fufilled by all of the changesets
 applied by the algorithm \textbf{TRC}.  \item \textbf{TRC} evicts $X'$, so
-$C_{t+1}  = C_t \setminus X'$. Assume again the opposite. This entails, that
-$X'' = X \setminus X'$ is a valid positive changeset for $C_t$. What is more, it
+$C_{t+1} = C_t \setminus X'$. Assume again the opposite. This entails that
+$X'' = X \setminus X'$ is a valid positive changeset for $C_t$. Additionally, it
 is saturated, because $bank_t(X'') = bank_t(X) \geq |X| \cdot \alpha \geq |X''|
-\cdot \alpha$. We have both a positive and  negative saturated changeset for
+\cdot \alpha$. We have both a positive and a negative saturated changeset for
 $C_t$, which contradicts the induction assumption (2).  \end{enumerate} This
 property implies the lemma for $t+1$, since we have strict inequalities for
-$C_{t+1}$. When request comes in round $t+1$, it is either positive or negative,
-so if it makes a changset be saturated, it can be either positive or negative
-chanegeset.  Only one request cames during each round, so strict inequalities
-can only change to equalities, what implies the first point of the lemma.
-\end{proof} The above lemma should convince us, that the algorithm is
+$C_{t+1}$. When a request comes in round $t+1$, it is either positive or negative,
+so if it makes a changeset be saturated, it can be either a positive or negative
+chanegeset. Only one request comes during each round, so strict inequalities
+can only change to equalities, which implies the first point of the lemma.
+\end{proof} The above lemma should convince us that the algorithm is
 deterministic. When it chooses a changeset to apply, there is at most one both
 maximal and saturated changeset at that time.
 
-\subsubsection{Concept of fields} First notice, that whenever there is a
-positive (negative) request to element present (absent) in \textbf{TRC}'s cache
-it does not influence neither the algorithm's behaviour nor its cost. Therefore,
-from now on, we assume, that in phase $P$ there aren't any such no-cost
-requests. We extend the space of requests from nodes to pairs consist of a node
+\subsubsection{Concept of fields} First notice that whenever there is a
+positive (negative) request to an element present (absent) in \textbf{TRC}'s cache,
+it does not influence either the algorithm's behaviour or its cost. Therefore,
+from now on we assume that in phase $P$ there aren't any such no-cost
+requests. We extend the space of requests from nodes to pairs consisting of a node
 and a time point $(v, t)$. We will call these pairs \textit{slots} and the newly
 obtained space: \textit{the event space}. If there is a request to node $v$ at
 time $t$, we say that slot $(v, t)$ is \textit{occupied}. We can then think of
 each phase $P$ as a set of occupied slots. Figure \ref{fig:spacial_temporal}
-might help to familiarize with above definitions of the event space.
+might help to demonstrate the above definitions of the event space.
 \begin{figure} \begin{center}
 \includegraphics[width=0.7\textwidth]{spacial_temporal.png} \end{center}
-\caption{Event space presented for node $v$. Nodes whose color is black form the
-tree from the tree caching problem.  We add new dimension - time. Every node is
+\caption{The event space presented for node $v$. Nodes whose color is black form the
+tree from the tree caching problem. We add a new dimension - time. Every node is
 replaced by slots $(v, t)$ for discrete values of $t$, which are rounds numbers.
 On the picture the new dimension is presented only for $v$.}
 \label{fig:spacial_temporal} \end{figure}
 
-As we now know, what the event space and slots are, we can define $fields$.
-Fields form disjoint partition of phase $P$ (partition of slots corresponding to
+As we now know what the event space and slots are, we can define $fields$.
+Fields form a disjoint partition of phase $P$ (a partition of slots corresponding to
 $P$). Formally, if $X_t$ is changeset applied by \textbf{TRC} at time $t$, we
-define related field as: $$F^t = \{(v, t'): v \in X^t \wedge last_v^t < t' \leq
+define a related field as: $$F^t = \{(v, t'): v \in X^t \wedge last_v^t < t' \leq
 t\},$$ where $last_v^{t'}$ stands for the last time strictly before $t'$ in
-phase $P$, when node $v$ changed its state in the cache either by being fetched
+phase $P$ when node $v$ changed its state in the cache either by being fetched
 or evicted. If there was no such change for $v$ in phase $P$ before $t'$, we
 assign $last_v^{t'} = \mathrm{begin_P}$. $F^t$ is \textit{positive} if the
-corresponding changeset $X_t$ is positive, similar for the \textit{negative}
+corresponding changeset $X_t$ is positive, and similarly for the \textit{negative}
 field. We define $req(F^t)$ to be the occupied slots from $F^t$. Notice that
 $req(F^t)$ are exactly the requests that 'paid' for changeset $X_t$, so it could
-have been applied. With Lemma \ref{thm:lemma1}, we can summarize discussion
+have been applied. With Lemma \ref{thm:lemma1}, we can summarize the discussion
 above in a simple observation.  \begin{observe} For field $F^t$ we have
 $req(F^t) = |X_t| \cdot \alpha$ and the requests in one field are either all
 positive or all negative.  \label{obs:observe1} \end{observe} The rest of the
-event space (occupied slots that does not belong to any field $F^t$ of the phase
+event space (occupied slots that do not belong to any field $F^t$ of the phase
 $P$), we call \textit{the open field} and denote by $F^{\infty}$. All fields
-except of the open field are denoted by $\mathcal{F}$ and their overall size by
+except the open field are denoted by $\mathcal{F}$ and their overall size by
 $|\mathcal{F}| = \sum_{F^t \in \mathcal{F}} |X^t| \cdot \alpha$.  Additionally,
 for any field $F$, if $A$ is a set of nodes, $F \cap A = \{(v,t) \in F: v \in
 A\}$ and if $T$ is a set of rounds $F \cap T = \{(v, t) \in F: t \in T\}$. We
 introduce another definition related to fields: $\tau$\textit{-restricted}
 subfields of $F^t$, which formally are equal $$F^t_{\leq \tau} = F^t \cap \{t':
 t' \leq \tau\}.$$ We can think of a $\tau$-restricted subfield as a snapshot of
-field, that was taken at time $\tau$ showing which slots are occupied in $F^t$
+a field that was taken at time $\tau$ showing which slots were occupied in $F^t$
 up to the time point $\tau$.  \begin{figure} \begin{center}
 \includegraphics[width=1.1\textwidth]{fields.png} \end{center} \caption{Example
-of fields for the tree structure being a line. $F^1$ is a positive field, $F^2$
+of fields for the tree structure being a line. $F^1$ is a positive field, while $F^2$
 is negative. $F^{\infty}$ is an open field for presented phase.}
-\label{fig:fields} \end{figure} Fields are hard to visualize in general case, so
+\label{fig:fields} \end{figure} Fields are hard to visualize in the general case, so
 we present them only for the case when the processed tree structure forms a line
 (look at the Figure \ref{fig:fields}).
 
@@ -205,13 +205,13 @@ Now we upper bound the cost of \textbf{TRC} obtained during phase $P$.
 fields. We have: $$cost_{\mathrm{TRC}}(P) \leq 2 \cdot \alpha \cdot
 |\mathcal{F}| + req(F^{\infty}) + k_{\mathrm{P}} \cdot \alpha.$$ \label{thm:trc_cost}
 \end{lemma} \begin{proof} The cost on every field $F^t$ originates from serving
-requests, that belong to it and reorganizing the cache at the end of the field
-(which ends with fetch or eviction). Both of this costs are equal $|X^t| \cdot
-\alpha$, what substantiates the first term in right hand side of the inequality.
+requests that belong to it and reorganizing the cache at the end of the field
+(which ends with fetch or eviction). Both of these costs equal $|X^t| \cdot
+\alpha$, which substantiates the first term in the right hand side of the inequality.
 Expression $req(F^{\infty})$ captures all of the cost associated with the open
 field in $P$ and $k_{\mathrm{P}} \cdot \alpha$ is the cost of the final eviction, which
 does not occur for the unfinished (last) phase. There are no other sources of
-cost for \textbf{TRC}'s algorithm, so it end the proof of the lemmma.
+cost for \textbf{TRC}'s algorithm, so we end the proof of the lemmma.
 \end{proof}
 
 \subsubsection{Shifting} Now we proceed to the main part of our deduction. What
