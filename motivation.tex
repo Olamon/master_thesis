@@ -1,26 +1,26 @@
-\subsection{Motivation} Motivation of the model we studied can be found in the
-IP-based computer networks problems. Router has to store enormous number of
-forwarding rules and this number is still growing. The fast router memory is
+\subsection{Motivation} Motivation for studying this model can be found in 
+IP-based computer networks problems. A router has to store an enormous number of
+forwarding rules, and this number is still growing. The fast router memory is
 expensive and requires a lot of energy, which is a big problem for Internet
-Service Providers. As a solution to this problem there comes Software-Defined
+Service Providers. As a solution to this problem, there comes Software-Defined
 Networking (SDN) technology. It consists of two types of memory: a fast memory,
-which is kept in router and a slow one, which is placed in so called controller.
-The latter one keeps exact information about all of the forwarding rules (the
+which is kept in the router and a slow one, which is placed in a so called controller.
+The latter keeps exact information about all of the forwarding rules (the
 forwarding rules are called Forwarding Information Base and the abbreviation FIB
-is commonly used).  On the other hand, router keeps only the part of the FIB
+is commonly used).  On the other hand, the router keeps only the part of the FIB
 table. Whenever a packet comes, it is firstly processed by the router. If its
 forwarding rule is found in the router's cache, then it is immediately forwarded
-to its final destination.  In the case of not finding the appropriate rule for
-the packet at the router, we have to ask the controller for it, therefore look
-up the rule in the slow memory and pay $1$ for each such request. The routers
+to its final destination. In the case where the appropriate rule is not found for
+the packet at the router, we have to ask the controller for it. We therefore look
+up the rule in the slow memory and pay $1$ for each such request. The router's
 cache can change its state, but this operation is usually expansive. Precisely,
-if we decide to erase a single rule form the router or fetch it form the
-controller to the router, we pay $\alpha$ for each such opertion.  Moreover,
-occasionaly an update might take place at some rule in controller's FIB table.
+if we decide to erase a single rule form the router or fetch it from the
+controller to the router, we pay $\alpha$ for each such opertion. Moreover,
+occasionaly an update might take place at some rule in the controller's FIB table.
 If the corresponting rule is stored in the router, we are obligated to make the
-update to it immediately, what cost us $\alpha$ as well. Figure
-\ref{fig:motivation} shows the crucial concepts, that were just briefly
-described. More detailed and technical description can found in \cite{sdn}.
+update to it immediately, which costs us $\alpha$, as well. Figure
+\ref{fig:motivation} shows the crucial concepts that were just briefly
+described. A more detailed and technical description can found in \cite{sdn}.
 \begin{figure} \begin{center}
 \includegraphics[width=0.8\textwidth]{motivation.png} \end{center} \caption{}
 \label{fig:motivation} \end{figure}
@@ -28,83 +28,83 @@ described. More detailed and technical description can found in \cite{sdn}.
 Since the rules are taken from the forwarding table, what we look for is the
 rule with the longest matching prefix (LMP). Whenever a packet arrives, the
 router will look for the rule which matches the longest prefix of the
-destination IP address of the packet. Consequently the search can be viewed as
-going down the tree, whose nodes preserve information of IP address prefix, its
-root keeps the least specific (empty) rule, and descendants of a node
-representing IP prefix $p$ are the nodes with rules $p \circ x$, where operation
-$\circ$ is concatenation of binary representations of $p$ and $x$. The deeper in
-the tree we can go, the more specific rule we will find. We add special rule,
-which is kept in the root of routers cache tree, that matches every prefix and
+destination IP address of the packet. Consequently, the search can be viewed as
+going down a tree whose nodes preserve information of IP address prefixes and whose
+root keeps the least specific (empty) rule. Additionally, the descendants of a node
+representing IP prefix $p$ are the nodes with rules $p \circ x$, where the operation
+$\circ$ is the concatenation of binary representations of $p$ and $x$. The deeper in
+the tree we can go, the more specific of a rule we will find. We add a special rule,
+which is kept in the root of router's cache tree, that matches every prefix and
 points to the controller. It solves the problem of deciding when to ask the
-controller if any rule can't be found in the routers cache. Note, that besides
-the tree like structure, that we now can easily see, that the routers cache
-consists of, there is natural requirement of the rooter's tree to be
-bottom-contiguous. Otherwise, in some cases we would not find the most specific
-rule for the packet and therefore forward the packet to the wrong addess. 
+controller if any rule can't be found in the router's cache. Note that besides
+the tree-like structure that we now can easily see the router's cache
+consists of, there is natural requirement of the router's tree to be
+bottom-contiguous. Otherwise, in some cases, we would not find the most specific
+rule for the packet and therefore we would forward the packet to the wrong addess. 
 
 Summing up, we can define a model for SDN architecture, which from now on will
-be called SDN model. In that model, as in the tree caching model, we have a tree
-$T$, whose nodes are requested, fast memory (cache), that can store $\kind{ONL}$
+be called the SDN model. In that model, as in the tree caching model, we have a tree
+$T$ whose nodes are requested, fast memory (cache) that can store $\kind{ONL}$
 elements (which are the forwarding rules), which form a bottom-contiguous forest
-and the slow memory keeping the whole tree structure. The input consists of
-requests to the elements of the tree. Cached items we can serve for free finding
-the appropriate rule in the cache, whereas the ones, that much only special rule
-(empty) require asking the controller and thus we pay $1$. Any change in the
-cache cost us $\alpha$, so the same as in the tree caching model. We have
-additional event though, because the FIB rules may change. Whenever controller
-rule is updated, we update the corresponding rule in the routers cache paying
-$\alpha$ if it is present in the router's cache, otherwise we do not perform
-update and do not have to pay anything.
+and, the slow memory keeping the whole tree structure. The input consists of
+requests for the elements of the tree. Cached items we can serve for free by finding
+the appropriate rule in the cache, whereas the ones that match only special rule
+(empty) require asking the controller, and thus we pay $1$. Any change in the
+cache costs us $\alpha$, the same as in the tree caching model. We have an
+additional event though, because the FIB rules may change. Whenever a controller
+rule is updated, we update the corresponding rule in the router's cache paying
+$\alpha$ if it is present in the router's cache, and otherwise we do not perform
+an update and do not have to pay anything.
 
-Now we will use an algorithm $TC$ solving the tree caching problem as a black
+Now we will use an algorithm $TC$ to solve the tree caching problem as a black
 box and adopt it to solve the SDN setting (by defining algorithm $ALG$ based on
 $TC$). First, the tree from the SDN model is mapped to the tree caching model's
-tree using identity function. Let $\sigma$ be the input for the SDN model. We
+tree using the identity function. Let $\sigma$ be the input for the SDN model. We
 transform it to $\sigma'$, which will be the input for $TC$. We do so by adding
 $\alpha$ negative requests to a rule for each time it was updated in the
-controller (recall, that in the SDN model in such situation we are obtaining
+controller (recall that in the SDN model in such a situation we are obtaining
 cost $\alpha$ for the update if the rule was in cache). The rest of the input
-stays the same with only one change, that make all these requests positive. Now
-$ALG$ is defined in such a way, that given input sequence $\sigma$ it copies the
+stays the same with only one change to make all of these requests positive. Now
+$ALG$ is defined in such a way that given input sequence $\sigma$, it copies the
 moves (fetches and evictions) of $TC$ given modified input $\sigma'$. The
-following theorem states, that using the described application of $TC$, we can
+following theorem states that using the described application of $TC$, we can
 get an algorithm with the same competitive ratio for the SDN model as for the
 tree caching model up to the constant factor. Therefore, solving the tree
-caching problem gives us competitive algorithm for the SDN model, thus the model
-considered by us finds a very useful practical application.  \begin{theorem} Let
-$TC$ be any algorithm solving the tree caching problem, that is $r$-competitive.
+caching problem gives us a competitive algorithm for the SDN model, and thus 
+our model has a very useful practical application.  \begin{theorem} Let
+$TC$ be any algorithm solving the tree caching problem that is $r$-competitive.
 Let $ALG$, $\sigma$ and $\sigma'$ be defined as above with respect to $TC$.
 Then: $$cost_{\mathrm{ALG}}(\sigma) \leq c \cdot cost_{\mathrm{TC}}(\sigma')
 \leq c \cdot r \cdot cost_{\mathrm{OPT'}}(\sigma') \leq c \cdot r \cdot
-cost_{\mathrm{OPT}}(\sigma),$$ where $c$ is a constant and $OPT'$ relates to the
-optimal offline solution for the tree caching model and $OPT$ relates to the
+cost_{\mathrm{OPT}}(\sigma),$$ where $c$ is a constant, $OPT'$ relates to the
+optimal offline solution for the tree caching model, and $OPT$ relates to the
 optimal offline solution for the SDN model. In other words, $ALG$ has the same
 competitive ratio as $TC$ up to the constant factor.  \end{theorem}
 \begin{proof} The second inequality we get directly from the definition of $TC$
-being $r$-competitive. To prove the first inequality we have to compare the
+being $r$-competitive. To prove the first inequality, we have to compare the
 costs of $ALG$ on $\sigma$ with the cost of $TC$ on $\sigma'$. Let $f$ be the
 mapping from requests in the sequence $\sigma$ to the positive requests of
-$\sigma'$, that preserves the chronology of events. To any update $u$ to the
-rule in the controller we assign $m(u)$, which is a set of $\alpha$ negative
-requests, that was added to the sequence $\sigma'$ because of that update. There
-are three cases when $ALG$ has to pay.  \begin{enumerate} \item $ALG$ processes
-the request $\sigma_t$ to an element, that is not present in the $ALG$'s cache.
+$\sigma'$ that preserves the order of events. To any update to the 
+rule in the controller $u$, we assign $m(u)$, which is a set of $\alpha$ negative
+requests that was added to the sequence $\sigma'$ because of that update. There
+are three cases when $ALG$ has to pay. \begin{enumerate} \item $ALG$ processes
+the request $\sigma_t$ to an element that is not present in the $ALG$'s cache.
 Then it pays $1$ for serving that element. $TC$ has the same cache state when it
-processes the corresponding positive request $f(\sigma_t)$ paying $1$ as well.
-The costs of both algorithms are equal in that case.  \item $ALG$ makes a
-reorganization of the cache. Recall, that it makes the same reorganizations as
+processes the corresponding positive request $f(\sigma_t)$, thus paying $1$ as well.
+The costs of both algorithms are equal in this case. \item $ALG$ makes a
+reorganization of the cache. Recall that it makes the same reorganizations as
 $TC$, thus the overall cost related to changing the cache is the same for both
-algorithms.  \item Update $u$ takes place for some rule in the controller, so
-$ALG$ pays $\alpha$.  The same time we have sequence of $\alpha$ negative
+algorithms. \item Update $u$ takes place for some rule in the controller, so
+$ALG$ pays $\alpha$. The same time we have a sequence of $\alpha$ negative
 requests $m(u)$. $ALG$ pays then at least $\alpha$ on that sequence - either for
-all the requests or the cache update.  $ALG$ and $TC$ both does not pay for any
-other requests or events. Cost originating from updates for $ALG$ were counted
-at most twice (look at the last two points above), therefore $cost_{ALG}(\sigma)
+all the requests or the cache update. $ALG$ and $TC$ both do not pay for any
+other requests or events. Costs originating from updates for $ALG$ were counted
+at most twice (look at the last two points above), and therefore $cost_{ALG}(\sigma)
 \leq 2 \cdot cost_{TC}(\sigma')$, which ends the proof of the first inequality.
 
 Now we proceed to the proof of the last inequality. Consider the following
 offline algorithm $OFF$ for the tree caching problem. It makes the same moves as
 the $OPT$ on $\sigma$. It does not pay on the updates, therefore the cost
-occurred on the negative requests can be compensated by the updates, so
+incurred on the negative requests can be compensated by the updates, so
 $cost_{OFF}(\sigma') \leq cost_{OPT}(\sigma)$. Obviously, $cost_{OPT'}(\sigma')
-\leq cost_{OFF}(\sigma')$, what ends the proof.  \end{enumerate} \end{proof}
+\leq cost_{OFF}(\sigma')$, which ends the proof.  \end{enumerate} \end{proof}

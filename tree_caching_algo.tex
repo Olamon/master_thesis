@@ -1,56 +1,55 @@
 \section{Tree caching with dependencies} \label{tree_caching_algo} The problem
-that we consider (called \textit{tree caching problem}), introduces an extension
-of standard caching problem with bypassing, which was described in section 2.
-The main difference between them is, that requested items have some
-inter-dependencies. Specifically, their universe forms rooted tree $T$ and the
+that we consider (called the \textit{tree caching problem}) introduces an extension
+of a standard caching problem with bypassing, which was described in section 2.
+The main difference between them is that requested items have some
+inter-dependencies. Specifically, their universe forms a rooted tree $T$ and the
 requested items are placed in its nodes.  Whenever $v \in T$ is fetched, all of
-its descendants (denoted $T(v)$), that are not in the cache, have to be fetched
-as well. We say, that the cache with property described above, is
-\textit{bottom-contiguous}.
+its descendants (denoted $T(v)$) that are not in the cache have to be fetched 
+as well. We say that a cache with this property is \textit{bottom-contiguous}.
 
 Moreover, we consider two types of requests: \textit{negative} and
-\textit{positive}. If incoming request is positive we pay 1, if and only if it
+\textit{positive}. If an incoming request is positive we pay 1 if and only if it
 is not present in the cache (so like in previously considered settings). On the
-other hand, we have to pay for negative requests, if and only if the item is
+other hand, we have to pay for negative requests if and only if the item is
 present in the cache at that time (so in the opposite situation to the positive
 requests). After serving the request, we can reorganize the cache, paying
-$\alpha \geq 1$ for every element, which is evicted or fetched. 
+$\alpha \geq 1$ for every element which is evicted or fetched. 
 
-The goal is to find an online algorithm, that solves this problem and minimizes
+The goal is to find an online algorithm that solves this problem and minimizes
 the obtained cost. We present a deterministic algorithm \textbf{TRC}, which we
-prove is $O(h(T) \times R)$-competitive, where $h(T)$ is height of input tree
+prove is $O(h(T) \times R)$-competitive, where $h(T)$ is the height of the input tree
 and $R = k_{\mathrm{ONL}}/(k_{\mathrm{ONL}} - k_{\mathrm{OPT}} +1)$ with
 $k_{\mathrm{ONL}}$ and $k_{\mathrm{OPT}}$ denoting the size of the online and
-the optimal offline algorithm's cache respectively.
+the optimal offline algorithm's cache, respectively.
 
 \subsection{Model} \input{definition_pic} For ease of the algorithm description
-and readability of presented proofs, we introduce bunch of useful definitions.
-First of all, by $T(r)$ we indicate the subtree of $T$ rooted in $r$ and by
-$h(T)$ the height of the tree $T$.  \textit{Tree cap} is a tree $T_c \subseteq
-T$, such that root $r$ of $T$ belongs to $T_c$ and the fact, that $v \in T_c$
-implies, that all of the nodes, that lie on the path from $v$ to $r$, belong to
-$T_c$.  We say, that set $C \subseteq T$ is \textit{bottom contiguous}, if $v
-\in C$ implies $T(v) \subseteq C$ and we call $C$ a \textit{valid cache state}.
+and readability of the presented proofs, we introduce several useful definitions.
+First of all, by $T(r)$ we indicate the subtree of $T$ rooted in $r$, and by
+$h(T)$ we indicate the height of the tree $T$. \textit{Tree cap} is a tree $T_c \subseteq
+T$, such that the root $r$ of $T$ belongs to $T_c$ and the fact that $v \in T_c$
+implies that all of the nodes that lie on the path from $v$ to $r$ belong to
+$T_c$.  We say that a set $C \subseteq T$ is \textit{bottom contiguous} if $v
+\in C$ implies that $T(v) \subseteq C$, and we call $C$ a \textit{valid cache state}.
 Notice that this definition does not depend on the cache size, so $C$ can be
-valid cache state and at the same time may not fit into the cache size.
+a valid cache state and at the same time may not fit into the cache size.
 
 The \textbf{TRC} algorithm, after each request, can change the state of its
 cache. The only changes that are possible leave the cache in a valid state.
-Depending on the character of change (eviction vs. fetch), we can apply either a
+Depending on the character of a change (eviction vs. fetch), we can apply either a
 \textit{valid negative changeset} or a \textit{valid positive changeset} on the
 cache $C$. The valid positive changeset $X$ (you may think of it as a set that
 can be fetched legally) is a set for which $X \cap C = \varnothing$ and $C \cup
-X$ is a valid cache state, the negative one (related to eviction) is a set $X
+X$ is a valid cache state. The valid negative one (related to eviction) is a set $X
 \subseteq C$ such that $C \setminus X$ is a valid cache state.
 
-We process the input one request by one and assume, that each request $\sigma_t$
+We process the input one request at a time and assume that each request $\sigma_t$
 comes in the time interval $(t-1, t)$. The next request comes in the time
-interval $(t, t + 1)$ and so on and so forth. At time $t$ algorithm changes its
+interval $(t, t + 1)$ and so on and so forth. At time $t$ the algorithm changes its
 cache state from $C_{t}$ to $C_{t+1}$. The cache state is well defined for round
 $t$ (which contains time interval $(t-1, t)$), because as we can see, the cache
 may only change between rounds.
 
-Some of the definitions, which were introduced above, are presented in the
+Some of the definitions that were introduced above are presented in 
 Figure ~\ref{fig:TreeCacheDefinitions}.
 
 \input{motivation.tex}
