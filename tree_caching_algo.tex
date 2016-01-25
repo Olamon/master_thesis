@@ -215,98 +215,98 @@ cost for \textbf{TRC}'s algorithm, so we end the proof of the lemmma.
 \end{proof}
 
 \subsubsection{Shifting} Now we proceed to the main part of our deduction. What
-we need to do is to relate the cost of \textbf{OPT} with the fields. Just to
-show intuition behind the idea, imagine for a moment, that requests are evenly
+we need to do is relate the cost of \textbf{OPT} with the fields. Just to
+show the intuition behind the idea, imagine for a moment that requests are evenly
 distributed within fields. What we mean is that each node in each field $F^t$
 has exactly $\alpha$ slots occupied at the time $t$ (so we distribute $|X^t|
-\cdot \alpha$ requests belonging to $F^t$ evenly). What it gives us, is that
+\cdot \alpha$ requests belonging to $F^t$ evenly). What this gives us is that
 every node $v$ alternates between time periods spent in positive and negative
-field. During each such period it is requested exactly $\alpha$ times. Moreover,
-we see that on two consecutive periods (first positive, then negative one)
+fields. During each such period it is requested exactly $\alpha$ times. Moreover,
+we see that on two consecutive periods (first positive, then negative)
 \textbf{OPT} pays at least $\alpha$, because it changes the state of $v$ or pays
 for all positive or all negative requests belonging to these two periods of $v$.
-Unfortunately, we usually do not have such fair distribution of requests. What
+Unfortunately, we usually do not have such a fair distribution of requests. What
 we will do is we will change phase $P$ to $P'$, which is not harder for
 \textbf{OPT} (in the sense of cost), but will take us closer to the even
-distribution of the requests. It will give us then ability to lower bound the
+distribution of the requests. It will give us the ability to lower bound the
 cost of \textbf{OPT}.  \begin{figure} \begin{center}
 \includegraphics[width=0.8\textwidth]{density_pic.png} \end{center}
-\caption{This picture shows the average density of the request in fields. The
-darker the colour, the more requests are in average in that part of the
+\caption{This picture shows the average density of the requests in fields. The
+darker the colour, the more requests are on average in that part of the
 changeset.} \label{fig:density} \end{figure}
 
-To achieve such $P'$, we will change $P$ by application of \textit{legal
-shifts}.  We say, that requests placed in slot $(v, t)$ can be legally shifted
-to slot $(m(v), t)$, if $v = m(v)$ or for the positive requests $m(v)$ is
-descendant of $v$ or for the negative requests $m(v)$ is ascendant of $v$.
-Observe, that for fixed sequence of fetches and removals from cache, for any
-algorithm, the associated cost can only decrease, when the legal shifts are
-applied. For example, consider positive request.  Shifting it 'down' in the tree
+To achieve such a $P'$, we will change $P$ by the application of \textit{legal
+shifts}.  We say that requests placed in slot $(v, t)$ can be legally shifted
+to slot $(m(v), t)$, if $v = m(v)$, or for the positive requests $m(v)$ is a 
+descendant of $v$, while for the negative requests $m(v)$ is an ascendant of $v$.
+Observe that for a fixed sequence of fetches and removals from the cache, for any
+algorithm, the associated cost can only decrease when the legal shifts are
+applied. For example, consider a positive request. Shifting it 'down' in the tree
 can lead to moving it to a node which is already in the cache and therefore we
-can only save on that request. Similar example can be constructed for negative
+can only save on that request. A similar example can be constructed for a negative
 request. We can now make the following observation: \begin{observe} If $P'$ was
 created from $P$ by application of legal shifts only, then
 $cost_{\mathrm{OPT}}(P') \leq cost_{\mathrm{OPT}}(P)$.  \end{observe}
 
-We do not want changing $P$ to $P'$ to drop $cost_{\mathrm{OPT}}$ value too
-much, so it would cause us being unable to argue, that it is sufficiently large.
-What we want is to keep the property, that there are consecutive alternating
-periods of positive and negative requests to each node, that are sufficiently
+We do not want changing $P$ to $P'$ to drop the $cost_{\mathrm{OPT}}$ value too
+much that it would cause us being unable to argue that it is sufficiently large.
+What we want is to keep the property that there are consecutive alternating
+periods of positive and negative requests to each node that are sufficiently
 'long' in the sense of the number of requests. 
 
-We will show that we can perform shifts within fields in such a way, that the
+We will show that we can perform shifts within fields in such a way that the
 requests are exactly (for negative requests) or approximately (for positive
 requests) evenly distributed and consequently we can lower bound \textbf{OPT}'s
 cost.
 
-Before we start presenting the way, in which we shift the requests, we
+Before we start presenting the way in which we shift the requests, we
 demonstrate a property of restricted subfields and their corresponding
-changesets.  For any field $F$ we say that $S \subseteq F$ is
-\textit{overrequested} if $req(S) > |S| \cdot \alpha$. It turns out, that some
+changesets. For any field $F$, we say that $S \subseteq F$ is
+\textit{overrequested} if $req(S) > |S| \cdot \alpha$. It turns out that some
 subsets of the fields are never overrequested.  \begin{lemma} Fix $F^t$,
 $F^t_{\leq \tau}$ with $X^t$ corresponding changeset.  \begin{itemize} \item If
 $F^t$ is negative, then for any tree cap $T'$ of $X^t$, $T' \cap F^t_{\leq
 \tau}$ is not overrequested.  \item If $F^t$ is positive, then for any
 bottom-contiguous subtree $T'$ of $X^t$, $T'\cap F^t_{\leq \tau}$ is not
 overrequested.  \end{itemize} \label{thm:not_over_requested} \end{lemma}
-\begin{proof} We start with the proof of the property for negative fields.  From
+\begin{proof} We start with the proof of the property for negative fields. From
 \ref{thm:lemma1}, because $T' \cap  F^t_{\leq \tau}$ is a valid changeset at
 $\tau$, we get $req(T' \cap  F^t_{\leq \tau}) = bank_{\tau}(T' \cap F^t_{\leq
 \tau}) \leq |T' \cap F^t_{\leq \tau}| \cdot \alpha$. For the positive field we
-have similar observation, that for any bottom-contiguous subtree $T'$ of the
-positive field $T'\cap F^t_{\leq \tau}$ is a valid positive changeset, thus we
-apply again \ref{thm:lemma1} obtaining desired result.  \end{proof}
+have a similar observation that for any bottom-contiguous subtree $T'$ of the
+positive field, $T'\cap F^t_{\leq \tau}$ is a valid positive changeset. Thus, we
+apply again \ref{thm:lemma1} to obtain the desired result.  \end{proof}
 
-Above lemma provide us a helpful attribute of the fields. Instinctively, for
-positive fields the saturation of slots is more dense in average for nodes
-closer to the root, whereas the density of requests in negative field is higher
+The lemma above provides us with a helpful attribute of the fields. Instinctively, for
+positive fields, the saturation of slots is more dense in average for nodes
+closer to the root, whereas the density of requests in a negative field is higher
 at the 'bottom' (see Figure \ref{fig:density}).
 
-For $\tau = t$ we can apply this lemma and Observation \ref{obs:observe1}, what
-gives us the following corollary.  \begin{corollary} Fix $F^t$ filed with
-corresponding changeset $X_t$. Let $T'$ be tree cap of $X_t$, then if the field
+For $\tau = t$, we can apply this lemma and Observation \ref{obs:observe1} which
+gives us the following corollary.  \begin{corollary} Fix $F^t$ field with
+corresponding changeset $X_t$. Let $T'$ be the tree cap of $X_t$, then if the field
 is: \begin{itemize} \item positive: $req(F^t \cap T') \geq |T'| \cdot \alpha$,
 \item negative: $req(F^t \cap (X_t \setminus T')) \geq |X_t \setminus T'| \cdot
 \alpha$.  \end{itemize} \label{thm:proper_at_t} \end{corollary}
 
 \myparagraph{Up-shifting of negative requests}
 
-With procedure of shifting up negative requests, we can obtain an even
-distribution of requests across nodes in changeset, that corresponds to a
+With a procedure of shifting up negative requests, we can obtain an even
+distribution of requests across nodes in changeset that corresponds to a
 negative field.  \begin{theorem} By legally shifting the negative requests, we
-can move requests within the negative field $F^t$ in a way, that each node has
+can move requests within the negative field $F^t$ in a way that each node has
 exactly $\alpha$ requests after that procedure.  \label{thm:legal_shifting_up}
-\end{theorem} To prove this theorem we will first argue, that we can always
-shift requests, that appeared after first $\alpha$ requests at any leaf moving
-them to the parent of that leaf. To make our argument transparent, we will say,
-that a tree cap $Y \subseteq X_t$ is \textit{proper}, if for any tree cap $Y'
+\end{theorem} To prove this theorem, we will first argue that we can always
+shift requests that appeared after the first $\alpha$ requests at any leaf moving
+them to the parent of that leaf. To make our argument transparent, we will say 
+that a tree cap $Y \subseteq X_t$ is \textit{proper} if for any tree cap $Y'
 \subseteq Y$ and any point of time $\tau \leq t$ it holds, that $req(F^t_{\leq
-\tau} \cap Y') \leq |Y'| \cdot \alpha$. Look, that Corollary
-\ref{thm:proper_at_t} states, that at time $t$, being the end time of the field,
+\tau} \cap Y') \leq |Y'| \cdot \alpha$. Seej that Corollary
+\ref{thm:proper_at_t} states that at time $t$, being the end time of the field,
 $X_t$ with all its tree caps are proper.
 
-Now we can present a lemma, which will be then used as induction step in the
-prove of Theorem \ref{thm:legal_shifting_up}.
+Now we can present a lemma which will be then used as the induction step in the
+proof of Theorem \ref{thm:legal_shifting_up}.
 \begin{lemma} Let $Y$ be a proper
 tree cap of a negative changeset $X_t$ and let $v_l$ be one of $Y$'s leaves. If
 $v_l$ was requested $r_l \geq \alpha$ times, we can legally shift  $\delta_l =
@@ -314,46 +314,46 @@ r_l - \alpha$ requests to the parent of $v_l$ (denoted $p(v_l)$), so the moved
 requests are kept in $F^t$ and $Y \setminus \{v_l\}$ stays proper.
 \end{lemma}
 \begin{proof}
-We consider $r_l$ requests, that are placed on $v_l$, in
-chronological order.  See, that when $\alpha + 1$-th request comes, at time
+We consider $r_l$ requests that are placed on $v_l$ in
+chronological order. See that when the $\alpha + 1$-th request comes at time
 $t_l$, $p(v_l)$ has to be in the cache. If that was not true, we would have
-encountered overrequested tree cap consisting of one node $\{v_l\}$, which
-contradicts Lemma \ref{thm:not_over_requested}. That means, that after $\alpha$
-first requests to $v_l$, the rest $\delta_l$ requests can be moved within field
-to $p(v_l)$.
+encountered an overrequested tree cap consisting of one node $\{v_l\}$, which
+contradicts Lemma \ref{thm:not_over_requested}. This means that after the $\alpha$
+first requests to $v_l$, the remaining $\delta_l$ requests can be moved within 
+the field to $p(v_l)$.
 
-What remains to be proven is that $Y' = Y \setminus \{v_l\}$, after operation
-described above, is proper. Suppose it is not. Then there exists tree cap $D
-\subseteq Y'$, which is overrequested at some time $\tau$. First of all $\tau
-\geq t_l$, because we do not change placement of any request up to time $t_l$
-and before the time $t_l$ $Y$ was proper. Also see, that $p(v)$ has to be an
+What remains to be proven is that $Y' = Y \setminus \{v_l\}$, after the operation
+described above, is proper. Suppose it is not. Then there exists a tree cap $D
+\subseteq Y'$ which is overrequested at some time $\tau$. First of all, $\tau
+\geq t_l$, because we do not change the placement of any request up to time $t_l$
+and before the time $t_l$ $Y$ was proper. Also, notice that $p(v)$ has to be an
 element of $D$ - we did not change the number of requests in any other node.
 After shift $req(F^t \cap Y) = req(F^t \cap D) + \alpha$, and if $req(F^t \cap
 D) > |D| \cdot \alpha$, then $D \cup v_l$ would be overrequested, contradicting
-the fact, that $Y$ is proper before change.
+the fact that $Y$ was proper before the change.
 \end{proof}
 \begin{figure}
 \begin{center} \includegraphics[width=0.8\textwidth]{example_not_even.png}
 \end{center} \caption{Numbers indicate chronology of events.}
 \label{fig:example_not_even} \end{figure}
 
-Now above lemma, used as induction step, proves Theorem
-\ref{thm:legal_shifting_up}. To ascertain that, recall the Corollary
-\ref{thm:proper_at_t}, which ensures, that in any proper tree cap $D$ of $X_t$
+Now, the above lemma, when used as an induction step, proves Theorem
+\ref{thm:legal_shifting_up}. To ascertain this, recall Corollary
+\ref{thm:proper_at_t}, which ensures that in any proper tree cap $D$ of $X_t$,
 there is a leaf with at least $\alpha$ requests. Going in the bottom-up manner
-through the field (actually through the tree corresponding to its changeset), shifting requests from 'overrequested' nodes on the way,
-leads to an even distribution of the requests - we leave $\alpha$ requests in
-every node on our path. That completes the proof.
+through the field (actually through the tree corresponding to its changeset), shifting 
+requests from 'overrequested' nodes on the way leads to an even distribution of the requests 
+- we leave $\alpha$ requests in every node on our path. This completes the proof.
 
 \myparagraph{Down-shifting of positive requests}
 
-Unfortunately, we can not obtain such perfectly even distribution of requests as in the case of negative fields,
-when using legal shifts on positive fields.
-Specifically, we cannot shift positive requests down legally in such a way, that
+Unfortunately, we can not obtain such a perfectly even distribution of requests as 
+in the case of negative fields when using legal shifts on positive fields.
+Specifically, we cannot shift positive requests down legally in such a way that
 we end up with $\alpha$ requests in every node. We show an example confirming
 this statement. Imagine we have a tree $T$ with a root $r$ and two distinct
-subtrees: $T_1$ and $T_2$, which both are of size $s$ and have $l$ leaves.
-Consider the following series of events (assume, that initially whole tree $T$
+subtrees $T_1$ and $T_2$, which both are of size $s$ and have $l$ leaves.
+Consider the following series of events (assume that initially whole tree $T$
 is in \textbf{TRC's} cache).  \begin{enumerate} \item $T_1 \cup \{r\}$ is
 evicted from cache.  \item $(s+1) \cdot \alpha - l$ requests to the root $r$
 appear (no fetch occurs - there is not enough requests in $r$ to pay for whole
@@ -361,26 +361,26 @@ $T_1 \cup \{r\}$).  \item $T_2$ is evicted.  \item $s \cdot \alpha$ requests
 appear at the root of $T_1$.  \item $l$ requests appear at the root $r$ of tree
 $T$. $T$ is again in \textbf{TRC's} cache.  \end{enumerate}
 
-The picture corresponding to this example can be found in the Figure
+The picture illustrating this example can be found in Figure
 \ref{fig:example_not_even}. 
-Notice, that when first $(s+1) \cdot \alpha - l$
-request appear to $r$, they can only be shifted to $T_1$ nodes. After that root
-of $T_1$ is given requests, which can not be moved to $T_2$. Recall, that we are
-unable to do shift positive requests up. Such movement would be illegal,
-therefore only $l$ last requests can be moved to $T_2$. Hence we managed to fill
+Notice that when first the $(s+1) \cdot \alpha - l$
+requests appear to $r$, they can only be shifted to $T_1$ nodes. After that root
+of $T_1$ is given these requests, they can not be moved to $T_2$. Recall that we are
+unable to shift positive requests up. Such a movement would be illegal,
+therefore only the $l$ last requests can be moved to $T_2$. Hence, we managed to fill
 only half of the tree nodes with =$\Omega(\alpha)$ requests.   
 
-Convinced, that shifting positive request down is not so easy, our goal is to
-prove, that what we can at least get by legal shifting within field $F^t$ is
+Convinced that shifting positive requests down is not so easy, our goal is to
+prove that what we can at least get by legal shifting within field $F^t$ is
 $\Omega(\frac{|F^t|}{h(T)})$ nodes having $\frac{\alpha}{2}$ requests or more.
-To do that first we argue, that from any node $v$ in the positive field $F^t$ we
-can move down fraction of its requests, that they stay within their field and there
-aren't any nodes $u$ in $T(v)$, that gets more then $\frac{\alpha}{2}$ requests
-(we do not count the requests placed originally at $u$). Notice, that to shift
-any request $(v, t_v)$ from $F^t$ to some node $v'$ we need to ensure, that $v'$
+To do this, first we argue that from any node $v$ in the positive field $F^t$, we
+can move down fraction of its requests such that they stay within their field and there
+aren't any nodes $u$ in $T(v)$ that get more then $\frac{\alpha}{2}$ requests
+(we do not count the requests placed originally at $u$). Notice that to shift
+any request $(v, t_v)$ from $F^t$ to some node $v'$ we need to ensure that $v'$
 is outside the cache. This can be expressed by the inequality $t_v > last_{v'}(t)$.
 
-\begin{lemma} Fix $F^t$ positive field with corresponding changeset $X_t$ and node $v \in X_t$,
+\begin{lemma} Fix positive field $F^t$ with corresponding changeset $X_t$ and node $v \in X_t$
 that has been requested at least $c_v \cdot (\frac{\alpha}{2})$ times for some
 positive integer $c_v$. There exists a legal shifting of $\lceil \frac{c_v}{2}
 \rceil \cdot (\frac{\alpha}{2})$ requests, chosen from the requests to $v$, to nodes in $T(v) \cap X^t$.
@@ -389,67 +389,67 @@ these nodes are given $\frac{\alpha}{2}$ requests. All of the shifts are within
 the field $F^t$.  \label{thm:request_mapping}
 \end{lemma} 
 \begin{proof} We sort
-the elements of $T(v) \cap X_t$ with respect to the increasing time order of
+the elements of $T(v) \cap X_t$ with respect to the increasing time order of the
 element's last eviction (so with respect to function $last_v$), obtaining a sequence of nodes
-$\{u_i\}_{i \geq 0}$. Since $v$ has to be in the first group of elements, that are
+$\{u_i\}_{i \geq 0}$. Since $v$ has to be in the first group of elements that are
 evicted from the cache in that field, we assume $u_0 = v$. We sort the
-requests, that occurred at $v$ as well, so we get a sequence of requests sorted by the
-increasing arrival time. The latter sequence will be denoted by $\{(v,
-t_j)\}_{j=0}^{c_v \cdot \frac{\alpha}{2} - 1}$. We define partial function
-\textit{shift} on latter sequence's elements, which will tell us to which element
-among the elements of  $T(v) \cap X_t$ the argument (request) should be pushed
-down. Precisely, $shift((v, t_{k \cdot \alpha + m})) = u_k$, where $m$ values are
+requests that occurred at $v$ as well, so we get a sequence of requests sorted by
+increasing time of arrival. The latter sequence will be denoted by $\{(v,
+t_j)\}_{j=0}^{c_v \cdot \frac{\alpha}{2} - 1}$. We define a partial function
+\textit{shift} on the latter sequence's elements which will tell us to which element
+among the elements of $T(v) \cap X_t$ the argument (request) should be pushed
+down to. Precisely, $shift((v, t_{k \cdot \alpha + m})) = u_k$, where $m$ values are
 integers taken from interval $[0, \frac{\alpha}{2})$. The function $shift$ is not
 defined on the rest of the requests. We will not push those requests down. The
-mapping definition given above is presented in the Figure \ref{fig:req_map}.
+mapping definition given above is presented in Figure \ref{fig:req_map}.
 \begin{figure} \begin{center}
 \includegraphics[width=1.1\textwidth]{request_mapping.png} \end{center}
-\caption{Request mapping from Lemma \ref{thm:request_mapping}. The requests are
+\caption{The request mapping from Lemma \ref{thm:request_mapping}. The requests are
 divided into alternating parts of size $\lceil \frac{\alpha}{2} \rceil$ and
 $\lfloor \frac{\alpha}{2} \rfloor$. The odd fragments (counting from $1$) are
 mapped, whereas the even parts are omitted in the mapping.} \label{fig:req_map}
 \end{figure}
 
-Now we need to prove, that defined shifting keeps requests within their fields,
-so for shifted requests we need to ensure $t_j \geq last_{shift((v, t_j))}(t)$. Assume that
-it is not true and $t_j < last_{shift((v, t_j))}(t)$ for a shifted request with index
+Now we need to prove that the defined shifting keeps requests within their fields,
+so for shifted requests we need to ensure that $t_j \geq last_{shift((v, t_j))}(t)$. Assume that
+this is not true and $t_j < last_{shift((v, t_j))}(t)$ for a shifted request with index
 $j = k \cdot \alpha + m$. Since the requests are mapped with respect to
-increasing order of sequence $\{u_i\}_{i \geq 0}$, thus increasing order of $last_v$, then $|F^t_{\leq t_j} \cap T(v)| <= k$, but the
-same time $|req(F^t_{\leq t_j} \cap T(v))| = j$ and $F^t_{\leq t_j} \cap T(v)$ is
+increasing order of sequence $\{u_i\}_{i \geq 0}$, and thus in increasing order of $last_v$, then $|F^t_{\leq t_j} \cap T(v)| <= k$. However, at the
+same time $|req(F^t_{\leq t_j} \cap T(v))| = j$, so $F^t_{\leq t_j} \cap T(v)$ is
 then overrequested. This with Lemma \ref{thm:not_over_requested} leads to a
 contradiction.
 \end{proof}
 We are ready to prove the main lemma of this
-paragraph, which gives us possibility to obtain (nearly) even distribution of
-positive request to the factor $O(\frac{1}{h(T)})$. 
-\begin{lemma} For any positive field $F^t$ it is possible to shift legally $\frac{req(F^t)}{2}$
-requests within the field in a way, that at least $\frac{|X^t|}{2 \cdot h(T)}$ nodes in
+section, which gives us the possibility to obtain a (nearly) even distribution of
+positive requests to the factor $O(\frac{1}{h(T)})$. 
+\begin{lemma} For any positive field $F^t$, it is possible to shift legally $\frac{req(F^t)}{2}$
+requests within the field in a way that at least $\frac{|X^t|}{2 \cdot h(T)}$ nodes in
 $F^t$ have $\frac{\alpha}{2}$ requests or more.
 \label{thm:legal_shifting_down}
 \end{lemma}
 \begin{proof}
-Let $X^t$ be corresponding changeset for $F^t$. We
+Let $X^t$ be the corresponding changeset for $F^t$. We
 take all of the requests at each node and arrange them into groups of size
-$\frac{\alpha}{2}$ chronologically, meaning, that first $\frac{\alpha}{2}$
+$\frac{\alpha}{2}$ chronologically, meaning that the first $\frac{\alpha}{2}$
 requests to a node are in first group and so on. If the last group is not full
-(it has less then  $\frac{\alpha}{2}$ requests) then it is omitted. The number
+(it has less then $\frac{\alpha}{2}$ requests) then it is omitted. The number
 of requests that are not omitted in set $X$ will be denoted by
 $\overline{req}(X)$. Notice that  $\overline{req}(F^t) \geq |X^t| \cdot
 \frac{\alpha}{2}$, since $req(F^t) = |X^t| \cdot \alpha$ and we omit at most
 $\frac{\alpha}{2}$ requests at every node.  \begin{figure} \begin{center}
 \includegraphics[width=0.5\textwidth]{layers.png} \end{center} \caption{Division
-of the requests into levels. Requests to the nodes, which have the same distance
+of the requests into levels. Requests to the nodes which have the same distance
 from $X^t$'s root are on the same level.} \label{fig:layers} \end{figure}
 
 We partition the elements of $X^t$. In each part there are elements with the
 same distance from the root of $X^t$. We call these parts levels. The nodes that
 are at distance $i$ from the root are on level $i$ and will be denoted $X^t_i$.
-We have exactly $h(T)$ levels. By pigeonhole principle, there exists a level
+We have exactly $h(T)$ levels. By the pigeonhole principle, there exists a level
 $X^t_i$ for which $\overline{req}(F^t \cap X^t_i) \geq \frac{req(F^t)}{2 \cdot
-h(T)}$ (look at Figure \ref{fig:layers}). The subtrees, that are rooted in the nodes
+h(T)}$ (look at Figure \ref{fig:layers}). The subtrees that are rooted in the nodes
 of $X^t_i$ are distinct and to each of them we can apply Lemma
 \ref{thm:request_mapping}. Node $v \in X^t_i$ has $\overline{req}(F^t \cap
-\{v\})$ requests, so from the lemma we we can shift $\frac{\alpha}{2}$ of them
+\{v\})$ requests, so from the lemma we can shift $\frac{\alpha}{2}$ of them
 to $\lceil \overline{req}(F^t \cap \{v\}) \rceil$ distinct nodes from $T(v)$.
 Summing up the 'filled' nodes for each subtree rooted in some element of
 $X^t_i$, we obtain at least $\lceil \overline{req}(F^t \cap X^t_i) \rceil \geq
