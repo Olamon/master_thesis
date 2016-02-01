@@ -146,7 +146,7 @@ so if it makes a changeset be saturated, it can be either a positive or negative
 chanegeset. Only one request comes during each round, so strict inequalities
 can only change to equalities, which implies the first point of the lemma.
 \end{proof} The above lemma should convince us that the algorithm is
-deterministic. When it chooses a changeset to apply, there is at most one both
+well defined. When it chooses a changeset to apply, there is at most one both
 maximal and saturated changeset at that time.
 
 \subsubsection{Concept of fields} First notice that whenever there is a
@@ -171,10 +171,10 @@ As we now know what the event space and slots are, we can define $fields$.
 Fields form a disjoint partition of phase $P$ (a partition of slots corresponding to
 $P$). Formally, if $X_t$ is changeset applied by \textbf{TRC} at time $t$, we
 define a related field as: $$F^t = \{(v, t'): v \in X^t \wedge last_v^t < t' \leq
-t\},$$ where $last_v^{t'}$ stands for the last time strictly before $t'$ in
+t\},$$ where $last_v^{t}$ stands for the last time strictly before $t$ in
 phase $P$ when node $v$ changed its state in the cache either by being fetched
-or evicted. If there was no such change for $v$ in phase $P$ before $t'$, we
-assign $last_v^{t'} = \mathrm{begin_P}$. $F^t$ is \textit{positive} if the
+or evicted. If there was no such change for $v$ in phase $P$ before $t$, we
+assign $last_v^{t} = \mathrm{begin_P}$. $F^t$ is \textit{positive} if the
 corresponding changeset $X_t$ is positive, and similarly for the \textit{negative}
 field. We define $req(F^t)$ to be the occupied slots from $F^t$. Notice that
 $req(F^t)$ are exactly the requests that 'paid' for changeset $X_t$, so it could
@@ -183,28 +183,34 @@ above in a simple observation.  \begin{observe} For field $F^t$ we have
 $req(F^t) = |X_t| \cdot \alpha$ and the requests in one field are either all
 positive or all negative.  \label{obs:observe1} \end{observe} The rest of the
 event space (occupied slots that do not belong to any field $F^t$ of the phase
-$P$), we call \textit{the open field} and denote by $F^{\infty}$. All fields
-except the open field are denoted by $\mathcal{F}$ and their overall size by
+$P$), we call \textit{the open field} and denote by $F^{\infty}$. The set of all fields
+except the open field is denoted by $\mathcal{F}$ and their overall size by
 $|\mathcal{F}| = \sum_{F^t \in \mathcal{F}} |X^t| \cdot \alpha$.  Additionally,
 for any field $F$, if $A$ is a set of nodes, $F \cap A = \{(v,t) \in F: v \in
 A\}$ and if $T$ is a set of rounds $F \cap T = \{(v, t) \in F: t \in T\}$. We
 introduce another definition related to fields: $\tau$\textit{-restricted}
-subfields of $F^t$, which formally are equal $$F^t_{\leq \tau} = F^t \cap \{t':
+subfields of $F^t$, which formally are equal to $$F^t_{\leq \tau} = F^t \cap \{t':
 t' \leq \tau\}.$$ We can think of a $\tau$-restricted subfield as a snapshot of
-a field that was taken at time $\tau$ showing which slots were occupied in $F^t$
+a field that was taken at time~$\tau$ showing which slots were occupied in $F^t$
 up to the time point $\tau$.  \begin{figure} \begin{center}
 \includegraphics[width=1.1\textwidth]{fields.png} \end{center} \caption{Example
 of fields for the tree structure being a line. $F^1$ is a positive field, while $F^2$
 is negative. $F^{\infty}$ is an open field for presented phase.}
 \label{fig:fields} \end{figure} Fields are hard to visualize in the general case, so
 we present them only for the case when the processed tree structure forms a line
-(look at the Figure \ref{fig:fields}).
+(look at Figure \ref{fig:fields}).
 
 Now we upper bound the cost of \textbf{TRC} obtained during phase $P$.
 \begin{lemma} Let $\mathcal{F} \cup F^{\infty}$ be a partition of $P$ into
-fields. We have: $$cost_{\mathrm{TRC}}(P) \leq 2 \cdot \alpha \cdot
-|\mathcal{F}| + req(F^{\infty}) + k_{\mathrm{P}} \cdot \alpha.$$ \label{thm:trc_cost}
-\end{lemma} \begin{proof} The cost on every field $F^t$ originates from serving
+fields. We have:
+\begin{equation*}
+cost_{\mathrm{TRC}}(P) \leq 2 \cdot \alpha \cdot
+|\mathcal{F}| + req(F^{\infty}) + k_{\mathrm{P}} \cdot \alpha.
+\end{equation*}
+\label{thm:trc_cost}
+\end{lemma}
+\vspace{-3.5em}
+\begin{proof} The cost on every field $F^t$ originates from serving
 requests that belong to it and reorganizing the cache at the end of the field
 (which ends with fetch or eviction). Both of these costs equal $|X^t| \cdot
 \alpha$, which substantiates the first term in the right hand side of the inequality.
