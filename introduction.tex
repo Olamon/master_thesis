@@ -9,17 +9,16 @@ of input in a defined system state. The cost usually mirrors the amount of time
 needed for performing an operation or some other resource usage. The 
 algorithms aim to minimize this cost.
 
-One of the online algorithm problems is the caching problem, a variant of which is 
+One of the problems in online algorithms is the caching problem, a variant of which is 
 studied in this thesis. In the caching (paging) problem, we need to maintain a
 two-level memory system that consists of fast memory, which is small (the reason 
-it is small originates from the practical application - fast memory is more 
-expensive), and slow memory, which is large enough to deal with the input 
-sequence. The input consists of elements that should be fetched from memory. If 
+it is small originates from the practical application: fast memory is more 
+expensive), and slow memory, which has much larger capacity than the fast memory. The input consists of elements that should be fetched from the slow memory. If 
 the element is already in the fast memory, the basic setting of problem lets us 
-handle it without any cost. Otherwise, we have to fetch the element from slow 
-memory paying non-zero cost. Sometimes it is required to place any requested 
-element immediately in cache. If there is no place in fast memory (cache) for 
-the element, we have to move some items from fast memory back to slow memory. 
+handle it without any cost. Otherwise, we have to fetch the element from the slow 
+memory paying non-zero cost. Sometimes, it is required to place any requested 
+element immediately in cache. If there is no place in the fast memory (cache) for 
+the element, we have to move some items from the fast memory back to the slow memory. 
 If such a requirement does not exist and we can serve item without putting it to 
 the cache (paying some possibly big cost instead) we say that the model is 
 \textit{with bypassing}.
@@ -35,7 +34,7 @@ elements that are requested are not independent. What we mean is that the
 space of items forms a tree, and whenever we have node $v$ in fast memory, we 
 are obligated to keep the whole subtree rooted in $v$ in the cache, too. Moreover,
 our model differs from the previously studied ones by introducing two types of 
-requests - \textit{positive} and \textit{negative}. For the positive request, we 
+requests: \textit{positive} and \textit{negative}. For the positive request, we 
 pay when we serve it and it is not in cache (so as in the usual setting), whereas 
 for the negative request we pay when it is in the cache.
 
@@ -43,27 +42,27 @@ This model finds its application in handling a Forwarding Information Base (FIB)
 An FIB is a set of rules which IP routers have to store to forward requests
 correctly. The number of such rules is dramatically increasing in modern 
 routers, and the memory storing FIB is known to be expensive and to need a lot 
-of energy. Technology of Software-Defined Networking (SDN) introduces the idea 
+of energy. Technology of Software-Defined Networking (SDN) allows the idea 
 of keeping the 'most popular' FIB rules in faster and more expensive memory. 
-As we explain later, FIB forms a tree, in that way solving our model is strongly
+As we explain later, FIB forms a tree and in that way solving our model is strongly
 connected to improving SDN performance.
 
 We present an online algorithm \textbf{TRC} to solve the caching problem 
 for the presented model. To measure its performance, we use \textbf{competitive 
-analysis}. Its basic idea is to compute the cost ratio (which is called the
-\textit{competitive ratio}) between the cost of the online algorithm to the cost of 
+analysis}. Its basic idea is to compute the ratio (which is called the
+\textit{competitive ratio}) between the cost of the online algorithm and the cost of 
 the \textit{offline algorithm}, which knows the whole the input sequence from the 
 beginning. Let $\kind{OPT}$ and $\kind{ONL}$ denote the size of the cache of the
 offline optimal and the online algorithm, respectively. If these values are equal, we
 will use $k$ instead. The main result presented is the online algorithm 
-\textbf{TRC}, whose competitive ratio we prove is 
+\textbf{TRC}, whose competitive ratio we prove to be 
 $O(\frac{h(T) \cdot \kind{OPT}}{\kind{ONL} - \kind{OPT} + 1})$, where $h(T)$ is
 the height of the tree $T$.
 
-In section \ref{caching_problems}, we review some basic definitions of competitive
+In section~\ref{caching_problems}, we review some basic definitions of competitive
 analysis. We also give a brief survey of online algorithms and their analysis 
 for the standard paging problem. We consider both deterministic and randomized 
-solutions for this problem. In section \ref{tree_caching_algo}, we start by 
+solutions for this problem. In section~\ref{tree_caching_algo}, we start by 
 presenting the model of tree caching with dependencies and two kinds of 
 requests. Then we give more precise description of our motivation and the importance
 of that model. Next, we show a deterministic algorithm \textbf{TRC} for the tree 

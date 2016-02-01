@@ -9,7 +9,7 @@ as well. We say that a cache with this property is \textit{bottom-contiguous}.
 
 Moreover, we consider two types of requests: \textit{negative} and
 \textit{positive}. If an incoming request is positive we pay 1 if and only if it
-is not present in the cache (so like in previously considered settings). On the
+is not present in the cache (like in previously considered settings). On the
 other hand, we have to pay for negative requests if and only if the item is
 present in the cache at that time (so in the opposite situation to the positive
 requests). After serving the request, we can reorganize the cache, paying
@@ -24,12 +24,12 @@ the optimal offline algorithm's cache, respectively.
 
 \subsection{Model} \input{definition_pic} For ease of the algorithm description
 and readability of the presented proofs, we introduce several useful definitions.
-First of all, by $T(r)$ we indicate the subtree of $T$ rooted in $r$, and by
-$h(T)$ we indicate the height of the tree $T$. \textit{Tree cap} is a tree $T_c \subseteq
-T$, such that the root $r$ of $T$ belongs to $T_c$ and the fact that $v \in T_c$
+First of all, by $T(r)$ we indicate the subtree of $T$ rooted at~$r$, and by
+$h(T)$ we indicate the height of the tree $T$. \textit{Tree cap} is a subtree $T_c \subseteq
+T$, such that the root $r$ of $T$ is a root of $T_c$ and the fact that $v \in T_c$
 implies that all of the nodes that lie on the path from $v$ to $r$ belong to
-$T_c$.  We say that a set $C \subseteq T$ is \textit{bottom contiguous} if $v
-\in C$ implies that $T(v) \subseteq C$, and we call $C$ a \textit{valid cache state}.
+$T_c$.  We say that a set $C \subseteq T$ is \textit{bottom-contiguous} if $v
+\in C$ implies that $T(v) \subseteq C$. We also call $C$ a \textit{valid cache state}.
 Notice that this definition does not depend on the cache size, so $C$ can be
 a valid cache state and at the same time may not fit into the cache size.
 
@@ -44,9 +44,9 @@ X$ is a valid cache state. The valid negative one (related to eviction) is a set
 
 We process the input one request at a time and assume that each request $\sigma_t$
 comes in the time interval $(t-1, t)$. The next request comes in the time
-interval $(t, t + 1)$ and so on and so forth. At time $t$ the algorithm changes its
+interval $(t, t + 1)$ and so on. At time $t$ the algorithm changes its
 cache state from $C_{t}$ to $C_{t+1}$. The cache state is well defined for round
-$t$ (which contains time interval $(t-1, t)$), because as we can see, the cache
+$t$ (which corresponds to time interval $(t-1, t)$), because the cache
 may only change between rounds.
 
 Some of the definitions that were introduced above are presented in 
@@ -56,12 +56,12 @@ Figure ~\ref{fig:TreeCacheDefinitions}.
 
 \subsection{Algorithm TRC}
 
-Before defining the \textbf{TRC} algorithm, we bind to each node $v \in T$ a
-$bank_{t}(v)$ value. At the beginning of the algorithm, for each $v \in T$ we
+Before defining the \textbf{TRC} algorithm, we bind a
+$bank_{t}(v)$ value to each node $v \in T$. At the beginning of the algorithm, for each $v \in T$ we
 have $bank_{0}(v) = 0$. If node $v$ gets a negative or a positive request at
 time $t$ whose processing cost us 1, we increase $bank_{t}(v)$ value by 1 (so
 $bank_{t}(v) = bank_{t-1}(v) + 1$), leaving the value assigned to any other node
-unchanged (so for $v' \neq v bank_{t-1}(v') = bank_{t}(v')$). When we change the
+unchanged (so for $v' \neq v$ $bank_{t-1}(v') = bank_{t}(v')$). When we change the
 state of node $v$ (either by evicting or fetching it into the cache) we 'clear'
 its bank value (change it to $0$). For a set of nodes $V \subseteq T$, we denote
 sum $\sum_{v \in V} bank_{t}(v)$ by $bank_{t}(V)$.
@@ -70,7 +70,7 @@ The \textbf{TRC} proceeds in phases. The first phase starts at time 0 and at the
 start of each phase the \textbf{TRC}'s cache is empty.  \begin{algorithm}
 \caption{\textbf{TRC}} \label{alg:TRC} \begin{algorithmic}[1] \ForAll{$t \in \{1
 \ldots |\sigma|\}$} \State Serve request $\sigma_t$.  \State Update $bank_t(v)$
-values for $v \in T$.  \If{exists valid changeset $X$ such that: \begin{itemize}
+values for $v \in T$.  \If{exists a valid changeset $X$ such that: \begin{itemize}
 \item $bank_t(X) \geq |X| \times \alpha$ (saturation), \item $bank_t(Y) < |Y|
 \times \alpha$ for any valid changeset $Y \varsupsetneq X$ (maximality):
 \end{itemize}} \State Apply $X$.  \If {the cache size $k_{\mathrm{ONL}}$ is
